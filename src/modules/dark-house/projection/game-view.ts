@@ -1,9 +1,11 @@
 import type { DarkHouseState } from "@/modules/dark-house/domain/types";
+import type { GameId } from "@/modules/game-catalog/games";
 import type { PlayerRoomView, PublicRoomView } from "@/modules/room/contracts";
 import { legalActions } from "@/modules/dark-house/domain/reducer";
 
 type ProjectionContext = {
   code: string;
+  gameId: GameId;
   version: number;
   now: number;
   status: "playing" | "finished";
@@ -24,7 +26,7 @@ export function projectPublic(state: DarkHouseState, context: ProjectionContext)
   const revealVisible = reveal && context.now >= reveal.revealAt;
 
   return {
-    room: { code: context.code, status: context.status, version: context.version },
+    room: { code: context.code, gameId: context.gameId, status: context.status, version: context.version },
     serverNow: new Date(context.now).toISOString(),
     phase: state.phase,
     players: state.players.map((player) => ({

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { applyRoomAction, createRoom, joinRoom } from "./room-service";
+import { applyRoomAction, createRoom, getRoomView, joinRoom } from "./room-service";
 import { resetMemoryStore } from "./repository";
 
 const tokenFrom = (url: string) => new URL(url).hash.slice(1);
@@ -11,7 +11,7 @@ describe("room service", () => {
   beforeEach(() => resetMemoryStore());
 
   it("allocates exactly six seats and rejects the seventh", async () => {
-    const created = await createRoom("host", "http://localhost", 1_000);
+    const created = await createRoom("host", "http://localhost", "dark-house", 1_000);
     const token = tokenFrom(created.joinUrl);
     for (let index = 1; index <= 6; index += 1) {
       const joined = await joinRoom({ code: created.code, joinToken: token, nickname: `손님${index}`, userId: `u${index}`, now: 1_001 });
@@ -21,7 +21,7 @@ describe("room service", () => {
   });
 
   it("applies duplicate action IDs once and returns the original version", async () => {
-    const created = await createRoom("host", "http://localhost", 1_000);
+    const created = await createRoom("host", "http://localhost", "dark-house", 1_000);
     const token = tokenFrom(created.joinUrl);
     await Promise.all(["host", "u2", "u3"].map((userId, index) =>
       joinRoom({ code: created.code, joinToken: token, nickname: `참가자${index + 1}`, userId, now: 1_001 }),
@@ -32,5 +32,21 @@ describe("room service", () => {
     expect(first.alreadyApplied).toBe(false);
     expect(duplicate.alreadyApplied).toBe(true);
     expect(duplicate.originalAppliedVersion).toBe(first.currentVersion);
+  });
+
+  it("persists the selected game and rejects games that are not playable yet", async () => {
+    const created = await createRoom("host", "http://localhost", "dark-house", 1_000);
+    expect(created.gameId).toBe("dark-house");
+    const lobby = await getRoomView({
+      code: created.code,
+      userId: "host",
+      mode: "public",
+      now: 1_001,
+    });
+    expect(lobby.room.gameId).toBe("dark-house");
+
+    await expect(
+      createRoom("host", "http://localhost", "suspicious-invite", 1_000),
+    ).rejects.toThrow(/아직/);
   });
 });

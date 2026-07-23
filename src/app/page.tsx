@@ -1,6 +1,7 @@
 import Link from "next/link";
+import { games } from "@/modules/game-catalog/games";
 import { CreateRoomButton } from "@/modules/room/ui/create-room-button";
-import { AppMark, DoorClosed, Ghost, Moon, ScanLine, UsersRound, Zap } from "@/shared/ui/icons";
+import { AppMark, CircleHelp, DoorClosed, Ghost, MessageSquareText, Moon, ScanLine, UsersRound, Vote, Zap } from "@/shared/ui/icons";
 
 const steps = [
   { icon: ScanLine, number: "01", title: "방을 열고", text: "QR이나 링크를 친구에게 보냅니다." },
@@ -55,7 +56,7 @@ export default function Home() {
       <section id="games" className="games-section" aria-labelledby="games-heading">
         <div className="section-heading horizontal">
           <div><span className="eyebrow"><span /> TONIGHT’S GAME</span><h2 id="games-heading">어떤 밤을 시작할까요?</h2></div>
-          <span className="game-count">01 GAME</span>
+          <span className="game-count">{String(games.length).padStart(2, "0")} GAMES</span>
         </div>
         <article className="game-card">
           <div className="game-poster">
@@ -73,7 +74,26 @@ export default function Home() {
               <li><Zap size={17} /> 게임당 한 번의 손전등</li>
               <li><UsersRound size={17} /> 한 기기당 한 명</li>
             </ul>
-            <CreateRoomButton />
+            <CreateRoomButton gameId="dark-house" label="불을 끄고 시작하기" />
+          </div>
+        </article>
+        <article className="game-card coming-soon-card">
+          <div className="game-poster invitation-poster">
+            <div className="poster-top"><span>3–6 PLAYERS</span><span>15–25 MIN</span></div>
+            <CircleHelp size={76} strokeWidth={1.3} aria-hidden="true" />
+            <div className="invitation-lines" aria-hidden="true"><i /><i /><i /></div>
+            <div className="poster-title"><span>THE</span><strong>ODD<br />INVITE</strong></div>
+          </div>
+          <div className="game-info">
+            <span className="soon-badge"><i /> COMING SOON</span>
+            <h3>수상한 초대장</h3>
+            <p>같은 단어를 받은 사람들 사이에, 단어를 모르는 Stranger가 숨어 있습니다. 티 나지 않는 단서를 남기고 가장 수상한 초대 손님을 찾아내세요.</p>
+            <ul>
+              <li><MessageSquareText size={17} /> 짧은 단서와 대화</li>
+              <li><Vote size={17} /> 비밀 지목과 종료 투표</li>
+              <li><UsersRound size={17} /> 원하는 만큼 이어서 플레이</li>
+            </ul>
+            <button className="secondary-button" disabled>두 번째 게임 준비 중</button>
           </div>
         </article>
       </section>

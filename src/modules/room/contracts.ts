@@ -5,6 +5,7 @@ import type {
   Token,
   TokenKind,
 } from "@/modules/dark-house/domain/types";
+import type { GameId } from "@/modules/game-catalog/games";
 
 export type AdministrativeAction = { type: "START_GAME" } | { type: "START_REMATCH" };
 export type RoomAction = GameAction | AdministrativeAction;
@@ -18,6 +19,7 @@ export type ActionRequest = {
 export type PublicRoomView = {
   room: {
     code: string;
+    gameId: GameId;
     status: "lobby" | "playing" | "finished";
     version: number;
   };

@@ -3,6 +3,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 import { advanceTimedState, createInitialState, transition } from "@/modules/dark-house/domain/reducer";
 import { projectPlayer, projectPublic } from "@/modules/dark-house/projection/game-view";
+import { findGame, type GameId } from "@/modules/game-catalog/games";
 import type { ActionRequest, PublicRoomView } from "@/modules/room/contracts";
 import { DomainError as GameRuleError } from "@/shared/errors/domain-error";
 import {
@@ -52,10 +53,16 @@ function advanceRoom(room: RoomRecord, now: number) {
   return false;
 }
 
-export async function createRoom(hostUserId: string, origin: string, now = Date.now()) {
-  const { room, joinToken, displayToken } = await createRoomRecord(hostUserId, now);
+export async function createRoom(hostUserId: string, origin: string, gameId: GameId, now = Date.now()) {
+  const game = findGame(gameId);
+  if (!game) throw new GameRuleError("GAME_NOT_FOUND", "게임을 찾을 수 없습니다.");
+  if (game.availability !== "playable") {
+    throw new GameRuleError("GAME_NOT_AVAILABLE", "아직 방을 만들 수 없는 게임입니다.");
+  }
+  const { room, joinToken, displayToken } = await createRoomRecord(hostUserId, gameId, now);
   return {
     code: room.code,
+    gameId: room.gameId,
     joinUrl: `${origin}/room/${room.code}/join#${joinToken}`,
     displayUrl: `${origin}/room/${room.code}/display#${displayToken}`,
   };
@@ -82,13 +89,16 @@ export async function joinRoom(input: {
       continue;
     }
     if (room.status !== "lobby") throw new GameRuleError("GAME_ALREADY_STARTED", "이미 시작한 게임입니다.");
-    if (room.players.length >= 6) throw new GameRuleError("ROOM_FULL", "방이 가득 찼습니다.");
+    const game = findGame(room.gameId);
+    if (!game) throw new GameRuleError("GAME_NOT_FOUND", "게임을 찾을 수 없습니다.");
+    if (room.players.length >= game.maxPlayers) throw new GameRuleError("ROOM_FULL", "방이 가득 찼습니다.");
     const nicknameNormalized = validateNickname(input.nickname);
     if (room.players.some((player) => player.nicknameNormalized === nicknameNormalized)) {
       throw new GameRuleError("NICKNAME_TAKEN", "이미 사용 중인 닉네임입니다.");
     }
     const occupied = new Set(room.players.map((player) => player.seat));
-    const seat = [1, 2, 3, 4, 5, 6].find((candidate) => !occupied.has(candidate))!;
+    const seat = Array.from({ length: game.maxPlayers }, (_, index) => index + 1)
+      .find((candidate) => !occupied.has(candidate))!;
     room.players.push({
       seat,
       userId: input.userId,
@@ -105,7 +115,7 @@ export async function joinRoom(input: {
 function projectLobby(room: RoomRecord, viewerUserId: string | undefined, now: number, display = false): PublicRoomView {
   const isHost = room.hostUserId === viewerUserId;
   return {
-    room: { code: room.code, status: "lobby", version: room.version },
+    room: { code: room.code, gameId: room.gameId, status: "lobby", version: room.version },
     serverNow: new Date(now).toISOString(),
     phase: "LOBBY",
     players: room.players.map((player) => ({
@@ -156,6 +166,7 @@ export async function getRoomView(input: {
 
   const context = {
     code: room.code,
+    gameId: room.gameId,
     version: room.version,
     now,
     status: room.status === "finished" ? "finished" as const : "playing" as const,
@@ -200,7 +211,11 @@ export async function applyRoomAction(input: {
     if (!isHost) throw new GameRuleError("UNAUTHORIZED", "호스트만 시작할 수 있습니다.");
     if (room.status !== "lobby") throw new GameRuleError("GAME_ALREADY_STARTED", "이미 시작한 게임입니다.");
     const connected = room.players.filter((player) => now - player.lastSeenAt <= 45_000);
-    if (connected.length < 3) throw new GameRuleError("MIN_PLAYERS", "연결된 플레이어가 3명 이상 필요합니다.");
+    const game = findGame(room.gameId);
+    if (!game) throw new GameRuleError("GAME_NOT_FOUND", "게임을 찾을 수 없습니다.");
+    if (connected.length < game.minPlayers) {
+      throw new GameRuleError("MIN_PLAYERS", `연결된 플레이어가 ${game.minPlayers}명 이상 필요합니다.`);
+    }
     room.players = connected;
     room.game = createInitialState(connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })));
     room.status = "playing";

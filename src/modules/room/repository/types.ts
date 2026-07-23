@@ -1,4 +1,5 @@
 import type { DarkHouseState } from "@/modules/dark-house/domain/types";
+import type { GameId } from "@/modules/game-catalog/games";
 
 export type LobbyPlayer = {
   seat: number;
@@ -16,6 +17,7 @@ export type ProcessedAction = {
 export type RoomRecord = {
   id: string;
   code: string;
+  gameId: GameId;
   joinTokenHash: string;
   displayTokenHash: string;
   hostUserId: string;

@@ -4,6 +4,8 @@ import { DomainError } from "@/shared/errors/domain-error";
 
 const statuses: Record<string, number> = {
   ROOM_NOT_FOUND: 404,
+  GAME_NOT_FOUND: 404,
+  GAME_NOT_AVAILABLE: 409,
   UNAUTHORIZED: 401,
   AUTH_NOT_CONFIGURED: 503,
   ROOM_FULL: 409,

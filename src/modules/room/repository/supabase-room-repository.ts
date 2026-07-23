@@ -10,6 +10,7 @@ const serialize = (room: RoomRecord): SerializedRoom => ({
 
 const deserialize = (value: SerializedRoom, revision: number): RoomRecord => ({
   ...value,
+  gameId: value.gameId ?? "dark-house",
   processedActions: new Map(value.processedActions),
   storageRevision: revision,
 });

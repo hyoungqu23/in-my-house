@@ -14,7 +14,14 @@ describe("role projections", () => {
     state = transition(state, 1, { type: "PLACE_INITIAL_TOKEN", tokenId: "1-empty-1" }, { now: 1 });
     state = transition(state, 2, { type: "PLACE_INITIAL_TOKEN", tokenId: "2-ghost" }, { now: 2 });
     state = transition(state, 3, { type: "PLACE_INITIAL_TOKEN", tokenId: "3-empty-1" }, { now: 3 });
-    const context = { code: "ABC123", version: 4, now: 10, status: "playing" as const, hostUserId: "u1" };
+    const context = {
+      code: "ABC123",
+      gameId: "dark-house" as const,
+      version: 4,
+      now: 10,
+      status: "playing" as const,
+      hostUserId: "u1",
+    };
     const publicJson = JSON.stringify(projectPublic(state, context));
     const playerJson = JSON.stringify(projectPlayer(state, { ...context, viewerUserId: "u1" }));
 
