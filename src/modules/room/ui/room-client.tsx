@@ -2,24 +2,36 @@
 
 import { Copy, ExternalLink, MonitorUp, RefreshCw, Share2, UsersRound } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { GameAction } from "@/modules/dark-house/domain/types";
-import type { PlayerRoomView, PublicRoomView } from "@/modules/room/contracts";
 import { getAuthHeaders, getBrowserSupabase } from "@/modules/auth/client";
-import { roomApiFetch } from "@/modules/room/client/room-api";
 import { PlayerControls } from "@/modules/dark-house/ui/player-controls";
 import { PublicBoard } from "@/modules/dark-house/ui/public-board";
+import { roomApiFetch } from "@/modules/room/client/room-api";
+import type {
+  DarkHousePlayerRoomView,
+  DarkHousePublicRoomView,
+  LobbyRoomView,
+  PlayerRoomView,
+  RoomAction,
+  RoomView,
+  SuspiciousInvitePlayerRoomView,
+  SuspiciousInvitePublicRoomView,
+} from "@/modules/room/contracts";
+import { SuspiciousInvitePlayerControls } from "@/modules/suspicious-invite/ui/player-controls";
+import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
 import { QrCode } from "@/shared/ui/qr-code";
 
 type ViewMode = "private" | "public";
 type RoomLinks = { code: string; joinUrl: string; displayUrl: string };
 
-function isPlayerView(view: PublicRoomView): view is PlayerRoomView {
-  return "privacyLocked" in view;
-}
+const isPlayerView = (view: RoomView): view is PlayerRoomView => view.projection === "player";
+const isDarkHousePlayer = (view: PlayerRoomView): view is DarkHousePlayerRoomView => view.room.gameId === "dark-house";
+const isSuspiciousPlayer = (view: PlayerRoomView): view is SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
+const isDarkHousePublic = (view: DarkHousePublicRoomView | SuspiciousInvitePublicRoomView): view is DarkHousePublicRoomView => view.room.gameId === "dark-house";
+const isDarkHouseView = (view: Exclude<RoomView, LobbyRoomView>): view is DarkHousePublicRoomView | DarkHousePlayerRoomView => view.room.gameId === "dark-house";
 
 export function RoomClient({ code }: { code: string }) {
   const [mode, setMode] = useState<ViewMode>("private");
-  const [view, setView] = useState<PublicRoomView>();
+  const [view, setView] = useState<RoomView>();
   const [links, setLinks] = useState<RoomLinks>();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -28,7 +40,7 @@ export function RoomClient({ code }: { code: string }) {
 
   const loadView = useCallback(async (requestedMode: ViewMode = mode) => {
     try {
-      const next = await roomApiFetch<PublicRoomView>(`/api/rooms/${code}/view?mode=${requestedMode}`);
+      const next = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=${requestedMode}`);
       setView(next);
       setError("");
     } catch (cause) {
@@ -45,11 +57,14 @@ export function RoomClient({ code }: { code: string }) {
     });
   }, [code, loadView, mode]);
 
+  const pollingPhase = view?.phase;
   useEffect(() => {
-    const intervalMs = view?.phase === "REVEALING" ? 500 : 1_500;
+    const intervalMs = pollingPhase && ["REVEALING", "ROUND_INTRO", "CLUE_REVEAL", "ROUND_RESULT"].includes(pollingPhase)
+      ? 500
+      : 1_500;
     const timer = window.setInterval(() => void loadView(mode), intervalMs);
     return () => window.clearInterval(timer);
-  }, [loadView, mode, view?.phase]);
+  }, [loadView, mode, pollingPhase]);
 
   useEffect(() => {
     const supabase = getBrowserSupabase();
@@ -105,12 +120,12 @@ export function RoomClient({ code }: { code: string }) {
     await loadView(nextMode);
   }
 
-  async function sendAction(action: GameAction | { type: "START_GAME" } | { type: "START_REMATCH" }) {
+  async function sendAction(action: RoomAction) {
     if (!view) return;
     setBusy(true);
     setError("");
     try {
-      const result = await roomApiFetch<{ projection: PublicRoomView }>(`/api/rooms/${code}/actions`, {
+      const result = await roomApiFetch<{ projection: RoomView }>(`/api/rooms/${code}/actions`, {
         method: "POST",
         body: JSON.stringify({
           clientActionId: crypto.randomUUID(),
@@ -118,7 +133,8 @@ export function RoomClient({ code }: { code: string }) {
           action,
         }),
       });
-      setView(result.projection);
+      if (mode === "private") setView(result.projection);
+      else await loadView("public");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "행동을 처리하지 못했습니다.");
       await loadView(mode);
@@ -160,17 +176,18 @@ export function RoomClient({ code }: { code: string }) {
         <Lobby view={view} links={links} isHost={isHost} busy={busy} copied={copied} onCopy={copyInvite} onStart={() => sendAction({ type: "START_GAME" })} />
       ) : mode === "private" && playerView ? (
         <div className="game-layout private-layout">
-          <PlayerControls view={playerView} busy={busy} onAction={sendAction} />
+          {isDarkHousePlayer(playerView) && <PlayerControls view={playerView} busy={busy} onAction={sendAction} />}
+          {isSuspiciousPlayer(playerView) && <SuspiciousInvitePlayerControls key={playerView.round} view={playerView} busy={busy} onAction={sendAction} />}
           <MiniPublicSummary view={view} onOpen={() => switchMode("public")} />
         </div>
-      ) : (
+      ) : view.projection === "public" ? (
         <div className="game-layout">
-          <PublicBoard view={view} />
+          {isDarkHousePublic(view) ? <PublicBoard view={view} /> : <SuspiciousInvitePublicBoard view={view} />}
           {view.phase === "GAME_OVER" && isHost && (
             <button className="primary-button rematch-button" disabled={busy} onClick={() => sendAction({ type: "START_REMATCH" })}>같은 사람들과 다시 하기</button>
           )}
         </div>
-      )}
+      ) : null}
 
       {error && <div className="toast" role="alert">{error}</div>}
     </main>
@@ -178,14 +195,15 @@ export function RoomClient({ code }: { code: string }) {
 }
 
 function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
-  view: PublicRoomView; links?: RoomLinks; isHost: boolean; busy: boolean; copied: boolean; onCopy: () => void; onStart: () => void;
+  view: LobbyRoomView; links?: RoomLinks; isHost: boolean; busy: boolean; copied: boolean; onCopy: () => void; onStart: () => void;
 }) {
+  const isSuspicious = view.room.gameId === "suspicious-invite";
   return (
     <div className="lobby-layout">
       <section className="lobby-stage">
-        <div className="eyebrow"><span /> THE HOUSE IS WAITING</div>
-        <h1>빈 방을 믿지 마세요</h1>
-        <p className="lobby-lead">모두 들어오면 호스트가 불을 끕니다. 각자의 화면은 다른 사람에게 보여주지 마세요.</p>
+        <div className="eyebrow"><span /> {isSuspicious ? "THE INVITATION IS WAITING" : "THE HOUSE IS WAITING"}</div>
+        <h1>{isSuspicious ? "초대받지 않은 사람을 찾으세요" : "빈 방을 믿지 마세요"}</h1>
+        <p className="lobby-lead">{isSuspicious ? "모두 들어오면 호스트가 초대장을 공개합니다. 역할과 비밀 단어는 다른 사람에게 보여주지 마세요." : "모두 들어오면 호스트가 불을 끕니다. 각자의 화면은 다른 사람에게 보여주지 마세요."}</p>
         <div className="lobby-code-block">
           <span>ROOM CODE</span>
           <strong>{view.room.code}</strong>
@@ -204,7 +222,7 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
         </div>
         {isHost ? (
           <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < 3} onClick={onStart}>
-            {busy ? "문을 잠그는 중…" : view.players.length < 3 ? `${3 - view.players.length}명 더 필요해요` : "모두 준비됨 · 게임 시작"}
+            {busy ? "게임을 준비하는 중…" : view.players.length < 3 ? `${3 - view.players.length}명 더 필요해요` : isSuspicious ? "모두 준비됨 · 초대장 공개" : "모두 준비됨 · 게임 시작"}
           </button>
         ) : <p className="waiting-copy">호스트가 게임을 시작할 때까지 기다려 주세요.</p>}
       </section>
@@ -221,11 +239,14 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
   );
 }
 
-function MiniPublicSummary({ view, onOpen }: { view: PublicRoomView; onOpen: () => void }) {
+function MiniPublicSummary({ view, onOpen }: { view: Exclude<RoomView, LobbyRoomView>; onOpen: () => void }) {
+  const summary = isDarkHouseView(view)
+    ? view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"
+    : `ROUND ${view.round} · ${view.category}`;
   return (
     <button className="mini-public" onClick={onOpen}>
       <span>공개 보드</span>
-      <strong>{view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"}</strong>
+      <strong>{summary}</strong>
       <span>탭해서 전환</span>
     </button>
   );

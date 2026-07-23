@@ -2,10 +2,11 @@ import type { RoomRecord, RoomRepository } from "./types";
 
 declare global {
   var __darkHouseRooms: Map<string, RoomRecord> | undefined;
+  var __inMyHouseRooms: Map<string, RoomRecord> | undefined;
 }
 
-const rooms = globalThis.__darkHouseRooms ?? new Map<string, RoomRecord>();
-if (process.env.NODE_ENV !== "production") globalThis.__darkHouseRooms = rooms;
+const rooms = globalThis.__inMyHouseRooms ?? globalThis.__darkHouseRooms ?? new Map<string, RoomRecord>();
+if (process.env.NODE_ENV !== "production") globalThis.__inMyHouseRooms = rooms;
 
 export class MemoryRoomRepository implements RoomRepository {
   async insert(room: RoomRecord) {

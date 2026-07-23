@@ -1,5 +1,5 @@
-import type { DarkHouseState } from "@/modules/dark-house/domain/types";
 import type { GameId } from "@/modules/game-catalog/games";
+import type { StoredGame } from "@/modules/game-runtime/types";
 
 export type LobbyPlayer = {
   seat: number;
@@ -26,7 +26,7 @@ export type RoomRecord = {
   status: "lobby" | "playing" | "finished";
   players: LobbyPlayer[];
   version: number;
-  game?: DarkHouseState;
+  game?: StoredGame;
   processedActions: Map<string, ProcessedAction>;
   createdAt: number;
   expiresAt: number;

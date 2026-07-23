@@ -34,7 +34,7 @@ describe("room service", () => {
     expect(duplicate.originalAppliedVersion).toBe(first.currentVersion);
   });
 
-  it("persists the selected game and rejects games that are not playable yet", async () => {
+  it("persists the selected game and starts suspicious invite with one private Stranger", async () => {
     const created = await createRoom("host", "http://localhost", "dark-house", 1_000);
     expect(created.gameId).toBe("dark-house");
     const lobby = await getRoomView({
@@ -45,8 +45,28 @@ describe("room service", () => {
     });
     expect(lobby.room.gameId).toBe("dark-house");
 
-    await expect(
-      createRoom("host", "http://localhost", "suspicious-invite", 1_000),
-    ).rejects.toThrow(/아직/);
+    const suspicious = await createRoom("host", "http://localhost", "suspicious-invite", 2_000);
+    const token = tokenFrom(suspicious.joinUrl);
+    await Promise.all(["host", "u2", "u3"].map((userId, index) =>
+      joinRoom({ code: suspicious.code, joinToken: token, nickname: `초대손님${index + 1}`, userId, now: 2_001 }),
+    ));
+    await applyRoomAction({
+      code: suspicious.code,
+      userId: "host",
+      request: { clientActionId: "start-suspicious", expectedVersion: 3, action: { type: "START_GAME" } },
+      now: 2_002,
+    });
+    const privateViews = await Promise.all(["host", "u2", "u3"].map((userId) =>
+      getRoomView({ code: suspicious.code, userId, mode: "private", now: 4_002 }),
+    ));
+    const roles = privateViews.map((view) =>
+      view.projection === "player" && view.self && "role" in view.self ? view.self.role : undefined,
+    );
+    expect(roles.filter((role) => role === "STRANGER")).toHaveLength(1);
+    expect(roles.filter((role) => role === "GUEST")).toHaveLength(2);
+
+    const publicView = await getRoomView({ code: suspicious.code, userId: "host", mode: "public", now: 4_002 });
+    expect(publicView.room.gameId).toBe("suspicious-invite");
+    expect(JSON.stringify(publicView)).not.toContain("strangerSeat");
   });
 });

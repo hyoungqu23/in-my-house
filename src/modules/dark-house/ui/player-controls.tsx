@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { GameAction } from "@/modules/dark-house/domain/types";
-import type { PlayerRoomView } from "@/modules/room/contracts";
+import type { DarkHousePlayerRoomView } from "@/modules/room/contracts";
 import { Ghost, Zap } from "@/shared/ui/icons";
 
 export function PlayerControls({
@@ -10,7 +10,7 @@ export function PlayerControls({
   onAction,
   busy,
 }: {
-  view: PlayerRoomView;
+  view: DarkHousePlayerRoomView;
   onAction: (action: GameAction) => Promise<void>;
   busy: boolean;
 }) {

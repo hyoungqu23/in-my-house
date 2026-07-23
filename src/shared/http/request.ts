@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ZodError } from "zod";
 import { DomainError } from "@/shared/errors/domain-error";
 
 const statuses: Record<string, number> = {
@@ -21,6 +22,9 @@ const statuses: Record<string, number> = {
 };
 
 export function apiError(error: unknown) {
+  if (error instanceof ZodError) {
+    return Response.json({ code: "INVALID_REQUEST", message: "요청 형식이 올바르지 않습니다." }, { status: 422 });
+  }
   if (error instanceof DomainError) {
     return Response.json({ code: error.code, message: error.message }, { status: statuses[error.code] ?? 422 });
   }
@@ -34,7 +38,11 @@ export async function readJson<T>(request: Request): Promise<T> {
   }
   const text = await request.text();
   if (text.length > 16_384) throw new DomainError("REQUEST_TOO_LARGE", "요청이 너무 큽니다.");
-  return JSON.parse(text) as T;
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    throw new DomainError("INVALID_JSON", "올바른 JSON 요청이 필요합니다.");
+  }
 }
 
 export function displayTokenFrom(request: Request) {

@@ -1,21 +1,20 @@
 import type { DarkHouseState } from "@/modules/dark-house/domain/types";
-import type { GameId } from "@/modules/game-catalog/games";
-import type { PlayerRoomView, PublicRoomView } from "@/modules/room/contracts";
+import type { DarkHousePlayerRoomView, DarkHousePublicRoomView } from "@/modules/room/contracts";
 import { legalActions } from "@/modules/dark-house/domain/reducer";
 
 type ProjectionContext = {
   code: string;
-  gameId: GameId;
   version: number;
   now: number;
   status: "playing" | "finished";
   hostUserId: string;
   viewerUserId?: string;
   display?: boolean;
+  connectedSeats: number[];
 };
 
-export function projectPublic(state: DarkHouseState, context: ProjectionContext): PublicRoomView {
-  const roles: PublicRoomView["viewer"]["roles"] = [];
+export function projectPublic(state: DarkHouseState, context: ProjectionContext): DarkHousePublicRoomView {
+  const roles: DarkHousePublicRoomView["viewer"]["roles"] = [];
   const self = state.players.find((player) => player.userId === context.viewerUserId);
   if (context.display) roles.push("DISPLAY");
   if (context.viewerUserId === context.hostUserId) roles.push("HOST");
@@ -26,13 +25,14 @@ export function projectPublic(state: DarkHouseState, context: ProjectionContext)
   const revealVisible = reveal && context.now >= reveal.revealAt;
 
   return {
-    room: { code: context.code, gameId: context.gameId, status: context.status, version: context.version },
+    projection: "public",
+    room: { code: context.code, gameId: "dark-house", status: context.status, version: context.version },
     serverNow: new Date(context.now).toISOString(),
     phase: state.phase,
     players: state.players.map((player) => ({
       seat: player.seat,
       nickname: player.nickname,
-      connected: player.connected,
+      connected: context.connectedSeats.includes(player.seat),
       active: player.active,
       isHost: player.userId === context.hostUserId,
       tokenCount: player.hand.length + player.stack.length,
@@ -72,15 +72,16 @@ export function projectPublic(state: DarkHouseState, context: ProjectionContext)
   };
 }
 
-export function projectPlayer(state: DarkHouseState, context: ProjectionContext): PlayerRoomView {
+export function projectPlayer(state: DarkHouseState, context: ProjectionContext): DarkHousePlayerRoomView {
   const publicView = projectPublic(state, context);
   const player = state.players.find((candidate) => candidate.userId === context.viewerUserId);
   const privacyLocked = ["REVEAL_CHOICE", "REVEALING", "ROUND_END", "GAME_OVER"].includes(state.phase);
-  if (!player || privacyLocked) return { ...publicView, privacyLocked };
+  if (!player || privacyLocked) return { ...publicView, projection: "player", privacyLocked };
 
   const peek = state.lastPeekBySeat[player.seat];
   return {
     ...publicView,
+    projection: "player",
     privacyLocked: false,
     self: {
       seat: player.seat,

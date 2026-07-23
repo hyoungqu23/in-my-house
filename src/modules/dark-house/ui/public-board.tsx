@@ -1,4 +1,4 @@
-import type { PublicRoomView } from "@/modules/room/contracts";
+import type { DarkHousePublicRoomView } from "@/modules/room/contracts";
 import { Ghost, KeyRound, Zap } from "@/shared/ui/icons";
 
 const phaseLabels: Record<string, string> = {
@@ -12,7 +12,7 @@ const phaseLabels: Record<string, string> = {
   GAME_OVER: "새벽이 밝았습니다",
 };
 
-export function PublicBoard({ view }: { view: PublicRoomView }) {
+export function PublicBoard({ view }: { view: DarkHousePublicRoomView }) {
   const winner = view.players.find((player) => player.seat === view.winnerSeat);
   return (
     <section className="board" aria-live="polite">

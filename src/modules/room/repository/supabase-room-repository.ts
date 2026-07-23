@@ -1,6 +1,8 @@
 import "server-only";
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { DarkHouseState } from "@/modules/dark-house/domain/types";
+import type { StoredGame } from "@/modules/game-runtime/types";
 import type { RoomRecord, RoomRepository, SerializedRoom } from "./types";
 
 const serialize = (room: RoomRecord): SerializedRoom => ({
@@ -8,9 +10,20 @@ const serialize = (room: RoomRecord): SerializedRoom => ({
   processedActions: [...room.processedActions.entries()],
 });
 
-const deserialize = (value: SerializedRoom, revision: number): RoomRecord => ({
+type LegacySerializedRoom = Omit<SerializedRoom, "game"> & {
+  game?: StoredGame | DarkHouseState;
+};
+
+const isStoredGame = (game: StoredGame | DarkHouseState): game is StoredGame => "type" in game;
+
+const deserialize = (value: LegacySerializedRoom, revision: number): RoomRecord => ({
   ...value,
   gameId: value.gameId ?? "dark-house",
+  game: value.game
+    ? isStoredGame(value.game)
+      ? value.game
+      : { type: "dark-house", state: value.game }
+    : undefined,
   processedActions: new Map(value.processedActions),
   storageRevision: revision,
 });
@@ -49,7 +62,7 @@ export class SupabaseRoomRepository implements RoomRepository {
       .maybeSingle();
     if (error) throw error;
     if (!data) return undefined;
-    return deserialize(data.snapshot as SerializedRoom, Number(data.revision));
+    return deserialize(data.snapshot as LegacySerializedRoom, Number(data.revision));
   }
 
   async commit(room: RoomRecord, expectedRevision: number) {

@@ -1,10 +1,15 @@
 import "server-only";
 
-import { randomInt } from "node:crypto";
-import { advanceTimedState, createInitialState, transition } from "@/modules/dark-house/domain/reducer";
-import { projectPlayer, projectPublic } from "@/modules/dark-house/projection/game-view";
 import { findGame, type GameId } from "@/modules/game-catalog/games";
-import type { ActionRequest, PublicRoomView } from "@/modules/room/contracts";
+import {
+  advanceGame,
+  createGame,
+  isGameOver,
+  projectGamePlayer,
+  projectGamePublic,
+  transitionGame,
+} from "@/modules/game-runtime/server";
+import type { ActionRequest, LobbyRoomView } from "@/modules/room/contracts";
 import { DomainError as GameRuleError } from "@/shared/errors/domain-error";
 import {
   createRoomRecord,
@@ -34,20 +39,13 @@ const assertNotExpired = (room: RoomRecord, now: number) => {
 const findPlayer = (room: RoomRecord, userId: string) =>
   room.players.find((player) => player.userId === userId);
 
-const randomRemovalId = (room: RoomRecord) => {
-  const game = room.game;
-  const challenger = game?.players.find((player) => player.seat === game.challengerSeat);
-  const candidates = challenger ? [...challenger.hand, ...challenger.stack] : [];
-  return candidates.length > 0 ? candidates[randomInt(candidates.length)].id : undefined;
-};
-
 function advanceRoom(room: RoomRecord, now: number) {
   if (!room.game) return false;
   const before = JSON.stringify(room.game);
-  room.game = advanceTimedState(room.game, { now, randomRemovalTokenId: randomRemovalId(room) });
+  room.game = advanceGame(room.game, now);
   if (JSON.stringify(room.game) !== before) {
     room.version += 1;
-    if (room.game.phase === "GAME_OVER") room.status = "finished";
+    if (isGameOver(room.game)) room.status = "finished";
     return true;
   }
   return false;
@@ -112,9 +110,10 @@ export async function joinRoom(input: {
   throw new GameRuleError("STALE_VERSION", "동시에 많은 사람이 참가했습니다. 다시 시도해 주세요.");
 }
 
-function projectLobby(room: RoomRecord, viewerUserId: string | undefined, now: number, display = false): PublicRoomView {
+function projectLobby(room: RoomRecord, viewerUserId: string | undefined, now: number, display = false): LobbyRoomView {
   const isHost = room.hostUserId === viewerUserId;
   return {
+    projection: "public",
     room: { code: room.code, gameId: room.gameId, status: "lobby", version: room.version },
     serverNow: new Date(now).toISOString(),
     phase: "LOBBY",
@@ -122,14 +121,8 @@ function projectLobby(room: RoomRecord, viewerUserId: string | undefined, now: n
       seat: player.seat,
       nickname: player.nickname,
       connected: now - player.lastSeenAt <= 45_000,
-      active: true,
       isHost: player.userId === room.hostUserId,
-      tokenCount: 4,
-      keyCount: 0,
-      flashlightUsed: false,
-      passed: false,
     })),
-    stacks: room.players.map((player) => ({ seat: player.seat, count: 0, revealed: [] })),
     viewer: {
       roles: [
         ...(display ? (["DISPLAY"] as const) : []),
@@ -166,17 +159,19 @@ export async function getRoomView(input: {
 
   const context = {
     code: room.code,
-    gameId: room.gameId,
     version: room.version,
     now,
     status: room.status === "finished" ? "finished" as const : "playing" as const,
     hostUserId: room.hostUserId,
     viewerUserId: input.userId,
     display: isDisplay,
+    connectedSeats: room.players
+      .filter((candidate) => now - candidate.lastSeenAt <= 45_000)
+      .map((candidate) => candidate.seat),
   };
   return input.mode === "private" && player
-    ? projectPlayer(room.game, context)
-    : projectPublic(room.game, context);
+    ? projectGamePlayer(room.game, context)
+    : projectGamePublic(room.game, context);
 }
 
 export async function applyRoomAction(input: {
@@ -217,25 +212,32 @@ export async function applyRoomAction(input: {
       throw new GameRuleError("MIN_PLAYERS", `연결된 플레이어가 ${game.minPlayers}명 이상 필요합니다.`);
     }
     room.players = connected;
-    room.game = createInitialState(connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })));
+    room.game = createGame(
+      room.gameId,
+      connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })),
+      now,
+    );
     room.status = "playing";
     room.expiresAt = Math.min(now + 12 * 60 * 60 * 1_000, room.createdAt + 24 * 60 * 60 * 1_000);
   } else if (action.type === "START_REMATCH") {
     if (!isHost) throw new GameRuleError("UNAUTHORIZED", "호스트만 다시 시작할 수 있습니다.");
     if (room.status !== "finished") throw new GameRuleError("INVALID_PHASE", "게임이 끝난 뒤 다시 할 수 있습니다.");
     const connected = room.players.filter((player) => now - player.lastSeenAt <= 45_000);
-    room.game = createInitialState(connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })));
+    room.game = createGame(
+      room.gameId,
+      connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })),
+      now,
+    );
     room.players = connected;
     room.status = "playing";
   } else {
     const player = findPlayer(room, input.userId);
     if (!player || !room.game) throw new GameRuleError("UNAUTHORIZED", "플레이어로 참가해야 합니다.");
-    room.game = transition(room.game, player.seat, action, {
+    room.game = transitionGame(room.game, player.seat, action, {
       now,
-      randomRemovalTokenId: randomRemovalId(room),
       sequenceId: input.request.clientActionId,
     });
-    if (room.game.phase === "GAME_OVER") room.status = "finished";
+    if (isGameOver(room.game)) room.status = "finished";
   }
 
   room.version += 1;
