@@ -5,7 +5,7 @@ import { AppMark, CircleHelp, DoorClosed, Ghost, MessageSquareText, Moon, ScanLi
 
 const steps = [
   { icon: ScanLine, number: "01", title: "방을 열고", text: "QR이나 링크를 친구에게 보냅니다." },
-  { icon: UsersRound, number: "02", title: "각자 숨기고", text: "휴대폰에서 비밀 방을 고릅니다." },
+  { icon: UsersRound, number: "02", title: "각자 확인하고", text: "휴대폰에서 나만의 역할과 정보를 봅니다." },
   { icon: Ghost, number: "03", title: "함께 의심하세요", text: "공개 보드에서 거짓말이 드러납니다." },
 ];
 
@@ -55,7 +55,7 @@ export default function Home() {
 
       <section id="games" className="games-section" aria-labelledby="games-heading">
         <div className="section-heading horizontal">
-          <div><span className="eyebrow"><span /> TONIGHT’S GAME</span><h2 id="games-heading">어떤 밤을 시작할까요?</h2></div>
+          <div><span className="eyebrow"><span /> TONIGHT’S GAMES</span><h2 id="games-heading">어떤 밤을 시작할까요?</h2></div>
           <span className="game-count">{String(games.length).padStart(2, "0")} GAMES</span>
         </div>
         <article className="game-card">
@@ -77,7 +77,7 @@ export default function Home() {
             <CreateRoomButton gameId="dark-house" label="불을 끄고 시작하기" />
           </div>
         </article>
-        <article className="game-card coming-soon-card">
+        <article className="game-card">
           <div className="game-poster invitation-poster">
             <div className="poster-top"><span>3–6 PLAYERS</span><span>15–25 MIN</span></div>
             <CircleHelp size={76} strokeWidth={1.3} aria-hidden="true" />
@@ -85,7 +85,7 @@ export default function Home() {
             <div className="poster-title"><span>THE</span><strong>ODD<br />INVITE</strong></div>
           </div>
           <div className="game-info">
-            <span className="soon-badge"><i /> COMING SOON</span>
+            <span className="live-badge"><i /> PLAYABLE NOW</span>
             <h3>수상한 초대장</h3>
             <p>같은 단어를 받은 사람들 사이에, 단어를 모르는 Stranger가 숨어 있습니다. 티 나지 않는 단서를 남기고 가장 수상한 초대 손님을 찾아내세요.</p>
             <ul>
@@ -93,14 +93,14 @@ export default function Home() {
               <li><Vote size={17} /> 비밀 지목과 종료 투표</li>
               <li><UsersRound size={17} /> 원하는 만큼 이어서 플레이</li>
             </ul>
-            <button className="secondary-button" disabled>두 번째 게임 준비 중</button>
+            <CreateRoomButton gameId="suspicious-invite" label="초대장 보내기" />
           </div>
         </article>
       </section>
 
       <footer className="home-footer">
         <AppMark />
-        <p>같은 집, 다른 비밀.<br />오늘 밤은 누가 유령을 숨겼을까요?</p>
+        <p>같은 집, 다른 비밀.<br />오늘 밤은 누구의 말을 믿을까요?</p>
       </footer>
     </main>
   );

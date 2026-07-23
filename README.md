@@ -1,6 +1,6 @@
 # In My House
 
-QR 하나로 같은 공간의 3–6명이 참여하는 웹 보드게임입니다. 첫 게임 **불 꺼진 집**은 각 휴대폰의 비밀 패와 TV 또는 휴대폰의 공개 보드를 분리한 블러핑 게임입니다.
+QR 하나로 같은 공간의 3–6명이 참여하는 웹 보드게임입니다. 비밀 패 블러핑 게임 **불 꺼진 집**과 단어 추리 게임 **수상한 초대장**을 각 휴대폰의 개인 화면과 TV 또는 휴대폰의 공개 보드로 즐길 수 있습니다.
 
 ## 바로 실행하기
 
@@ -12,7 +12,7 @@ pnpm install
 pnpm dev
 ```
 
-브라우저에서 [http://localhost:3000](http://localhost:3000)을 열고 **불을 끄고 시작하기**를 누릅니다. 기본값은 설정이 필요 없는 메모리 저장소입니다. 개발 서버를 다시 시작하면 방이 사라집니다.
+브라우저에서 [http://localhost:3000](http://localhost:3000)을 열고 원하는 게임의 시작 버튼을 누릅니다. 기본값은 설정이 필요 없는 메모리 저장소입니다. 개발 서버를 다시 시작하면 방이 사라집니다.
 
 같은 컴퓨터에서 여러 명을 시험할 때는 일반 창과 시크릿 창을 섞거나 서로 다른 브라우저 프로필을 사용해야 각기 다른 기기로 인식됩니다.
 
@@ -44,16 +44,18 @@ CRON_SECRET=...
 
 - `src/app/` — 페이지와 얇은 HTTP Route Handler
 - `src/modules/game-catalog/` — 게임 식별자, 공개 상태, 지원 인원 등 방 생성에 필요한 카탈로그
+- `src/modules/game-runtime/` — 방이 게임별 생성·전이·투영을 호출하는 판별 유니온 seam
 - `src/modules/dark-house/domain/` — 순수 게임 상태·행동·전이
 - `src/modules/dark-house/projection/` — 공개/플레이어별 allowlist 투영
 - `src/modules/dark-house/ui/` — 게임 규칙에 종속된 공개 보드와 개인 조작 화면
+- `src/modules/suspicious-invite/` — 수상한 초대장의 상태 머신, 단어 덱, 투영, 공개/개인 화면
 - `src/modules/room/` — 방 계약, 입장, idempotency, version, heartbeat, 토큰 회전
 - `src/modules/room/repository/` — 저장소 인터페이스와 메모리/Supabase 어댑터
 - `src/modules/auth/` — 브라우저 익명 인증과 서버 사용자 확인
 - `src/shared/` — 여러 모듈에서 사용하는 오류, HTTP, UI
 - `supabase/migrations/` — RLS, CAS RPC, secret-free 이벤트, 만료 정리
 
-각 방은 생성 시 선택한 `gameId`를 저장합니다. 현재 `dark-house`만 방을 만들 수 있고, 두 번째 게임 `suspicious-invite`는 카탈로그에 준비 중으로 등록되어 있습니다. 게임별 상태·전이·투영 인터페이스는 두 번째 구현을 추가할 때 판별 유니온으로 확장합니다.
+각 방은 생성 시 선택한 `gameId`와 해당 게임의 판별된 서버 상태를 저장합니다. 방 모듈은 게임 내부의 비밀 구조를 알지 않고 game runtime 인터페이스를 통해 생성·전이·투영합니다.
 
 전체 비밀 상태는 서버에만 존재합니다. 공개 화면에는 공개된 토큰 종류만, 개인 화면에는 해당 플레이어의 손과 스택만 반환합니다. 도전 단계에서는 모든 플레이어의 `self` 투영을 제거합니다.
 

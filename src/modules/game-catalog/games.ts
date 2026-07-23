@@ -27,7 +27,7 @@ export const games = [
     minPlayers: 3,
     maxPlayers: 6,
     durationMinutes: [15, 25],
-    availability: "coming-soon",
+    availability: "playable",
   },
 ] as const satisfies readonly GameDefinition[];
 
