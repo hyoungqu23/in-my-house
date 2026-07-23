@@ -1,7 +1,8 @@
 import { z } from "zod";
-import { requireActor } from "@/server/auth";
-import { apiError, readJson } from "@/server/http";
-import { ActionRequest, applyRoomAction } from "@/server/room-service";
+import { requireActor } from "@/modules/auth/server";
+import type { ActionRequest } from "@/modules/room/contracts";
+import { applyRoomAction } from "@/modules/room/room-service";
+import { apiError, readJson } from "@/shared/http/request";
 
 export const runtime = "nodejs";
 

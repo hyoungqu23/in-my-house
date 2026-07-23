@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { AppMark } from "@/components/icons";
-import { JoinRoomForm } from "@/components/join-room-form";
+import { JoinRoomForm } from "@/modules/room/ui/join-room-form";
+import { AppMark } from "@/shared/ui/icons";
 
 export const metadata = { referrer: "no-referrer" as const };
 

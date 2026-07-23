@@ -1,6 +1,6 @@
-import { requireActor } from "@/server/auth";
-import { apiError } from "@/server/http";
-import { createRoom } from "@/server/room-service";
+import { requireActor } from "@/modules/auth/server";
+import { createRoom } from "@/modules/room/room-service";
+import { apiError } from "@/shared/http/request";
 
 export const runtime = "nodejs";
 

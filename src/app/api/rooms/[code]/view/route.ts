@@ -1,6 +1,6 @@
-import { requireActor } from "@/server/auth";
-import { apiError, displayTokenFrom } from "@/server/http";
-import { getRoomView } from "@/server/room-service";
+import { requireActor } from "@/modules/auth/server";
+import { getRoomView } from "@/modules/room/room-service";
+import { apiError, displayTokenFrom } from "@/shared/http/request";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

@@ -1,6 +1,6 @@
-import { requireActor } from "@/server/auth";
-import { apiError, displayTokenFrom } from "@/server/http";
-import { heartbeat } from "@/server/room-service";
+import { requireActor } from "@/modules/auth/server";
+import { heartbeat } from "@/modules/room/room-service";
+import { apiError, displayTokenFrom } from "@/shared/http/request";
 
 export const runtime = "nodejs";
 

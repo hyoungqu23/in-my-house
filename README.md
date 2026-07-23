@@ -42,10 +42,14 @@ CRON_SECRET=...
 
 ## 구조
 
-- `src/features/dark-house/reducer.ts` — 순수 게임 상태 전이와 시간 전이
-- `src/features/dark-house/projection.ts` — 공개/플레이어별 allowlist 투영
-- `src/server/room-service.ts` — 정원, idempotency, version, heartbeat, 토큰 회전
-- `src/server/room-store.ts` — 메모리/Supabase 저장 어댑터
+- `src/app/` — 페이지와 얇은 HTTP Route Handler
+- `src/modules/dark-house/domain/` — 순수 게임 상태·행동·전이
+- `src/modules/dark-house/projection/` — 공개/플레이어별 allowlist 투영
+- `src/modules/dark-house/ui/` — 게임 규칙에 종속된 공개 보드와 개인 조작 화면
+- `src/modules/room/` — 방 계약, 입장, idempotency, version, heartbeat, 토큰 회전
+- `src/modules/room/repository/` — 저장소 인터페이스와 메모리/Supabase 어댑터
+- `src/modules/auth/` — 브라우저 익명 인증과 서버 사용자 확인
+- `src/shared/` — 여러 모듈에서 사용하는 오류, HTTP, UI
 - `supabase/migrations/` — RLS, CAS RPC, secret-free 이벤트, 만료 정리
 
 전체 비밀 상태는 서버에만 존재합니다. 공개 화면에는 공개된 토큰 종류만, 개인 화면에는 해당 플레이어의 손과 스택만 반환합니다. 도전 단계에서는 모든 플레이어의 `self` 투영을 제거합니다.

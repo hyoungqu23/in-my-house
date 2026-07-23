@@ -1,4 +1,4 @@
-import { DisplayClient } from "@/components/display-client";
+import { DisplayClient } from "@/modules/room/ui/display-client";
 
 export const metadata = { referrer: "no-referrer" as const };
 

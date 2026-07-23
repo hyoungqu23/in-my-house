@@ -1,5 +1,5 @@
 import { timingSafeEqual } from "node:crypto";
-import { cleanupExpiredRooms } from "@/server/room-store";
+import { cleanupExpiredRooms } from "@/modules/room/repository";
 
 export const runtime = "nodejs";
 

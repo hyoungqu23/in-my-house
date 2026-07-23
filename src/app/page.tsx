@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { CreateRoomButton } from "@/components/create-room-button";
-import { AppMark, DoorClosed, Ghost, Moon, ScanLine, UsersRound, Zap } from "@/components/icons";
+import { CreateRoomButton } from "@/modules/room/ui/create-room-button";
+import { AppMark, DoorClosed, Ghost, Moon, ScanLine, UsersRound, Zap } from "@/shared/ui/icons";
 
 const steps = [
   { icon: ScanLine, number: "01", title: "방을 열고", text: "QR이나 링크를 친구에게 보냅니다." },
