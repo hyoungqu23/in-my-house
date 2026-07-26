@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Footprints, Gem, Shield } from "lucide-react";
 import { games } from "@/modules/game-catalog/games";
 import { CreateRoomButton } from "@/modules/room/ui/create-room-button";
 import { AppMark, CircleHelp, DoorClosed, Ghost, MessageSquareText, Moon, ScanLine, UsersRound, Vote, Zap } from "@/shared/ui/icons";
@@ -115,6 +116,27 @@ export default function Home() {
               <li><UsersRound size={17} /> 순번 릴레이 공동 승리</li>
             </ul>
             <CreateRoomButton gameId="dawn-switchboard" label="배전반 복구 시작하기" />
+          </div>
+        </article>
+        <article className="game-card">
+          <div className="game-poster footprints-poster">
+            <div className="poster-top"><span>2 PLAYERS</span><span>15–25 MIN</span></div>
+            <div className="poster-footprints" aria-hidden="true">
+              <Footprints size={72} strokeWidth={1.3} />
+              <Shield size={40} strokeWidth={1.35} />
+            </div>
+            <div className="poster-title"><span>THE</span><strong>MIDNIGHT<br />FOOTPRINTS</strong></div>
+          </div>
+          <div className="game-info">
+            <span className="live-badge"><i /> PLAYABLE NOW</span>
+            <h3>한밤의 발자국</h3>
+            <p>괴도는 아홉 방을 비밀리에 누비고, 경비는 번갈아 드러나는 구역과 바닥 흔적을 쫓습니다. 역할을 바꿔 두 번 잠입한 뒤 더 좋은 성과를 겨루세요.</p>
+            <ul>
+              <li><Footprints size={17} /> 숨겨진 이동과 공개 흔적</li>
+              <li><Shield size={17} /> 이동·수색과 통로 봉쇄</li>
+              <li><Gem size={17} /> 위험할수록 값비싼 목표물</li>
+            </ul>
+            <CreateRoomButton gameId="midnight-footprints" label="야간 잠입 시작하기" />
           </div>
         </article>
       </section>
