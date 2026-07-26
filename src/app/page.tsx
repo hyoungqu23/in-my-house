@@ -6,7 +6,7 @@ import { AppMark, CircleHelp, DoorClosed, Ghost, MessageSquareText, Moon, ScanLi
 const steps = [
   { icon: ScanLine, number: "01", title: "방을 열고", text: "QR이나 링크를 친구에게 보냅니다." },
   { icon: UsersRound, number: "02", title: "각자 확인하고", text: "휴대폰에서 나만의 역할과 정보를 봅니다." },
-  { icon: Ghost, number: "03", title: "함께 의심하세요", text: "공개 보드에서 거짓말이 드러납니다." },
+  { icon: Ghost, number: "03", title: "같이 해결하세요", text: "공개 보드에서 선택과 결과를 함께 확인합니다." },
 ];
 
 export default function Home() {
@@ -32,7 +32,7 @@ export default function Home() {
             <div className="art-door"><Ghost size={34} /></div>
           </div>
           <span className="flashlight-beam" />
-          <span className="art-caption">ONE OF THEM IS LYING</span>
+          <span className="art-caption">ONE ROOM · MANY SECRETS</span>
         </div>
       </section>
 
@@ -96,11 +96,32 @@ export default function Home() {
             <CreateRoomButton gameId="suspicious-invite" label="초대장 보내기" />
           </div>
         </article>
+        <article className="game-card">
+          <div className="game-poster switchboard-poster">
+            <div className="poster-top"><span>3–6 PLAYERS</span><span>12–18 MIN</span></div>
+            <div className="poster-circuit" aria-hidden="true">
+              <i /><i /><i /><i />
+              <Zap size={66} strokeWidth={1.35} />
+            </div>
+            <div className="poster-title"><span>THE</span><strong>DAWN<br />GRID</strong></div>
+          </div>
+          <div className="game-info">
+            <span className="live-badge"><i /> PLAYABLE NOW</span>
+            <h3>새벽의 배전반</h3>
+            <p>집 전체의 전력이 꺼지기 전, 각자에게 흩어진 회로 단서를 말로 조합하세요. 차례대로 스위치를 확정해 세 개의 배전반을 함께 복구합니다.</p>
+            <ul>
+              <li><MessageSquareText size={17} /> 서로 다른 비밀 단서</li>
+              <li><Zap size={17} /> 12분과 퓨즈 3개</li>
+              <li><UsersRound size={17} /> 순번 릴레이 공동 승리</li>
+            </ul>
+            <CreateRoomButton gameId="dawn-switchboard" label="배전반 복구 시작하기" />
+          </div>
+        </article>
       </section>
 
       <footer className="home-footer">
         <AppMark />
-        <p>같은 집, 다른 비밀.<br />오늘 밤은 누구의 말을 믿을까요?</p>
+        <p>같은 집, 다른 비밀.<br />의심하거나, 협력하거나, 함께 즐기세요.</p>
       </footer>
     </main>
   );
