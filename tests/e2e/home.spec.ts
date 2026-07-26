@@ -283,3 +283,92 @@ test("six repairers restore all dawn switchboard panels", async ({ browser }, te
   test.setTimeout(180_000);
   await playDawnSwitchboard(browser, 6);
 });
+
+test("two players swap roles across a midnight footprints match and start a rematch", async ({ browser }, testInfo) => {
+  test.skip(testInfo.project.name !== "desktop-chrome", "multi-context match runs once");
+  test.setTimeout(90_000);
+
+  const contexts = await Promise.all([browser.newContext(), browser.newContext()]);
+  const pages = await Promise.all(contexts.map((context) => context.newPage()));
+  const [host] = pages;
+
+  await host.goto("/");
+  await host.getByRole("button", { name: "야간 잠입 시작하기" }).click();
+  await expect(host.getByRole("heading", { name: "누가 문을 두드렸나요?" })).toBeVisible();
+  const links = await host.evaluate(() => {
+    const key = Object.keys(localStorage).find((candidate) =>
+      candidate.startsWith("in-my-house:links:")
+    );
+    return key
+      ? JSON.parse(localStorage.getItem(key)!) as { joinUrl: string; code: string }
+      : undefined;
+  });
+  expect(links).toBeTruthy();
+
+  for (const [index, page] of pages.entries()) {
+    if (index > 0) await page.goto(links!.joinUrl);
+    await page.getByLabel("닉네임").fill(index === 0 ? "달빛 괴도" : "야간 경비");
+    await page.getByRole("button", { name: "이 이름으로 들어가기" }).click();
+    await expect(page).toHaveURL(new RegExp(`/room/${links!.code}$`));
+  }
+
+  await expect(host.getByText("야간 경비")).toBeVisible({ timeout: 8_000 });
+  await host.getByRole("button", { name: "두 사람 준비됨 · 야간 순찰 시작" }).click();
+
+  async function ensurePrivate(page: typeof host) {
+    await page.getByRole("button", { name: "내 화면", exact: true }).click();
+    await expect(page.locator(".footprints-controls")).toBeVisible({ timeout: 8_000 });
+  }
+
+  async function rolePages() {
+    await Promise.all(pages.map(ensurePrivate));
+    const firstRole = (await pages[0].locator(".footprints-role").textContent())?.trim();
+    return firstRole?.includes("괴도")
+      ? { intruder: pages[0], guard: pages[1] }
+      : { intruder: pages[1], guard: pages[0] };
+  }
+
+  async function getCaughtAtEntry() {
+    const { intruder, guard } = await rolePages();
+    const entryButtons = intruder.locator(".entry-selector button");
+    await expect(entryButtons).toHaveCount(3);
+    const entryName = (await entryButtons.last().textContent())!.trim();
+    await entryButtons.last().click();
+    await intruder.getByRole("button", { name: "역할 확인 · 준비 완료" }).click();
+    await guard.waitForTimeout(1_700);
+    await guard.getByRole("button", { name: "역할 확인 · 준비 완료" }).click();
+
+    const searchSection = guard.locator(".private-choice").filter({
+      has: guard.getByRole("heading", { name: "이동 후 최종 방 수색" }),
+    });
+    const capturePath = searchSection.getByRole("button").filter({ hasText: entryName });
+    await expect(capturePath.first()).toBeVisible({ timeout: 8_000 });
+    await capturePath.first().click();
+    await expect(guard.getByRole("button", { name: "다음 라운드로" })).toBeVisible({
+      timeout: 8_000,
+    });
+    await guard.getByRole("button", { name: "다음 라운드로" }).click();
+    await intruder.waitForTimeout(1_700);
+    await intruder.getByRole("button", { name: "다음 라운드로" }).click();
+  }
+
+  const initialRoles = await rolePages();
+  await getCaughtAtEntry();
+  const swappedRoles = await rolePages();
+  expect(swappedRoles.intruder).toBe(initialRoles.guard);
+  await getCaughtAtEntry();
+
+  await host.getByRole("button", { name: "공개 화면" }).click();
+  await expect(host.getByRole("heading", { name: "두 번의 잠입이 끝났습니다" })).toBeVisible({
+    timeout: 8_000,
+  });
+  await expect(host.getByRole("heading", { name: "두 괴도의 전체 경로" })).toBeVisible();
+
+  await Promise.all(pages.map(ensurePrivate));
+  await pages[0].getByRole("button", { name: "한 판 더" }).click();
+  await pages[1].waitForTimeout(1_700);
+  await pages[1].getByRole("button", { name: "한 판 더" }).click();
+  await expect(pages[0].getByText("ROUND 1/2 · PRIVATE")).toBeVisible({ timeout: 8_000 });
+
+  await Promise.all(contexts.map((context) => context.close()));
+});
