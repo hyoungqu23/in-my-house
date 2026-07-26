@@ -69,4 +69,64 @@ describe("room service", () => {
     expect(publicView.room.gameId).toBe("suspicious-invite");
     expect(JSON.stringify(publicView)).not.toContain("strangerSeat");
   });
+
+  it("starts dawn switchboard without leaking solutions or other players' clues", async () => {
+    const created = await createRoom("host", "http://localhost", "dawn-switchboard", 3_000);
+    const token = tokenFrom(created.joinUrl);
+    await Promise.all(["host", "u2", "u3"].map((userId, index) =>
+      joinRoom({ code: created.code, joinToken: token, nickname: `수리공${index + 1}`, userId, now: 3_001 }),
+    ));
+    await applyRoomAction({
+      code: created.code,
+      userId: "host",
+      request: { clientActionId: "start-switchboard", expectedVersion: 3, action: { type: "START_GAME" } },
+      now: 3_002,
+    });
+
+    const hostView = await getRoomView({
+      code: created.code,
+      userId: "host",
+      mode: "private",
+      now: 3_003,
+    });
+    const publicView = await getRoomView({
+      code: created.code,
+      userId: "host",
+      mode: "public",
+      now: 3_003,
+    });
+    expect(hostView.room.gameId).toBe("dawn-switchboard");
+    expect(hostView.phase).toBe("BRIEFING");
+    expect(JSON.stringify(publicView)).not.toContain("solutionModuleIds");
+    expect(JSON.stringify(publicView)).not.toContain("cluesBySeat");
+    if (
+      hostView.projection !== "player"
+      || !hostView.self
+      || !("clues" in hostView.self)
+    ) {
+      throw new Error("Expected switchboard player projection");
+    }
+    expect(hostView.self.clues.length).toBeGreaterThan(0);
+    expect(hostView.self.legalActions).toContain("MARK_READY");
+
+    await applyRoomAction({
+      code: created.code,
+      userId: "host",
+      request: { clientActionId: "ready-host", expectedVersion: 4, action: { type: "MARK_READY" } },
+      now: 3_004,
+    });
+    await applyRoomAction({
+      code: created.code,
+      userId: "u2",
+      request: { clientActionId: "ready-u2", expectedVersion: 5, action: { type: "MARK_READY" } },
+      now: 3_005,
+    });
+    const readyResult = await applyRoomAction({
+      code: created.code,
+      userId: "u3",
+      request: { clientActionId: "ready-u3", expectedVersion: 6, action: { type: "MARK_READY" } },
+      now: 3_006,
+    });
+    expect(readyResult.projection.phase).toBe("SOLVING");
+  });
 });

@@ -1,8 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { DarkHousePublicRoomView, PublicRoomView, SuspiciousInvitePublicRoomView } from "@/modules/room/contracts";
+import type {
+  DarkHousePublicRoomView,
+  DawnSwitchboardPublicRoomView,
+  PublicRoomView,
+  SuspiciousInvitePublicRoomView,
+} from "@/modules/room/contracts";
 import { PublicBoard } from "@/modules/dark-house/ui/public-board";
+import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public-board";
 import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
 
 export function DisplayClient({ code }: { code: string }) {
@@ -48,11 +54,18 @@ export function DisplayClient({ code }: { code: string }) {
   if (view.phase === "LOBBY") {
     return <main className="display-page"><section className="board display-lobby"><span className="room-code">ROOM {view.room.code}</span><h1>플레이어를 기다리는 중</h1><strong>{view.players.length}명 입장</strong></section></main>;
   }
-  const isDarkHouse = (candidate: DarkHousePublicRoomView | SuspiciousInvitePublicRoomView): candidate is DarkHousePublicRoomView =>
+  type GamePublicView = DarkHousePublicRoomView | SuspiciousInvitePublicRoomView | DawnSwitchboardPublicRoomView;
+  const isDarkHouse = (candidate: GamePublicView): candidate is DarkHousePublicRoomView =>
     candidate.room.gameId === "dark-house";
+  const isSuspicious = (candidate: GamePublicView): candidate is SuspiciousInvitePublicRoomView =>
+    candidate.room.gameId === "suspicious-invite";
   return (
     <main className="display-page">
-      {isDarkHouse(view) ? <PublicBoard view={view} /> : <SuspiciousInvitePublicBoard view={view} />}
+      {isDarkHouse(view)
+        ? <PublicBoard view={view} />
+        : isSuspicious(view)
+          ? <SuspiciousInvitePublicBoard view={view} />
+          : <DawnSwitchboardPublicBoard view={view} />}
     </main>
   );
 }

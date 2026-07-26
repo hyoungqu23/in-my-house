@@ -42,7 +42,12 @@ const findPlayer = (room: RoomRecord, userId: string) =>
 function advanceRoom(room: RoomRecord, now: number) {
   if (!room.game) return false;
   const before = JSON.stringify(room.game);
-  room.game = advanceGame(room.game, now);
+  room.game = advanceGame(room.game, {
+    now,
+    connectedSeats: room.players
+      .filter((player) => now - player.lastSeenAt <= 45_000)
+      .map((player) => player.seat),
+  });
   if (JSON.stringify(room.game) !== before) {
     room.version += 1;
     if (isGameOver(room.game)) room.status = "finished";
@@ -223,10 +228,12 @@ export async function applyRoomAction(input: {
     if (!isHost) throw new GameRuleError("UNAUTHORIZED", "호스트만 다시 시작할 수 있습니다.");
     if (room.status !== "finished") throw new GameRuleError("INVALID_PHASE", "게임이 끝난 뒤 다시 할 수 있습니다.");
     const connected = room.players.filter((player) => now - player.lastSeenAt <= 45_000);
+    const previousGame = room.game;
     room.game = createGame(
       room.gameId,
       connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })),
       now,
+      previousGame,
     );
     room.players = connected;
     room.status = "playing";
@@ -236,6 +243,9 @@ export async function applyRoomAction(input: {
     room.game = transitionGame(room.game, player.seat, action, {
       now,
       sequenceId: input.request.clientActionId,
+      connectedSeats: room.players
+        .filter((candidate) => now - candidate.lastSeenAt <= 45_000)
+        .map((candidate) => candidate.seat),
     });
     if (isGameOver(room.game)) room.status = "finished";
   }

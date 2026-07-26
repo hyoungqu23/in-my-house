@@ -19,6 +19,8 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("CAST_SUSPICION_VOTE"), targetSeat: z.number().int().positive() }).strict(),
   z.object({ type: z.literal("GUESS_WORD"), wordId: z.string().min(1).max(128) }).strict(),
   z.object({ type: z.literal("CAST_END_VOTE"), vote: z.enum(["CONTINUE", "END"]) }).strict(),
+  z.object({ type: z.literal("MARK_READY") }).strict(),
+  z.object({ type: z.literal("CONFIRM_MODULE"), moduleId: z.string().min(1).max(128) }).strict(),
 ]);
 
 const requestSchema = z.object({

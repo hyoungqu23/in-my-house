@@ -7,13 +7,25 @@ import type {
 } from "@/modules/dark-house/domain/types";
 import type { GameId } from "@/modules/game-catalog/games";
 import type {
+  CircuitModule,
+  PuzzleDifficulty,
+  SwitchboardAction,
+  SwitchboardAttempt,
+  SwitchboardPhase,
+  SwitchboardResult,
+} from "@/modules/dawn-switchboard/domain/types";
+import type {
   SuspiciousInviteAction,
   SuspiciousInvitePhase,
   SuspiciousRoundResult,
 } from "@/modules/suspicious-invite/domain/types";
 
 export type AdministrativeAction = { type: "START_GAME" } | { type: "START_REMATCH" };
-export type RoomAction = DarkHouseAction | SuspiciousInviteAction | AdministrativeAction;
+export type RoomAction =
+  | DarkHouseAction
+  | SuspiciousInviteAction
+  | SwitchboardAction
+  | AdministrativeAction;
 
 export type ActionRequest = {
   clientActionId: string;
@@ -132,6 +144,54 @@ export type SuspiciousInvitePlayerRoomView = Omit<SuspiciousInvitePublicRoomView
   };
 };
 
-export type PublicRoomView = LobbyRoomView | DarkHousePublicRoomView | SuspiciousInvitePublicRoomView;
-export type PlayerRoomView = DarkHousePlayerRoomView | SuspiciousInvitePlayerRoomView;
+export type DawnSwitchboardPublicRoomView = RoomViewBase<"dawn-switchboard", SwitchboardPhase> & {
+  projection: "public";
+  phaseEndsAt?: string;
+  deadlineAt?: string;
+  stage: number;
+  stageCount: number;
+  panel: {
+    title: string;
+    difficulty: PuzzleDifficulty;
+    slotCount: number;
+  };
+  fusesRemaining: number;
+  activeSeat?: number;
+  players: Array<{
+    seat: number;
+    nickname: string;
+    connected: boolean;
+    isHost: boolean;
+    ready: boolean;
+    active: boolean;
+    clueCount: number;
+    cluesExposed: boolean;
+  }>;
+  modules: CircuitModule[];
+  lockedSequence: CircuitModule[];
+  rejectedModuleIds: string[];
+  exposedClues: Array<{ seat: number; entries: string[] }>;
+  lastAttempt?: SwitchboardAttempt;
+  result?: SwitchboardResult;
+};
+
+export type DawnSwitchboardPlayerRoomView = Omit<DawnSwitchboardPublicRoomView, "projection"> & {
+  projection: "player";
+  self: {
+    seat: number;
+    ready: boolean;
+    clues: string[];
+    legalActions: SwitchboardAction["type"][];
+  };
+};
+
+export type PublicRoomView =
+  | LobbyRoomView
+  | DarkHousePublicRoomView
+  | SuspiciousInvitePublicRoomView
+  | DawnSwitchboardPublicRoomView;
+export type PlayerRoomView =
+  | DarkHousePlayerRoomView
+  | SuspiciousInvitePlayerRoomView
+  | DawnSwitchboardPlayerRoomView;
 export type RoomView = PublicRoomView | PlayerRoomView;

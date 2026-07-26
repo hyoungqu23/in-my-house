@@ -1,4 +1,4 @@
-export const GAME_IDS = ["dark-house", "suspicious-invite"] as const;
+export const GAME_IDS = ["dark-house", "suspicious-invite", "dawn-switchboard"] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
 export type GameAvailability = "playable" | "coming-soon";
@@ -27,6 +27,14 @@ export const games = [
     minPlayers: 3,
     maxPlayers: 6,
     durationMinutes: [15, 25],
+    availability: "playable",
+  },
+  {
+    id: "dawn-switchboard",
+    title: "새벽의 배전반",
+    minPlayers: 3,
+    maxPlayers: 6,
+    durationMinutes: [12, 18],
     availability: "playable",
   },
 ] as const satisfies readonly GameDefinition[];
