@@ -3,7 +3,12 @@ import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { DarkHouseState } from "@/modules/dark-house/domain/types";
 import type { StoredGame } from "@/modules/game-runtime/types";
-import type { RoomRecord, RoomRepository, SerializedRoom } from "./types";
+import type {
+  FootprintsPrivateStateRecord,
+  RoomRecord,
+  RoomRepository,
+  SerializedRoom,
+} from "./types";
 
 const serialize = (room: RoomRecord): SerializedRoom => ({
   ...room,
@@ -82,5 +87,44 @@ export class SupabaseRoomRepository implements RoomRepository {
     const { data, error } = await this.getClient().rpc("cleanup_expired_game_rooms");
     if (error) throw error;
     return Number(data ?? 0);
+  }
+
+  async findFootprintsPrivateState(code: string, userId: string) {
+    const { data, error } = await this.getClient()
+      .from("game_room_private_player_states")
+      .select("revision, payload")
+      .eq("room_code", code.toUpperCase())
+      .eq("user_id", userId)
+      .maybeSingle();
+    if (error) throw error;
+    if (!data) return undefined;
+    const payload = data.payload as Omit<FootprintsPrivateStateRecord, "revision">;
+    return {
+      revision: Number(data.revision),
+      roundKey: payload.roundKey,
+      roomMarks: payload.roomMarks,
+    };
+  }
+
+  async commitFootprintsPrivateState(
+    code: string,
+    userId: string,
+    state: FootprintsPrivateStateRecord,
+    expectedRevision: number,
+  ) {
+    const { data, error } = await this.getClient().rpc(
+      "commit_game_room_private_player_state",
+      {
+        p_room_code: code.toUpperCase(),
+        p_user_id: userId,
+        p_expected_revision: expectedRevision,
+        p_payload: {
+          roundKey: state.roundKey,
+          roomMarks: state.roomMarks,
+        },
+      },
+    );
+    if (error) throw error;
+    return Boolean(data);
   }
 }

@@ -33,6 +33,24 @@ export function cleanupExpiredRooms(now = Date.now()) {
   return repository().cleanupExpired(now);
 }
 
+export function getFootprintsPrivateState(code: string, userId: string) {
+  return repository().findFootprintsPrivateState(code, userId);
+}
+
+export function saveFootprintsPrivateState(
+  code: string,
+  userId: string,
+  state: Parameters<RoomRepository["commitFootprintsPrivateState"]>[2],
+  expectedRevision: number,
+) {
+  return repository().commitFootprintsPrivateState(
+    code,
+    userId,
+    state,
+    expectedRevision,
+  );
+}
+
 export function resetMemoryStore() {
   memoryRepository.reset();
 }

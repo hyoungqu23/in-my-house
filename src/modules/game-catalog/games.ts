@@ -1,4 +1,9 @@
-export const GAME_IDS = ["dark-house", "suspicious-invite", "dawn-switchboard"] as const;
+export const GAME_IDS = [
+  "dark-house",
+  "suspicious-invite",
+  "dawn-switchboard",
+  "midnight-footprints",
+] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
 export type GameAvailability = "playable" | "coming-soon";
@@ -35,6 +40,14 @@ export const games = [
     minPlayers: 3,
     maxPlayers: 6,
     durationMinutes: [12, 18],
+    availability: "playable",
+  },
+  {
+    id: "midnight-footprints",
+    title: "한밤의 발자국",
+    minPlayers: 2,
+    maxPlayers: 2,
+    durationMinutes: [15, 25],
     availability: "playable",
   },
 ] as const satisfies readonly GameDefinition[];

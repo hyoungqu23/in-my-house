@@ -13,14 +13,17 @@ import type { ActionRequest, LobbyRoomView } from "@/modules/room/contracts";
 import { DomainError as GameRuleError } from "@/shared/errors/domain-error";
 import {
   createRoomRecord,
+  getFootprintsPrivateState,
   getRoomRecord,
   hashSecret,
   RoomRecord,
   rotateRoomToken,
   saveRoomRecord,
+  saveFootprintsPrivateState,
   verifyDisplayToken,
   verifyJoinToken,
 } from "./repository";
+import type { FootprintsRoomMark } from "@/modules/midnight-footprints/domain/types";
 
 const normalizeNickname = (nickname: string) =>
   nickname.normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US");
@@ -38,6 +41,24 @@ const assertNotExpired = (room: RoomRecord, now: number) => {
 
 const findPlayer = (room: RoomRecord, userId: string) =>
   room.players.find((player) => player.userId === userId);
+
+const footprintsRoundKey = (
+  game: Extract<NonNullable<RoomRecord["game"]>, { type: "midnight-footprints" }>,
+) => `${game.state.matchNumber}:${game.state.round}:${game.state.guardSeat}`;
+
+async function footprintsPrivateProjection(
+  room: RoomRecord,
+  userId: string,
+) {
+  if (room.game?.type !== "midnight-footprints") return undefined;
+  const stored = await getFootprintsPrivateState(room.code, userId);
+  return {
+    revision: stored?.revision ?? 0,
+    roomMarks: stored?.roundKey === footprintsRoundKey(room.game)
+      ? stored.roomMarks
+      : {},
+  };
+}
 
 function advanceRoom(room: RoomRecord, now: number) {
   if (!room.game) return false;
@@ -175,7 +196,11 @@ export async function getRoomView(input: {
       .map((candidate) => candidate.seat),
   };
   return input.mode === "private" && player
-    ? projectGamePlayer(room.game, context)
+    ? projectGamePlayer(
+        room.game,
+        context,
+        await footprintsPrivateProjection(room, player.userId),
+      )
     : projectGamePublic(room.game, context);
 }
 
@@ -229,6 +254,12 @@ export async function applyRoomAction(input: {
     if (room.status !== "finished") throw new GameRuleError("INVALID_PHASE", "게임이 끝난 뒤 다시 할 수 있습니다.");
     const connected = room.players.filter((player) => now - player.lastSeenAt <= 45_000);
     const previousGame = room.game;
+    if (previousGame?.type === "midnight-footprints") {
+      throw new GameRuleError(
+        "INVALID_PHASE",
+        "한밤의 발자국은 두 플레이어의 재경기 투표로만 다시 시작합니다.",
+      );
+    }
     room.game = createGame(
       room.gameId,
       connected.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })),
@@ -270,6 +301,69 @@ export async function applyRoomAction(input: {
     currentVersion: room.version,
     projection: await getRoomView({ code: room.code, userId: input.userId, mode: "private", now }),
   };
+}
+
+export async function setFootprintsRoomMarks(input: {
+  code: string;
+  userId: string;
+  expectedPrivateRevision: number;
+  roomMarks: Record<string, FootprintsRoomMark>;
+  now?: number;
+}) {
+  const now = input.now ?? Date.now();
+  const room = await getRoomRecord(input.code);
+  if (!room) throw new GameRuleError("ROOM_NOT_FOUND", "방을 찾을 수 없습니다.");
+  assertNotExpired(room, now);
+  const player = findPlayer(room, input.userId);
+  if (!player || room.game?.type !== "midnight-footprints") {
+    throw new GameRuleError("UNAUTHORIZED", "이 게임의 플레이어가 아닙니다.");
+  }
+  const state = room.game.state;
+  if (player.seat !== state.guardSeat) {
+    throw new GameRuleError("UNAUTHORIZED", "현재 경비만 방 표시를 저장할 수 있습니다.");
+  }
+  if (!["INTRUDER_TURN", "GUARD_TURN"].includes(state.phase)) {
+    throw new GameRuleError("INVALID_PHASE", "라운드 진행 중에만 방 표시를 저장할 수 있습니다.");
+  }
+  const roomIds = new Set(state.layout.rooms.map((candidate) => candidate.id));
+  const validMarks = new Set<FootprintsRoomMark>([
+    "LIKELY",
+    "EXCLUDED",
+    "UNKNOWN",
+  ]);
+  if (
+    Object.entries(input.roomMarks).some(
+      ([roomId, mark]) => !roomIds.has(roomId) || !validMarks.has(mark),
+    )
+  ) {
+    throw new GameRuleError("INVALID_TARGET", "유효하지 않은 방 표시가 포함되어 있습니다.");
+  }
+  const existing = await getFootprintsPrivateState(room.code, input.userId);
+  const currentRevision = existing?.revision ?? 0;
+  if (input.expectedPrivateRevision !== currentRevision) {
+    throw new GameRuleError("STALE_PRIVATE_VERSION", "개인 메모가 바뀌었습니다. 다시 시도해 주세요.");
+  }
+  const roomMarks = Object.fromEntries(
+    state.layout.rooms.map((candidate) => [
+      candidate.id,
+      input.roomMarks[candidate.id] ?? "UNKNOWN",
+    ]),
+  ) as Record<string, FootprintsRoomMark>;
+  const privateRevision = currentRevision + 1;
+  const saved = await saveFootprintsPrivateState(
+    room.code,
+    input.userId,
+    {
+      revision: privateRevision,
+      roundKey: footprintsRoundKey(room.game),
+      roomMarks,
+    },
+    currentRevision,
+  );
+  if (!saved) {
+    throw new GameRuleError("STALE_PRIVATE_VERSION", "개인 메모가 바뀌었습니다. 다시 시도해 주세요.");
+  }
+  return { privateRevision, roomVersion: room.version };
 }
 
 export async function heartbeat(input: { code: string; userId?: string; displayToken?: string; now?: number }) {

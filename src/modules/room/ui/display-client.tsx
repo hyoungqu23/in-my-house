@@ -4,12 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import type {
   DarkHousePublicRoomView,
   DawnSwitchboardPublicRoomView,
+  MidnightFootprintsPublicRoomView,
   PublicRoomView,
   SuspiciousInvitePublicRoomView,
 } from "@/modules/room/contracts";
 import { PublicBoard } from "@/modules/dark-house/ui/public-board";
 import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public-board";
 import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
+import { MidnightFootprintsPublicBoard } from "@/modules/midnight-footprints/ui/public-board";
 
 export function DisplayClient({ code }: { code: string }) {
   const [token, setToken] = useState("");
@@ -54,18 +56,26 @@ export function DisplayClient({ code }: { code: string }) {
   if (view.phase === "LOBBY") {
     return <main className="display-page"><section className="board display-lobby"><span className="room-code">ROOM {view.room.code}</span><h1>플레이어를 기다리는 중</h1><strong>{view.players.length}명 입장</strong></section></main>;
   }
-  type GamePublicView = DarkHousePublicRoomView | SuspiciousInvitePublicRoomView | DawnSwitchboardPublicRoomView;
+  type GamePublicView =
+    | DarkHousePublicRoomView
+    | SuspiciousInvitePublicRoomView
+    | DawnSwitchboardPublicRoomView
+    | MidnightFootprintsPublicRoomView;
   const isDarkHouse = (candidate: GamePublicView): candidate is DarkHousePublicRoomView =>
     candidate.room.gameId === "dark-house";
   const isSuspicious = (candidate: GamePublicView): candidate is SuspiciousInvitePublicRoomView =>
     candidate.room.gameId === "suspicious-invite";
+  const isSwitchboard = (candidate: GamePublicView): candidate is DawnSwitchboardPublicRoomView =>
+    candidate.room.gameId === "dawn-switchboard";
   return (
     <main className="display-page">
       {isDarkHouse(view)
         ? <PublicBoard view={view} />
         : isSuspicious(view)
           ? <SuspiciousInvitePublicBoard view={view} />
-          : <DawnSwitchboardPublicBoard view={view} />}
+          : isSwitchboard(view)
+            ? <DawnSwitchboardPublicBoard view={view} />
+            : <MidnightFootprintsPublicBoard view={view} />}
     </main>
   );
 }

@@ -19,12 +19,24 @@ import type {
   SuspiciousInvitePhase,
   SuspiciousRoundResult,
 } from "@/modules/suspicious-invite/domain/types";
+import type {
+  FootprintsAction,
+  FootprintsActiveBlock,
+  FootprintsLayout,
+  FootprintsPhase,
+  FootprintsPrivatePlayerState,
+  FootprintsRoundResult,
+  FootprintsSessionRecord,
+  FootprintsTargetId,
+  FootprintsTrace,
+} from "@/modules/midnight-footprints/domain/types";
 
 export type AdministrativeAction = { type: "START_GAME" } | { type: "START_REMATCH" };
 export type RoomAction =
   | DarkHouseAction
   | SuspiciousInviteAction
   | SwitchboardAction
+  | FootprintsAction
   | AdministrativeAction;
 
 export type ActionRequest = {
@@ -185,13 +197,72 @@ export type DawnSwitchboardPlayerRoomView = Omit<DawnSwitchboardPublicRoomView, 
   };
 };
 
+export type MidnightFootprintsPublicRoomView =
+  RoomViewBase<"midnight-footprints", FootprintsPhase> & {
+    projection: "public";
+    matchNumber: number;
+    round: 1 | 2;
+    activeSeat?: number;
+    actionStartedAt: string;
+    players: Array<{
+      seat: number;
+      nickname: string;
+      connected: boolean;
+      isHost: boolean;
+      role: "INTRUDER" | "GUARD";
+      ready: boolean;
+      record: Omit<FootprintsSessionRecord, "seat">;
+    }>;
+    layout: FootprintsLayout;
+    guardRoomId: string;
+    blocksRemaining: number;
+    activeBlock?: FootprintsActiveBlock;
+    traceHistory: FootprintsTrace[];
+    failedSearches: Array<{ turn: number; roomId: string }>;
+    roundResults: Array<Omit<FootprintsRoundResult, "path">>;
+    revealedPaths?: Array<{ round: 1 | 2; intruderSeat: number; path: string[] }>;
+    pause?: {
+      disconnectedSeats: number[];
+      pausedAt: string;
+      forfeitClaimAt: string;
+    };
+    rematchVoteCount: number;
+    matchWinnerSeat?: number;
+    forfeitWinnerSeat?: number;
+  };
+
+export type MidnightFootprintsPlayerRoomView =
+  Omit<MidnightFootprintsPublicRoomView, "projection"> & {
+    projection: "player";
+    self: {
+      seat: number;
+      role: "INTRUDER" | "GUARD";
+      ready: boolean;
+      legalActions: FootprintsAction["type"][];
+      ownRematchVote?: "REMATCH" | "END";
+      entryRoomIds?: string[];
+      currentRoomId?: string;
+      initialEntryRoomId?: string;
+      legalMoveRoomIds?: string[];
+      hideRemaining?: number;
+      stolenTargetId?: FootprintsTargetId;
+      path?: string[];
+      privateStateRevision?: number;
+      roomMarks?: FootprintsPrivatePlayerState["roomMarks"];
+      legalGuardPaths?: string[][];
+      blockablePassages?: Array<readonly [string, string]>;
+    };
+  };
+
 export type PublicRoomView =
   | LobbyRoomView
   | DarkHousePublicRoomView
   | SuspiciousInvitePublicRoomView
-  | DawnSwitchboardPublicRoomView;
+  | DawnSwitchboardPublicRoomView
+  | MidnightFootprintsPublicRoomView;
 export type PlayerRoomView =
   | DarkHousePlayerRoomView
   | SuspiciousInvitePlayerRoomView
-  | DawnSwitchboardPlayerRoomView;
+  | DawnSwitchboardPlayerRoomView
+  | MidnightFootprintsPlayerRoomView;
 export type RoomView = PublicRoomView | PlayerRoomView;

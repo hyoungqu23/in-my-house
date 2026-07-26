@@ -14,6 +14,20 @@ import {
   transition as transitionSwitchboard,
 } from "@/modules/dawn-switchboard/domain/reducer";
 import type { SwitchboardAction } from "@/modules/dawn-switchboard/domain/types";
+import { createMatchSetup as createFootprintsSetup } from "@/modules/midnight-footprints/domain/content";
+import {
+  advanceTimedState as advanceFootprints,
+  createInitialState as createFootprints,
+  transition as transitionFootprints,
+} from "@/modules/midnight-footprints/domain/reducer";
+import type {
+  FootprintsAction,
+  FootprintsPrivatePlayerState,
+} from "@/modules/midnight-footprints/domain/types";
+import {
+  projectPlayer as projectFootprintsPlayer,
+  projectPublic as projectFootprintsPublic,
+} from "@/modules/midnight-footprints/projection/game-view";
 import {
   projectPlayer as projectSwitchboardPlayer,
   projectPublic as projectSwitchboardPublic,
@@ -75,6 +89,19 @@ const switchboardActionTypes = new Set<SwitchboardAction["type"]>([
   "CONFIRM_MODULE",
 ]);
 
+const footprintsActionTypes = new Set<FootprintsAction["type"]>([
+  "SELECT_ENTRY",
+  "MARK_READY",
+  "MOVE_INTRUDER",
+  "HIDE",
+  "STEAL",
+  "MOVE_AND_SEARCH",
+  "BLOCK_PASSAGE",
+  "ACK_ROUND_RESULT",
+  "CAST_REMATCH_VOTE",
+  "CLAIM_FORFEIT",
+]);
+
 const isDarkHouseAction = (action: GameAction): action is DarkHouseAction =>
   darkHouseActionTypes.has(action.type as DarkHouseAction["type"]);
 
@@ -83,6 +110,13 @@ const isSuspiciousAction = (action: GameAction): action is SuspiciousInviteActio
 
 const isSwitchboardAction = (action: GameAction): action is SwitchboardAction =>
   switchboardActionTypes.has(action.type as SwitchboardAction["type"]);
+
+const isFootprintsAction = (action: GameAction): action is FootprintsAction =>
+  footprintsActionTypes.has(action.type as FootprintsAction["type"]);
+
+const assertNever = (value: never): never => {
+  throw new GameRuleError("GAME_NOT_FOUND", `지원하지 않는 게임입니다: ${String(value)}`);
+};
 
 const randomRemovalId = (state: DarkHouseState) => {
   const challenger = state.players.find((player) => player.seat === state.challengerSeat);
@@ -99,39 +133,63 @@ export function createGame(
   now: number,
   previousGame?: StoredGame,
 ): StoredGame {
-  if (gameId === "dark-house") return { type: gameId, state: createDarkHouse(roster) };
-  if (gameId === "suspicious-invite") {
-    const setup = suspiciousSetup(roster.map((player) => player.seat), []);
-    return { type: gameId, state: createSuspiciousInvite(roster, setup, now) };
+  switch (gameId) {
+    case "dark-house":
+      return { type: gameId, state: createDarkHouse(roster) };
+    case "suspicious-invite": {
+      const setup = suspiciousSetup(roster.map((player) => player.seat), []);
+      return { type: gameId, state: createSuspiciousInvite(roster, setup, now) };
+    }
+    case "dawn-switchboard": {
+      const excludedPuzzleIds = previousGame?.type === "dawn-switchboard"
+        ? previousGame.state.panels.map((panel) => panel.id)
+        : [];
+      const setup = createMatchSetup({
+        seats: roster.map((player) => player.seat),
+        excludedPuzzleIds,
+        randomIndex: (maxExclusive) => randomInt(maxExclusive),
+      });
+      return { type: gameId, state: createSwitchboard(roster, setup) };
+    }
+    case "midnight-footprints": {
+      const seats = roster.map((player) => player.seat);
+      const roleOrder = randomInt(2) === 0 ? seats : [...seats].reverse();
+      const setup = createFootprintsSetup({
+        seats: roleOrder,
+        previousLayoutId: previousGame?.type === "midnight-footprints"
+          ? previousGame.state.layout.id
+          : undefined,
+        randomIndex: (maxExclusive) => randomInt(maxExclusive),
+      });
+      return { type: gameId, state: createFootprints(roster, setup, now) };
+    }
+    default:
+      return assertNever(gameId);
   }
-  const excludedPuzzleIds = previousGame?.type === "dawn-switchboard"
-    ? previousGame.state.panels.map((panel) => panel.id)
-    : [];
-  const setup = createMatchSetup({
-    seats: roster.map((player) => player.seat),
-    excludedPuzzleIds,
-    randomIndex: (maxExclusive) => randomInt(maxExclusive),
-  });
-  return { type: gameId, state: createSwitchboard(roster, setup) };
 }
 
 export function advanceGame(
   game: StoredGame,
   context: { now: number; connectedSeats: number[] },
 ): StoredGame {
-  if (game.type === "dark-house") {
-    return {
-      ...game,
-      state: advanceDarkHouse(game.state, {
-        now: context.now,
-        randomRemovalTokenId: randomRemovalId(game.state),
-      }),
-    };
+  switch (game.type) {
+    case "dark-house":
+      return {
+        ...game,
+        state: advanceDarkHouse(game.state, {
+          now: context.now,
+          randomRemovalTokenId: randomRemovalId(game.state),
+        }),
+      };
+    case "suspicious-invite":
+      return { ...game, state: advanceSuspiciousInvite(game.state, context.now) };
+    case "dawn-switchboard":
+      return { ...game, state: advanceSwitchboard(game.state, context) };
+    case "midnight-footprints":
+      return { ...game, state: advanceFootprints(game.state, context) };
+    default:
+      return assertNever(game);
   }
-  if (game.type === "suspicious-invite") {
-    return { ...game, state: advanceSuspiciousInvite(game.state, context.now) };
-  }
-  return { ...game, state: advanceSwitchboard(game.state, context) };
 }
 
 export function transitionGame(
@@ -164,26 +222,67 @@ export function transitionGame(
       }),
     };
   }
-  if (!isSwitchboardAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
+  if (game.type === "dawn-switchboard") {
+    if (!isSwitchboardAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
+    return {
+      ...game,
+      state: transitionSwitchboard(game.state, actorSeat, action, {
+        now: context.now,
+        connectedSeats: context.connectedSeats,
+      }),
+    };
+  }
+  if (!isFootprintsAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
+  const otherSeat = game.state.players.find(
+    (player) => player.seat !== game.state.startingIntruderSeat,
+  )!.seat;
+  const nextMatchSetup = createFootprintsSetup({
+    seats: [otherSeat, game.state.startingIntruderSeat],
+    previousLayoutId: game.state.layout.id,
+    randomIndex: (maxExclusive) => randomInt(maxExclusive),
+  });
   return {
     ...game,
-    state: transitionSwitchboard(game.state, actorSeat, action, {
+    state: transitionFootprints(game.state, actorSeat, action, {
       now: context.now,
       connectedSeats: context.connectedSeats,
+      nextMatchSetup,
     }),
   };
 }
 
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
-  if (game.type === "dark-house") return projectDarkHousePublic(game.state, context);
-  if (game.type === "suspicious-invite") return projectSuspiciousPublic(game.state, context);
-  return projectSwitchboardPublic(game.state, context);
+  switch (game.type) {
+    case "dark-house":
+      return projectDarkHousePublic(game.state, context);
+    case "suspicious-invite":
+      return projectSuspiciousPublic(game.state, context);
+    case "dawn-switchboard":
+      return projectSwitchboardPublic(game.state, context);
+    case "midnight-footprints":
+      return projectFootprintsPublic(game.state, context);
+    default:
+      return assertNever(game);
+  }
 }
 
-export function projectGamePlayer(game: StoredGame, context: ProjectionContext): PlayerRoomView {
-  if (game.type === "dark-house") return projectDarkHousePlayer(game.state, context);
-  if (game.type === "suspicious-invite") return projectSuspiciousPlayer(game.state, context);
-  return projectSwitchboardPlayer(game.state, context);
+export function projectGamePlayer(
+  game: StoredGame,
+  context: ProjectionContext,
+  privateState?: FootprintsPrivatePlayerState,
+): PlayerRoomView {
+  switch (game.type) {
+    case "dark-house":
+      return projectDarkHousePlayer(game.state, context);
+    case "suspicious-invite":
+      return projectSuspiciousPlayer(game.state, context);
+    case "dawn-switchboard":
+      return projectSwitchboardPlayer(game.state, context);
+    case "midnight-footprints":
+      return projectFootprintsPlayer(game.state, context, privateState);
+    default:
+      return assertNever(game);
+  }
 }
 
 export const isGameOver = (game: StoredGame) => game.state.phase === "GAME_OVER";

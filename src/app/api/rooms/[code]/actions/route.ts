@@ -21,6 +21,18 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("CAST_END_VOTE"), vote: z.enum(["CONTINUE", "END"]) }).strict(),
   z.object({ type: z.literal("MARK_READY") }).strict(),
   z.object({ type: z.literal("CONFIRM_MODULE"), moduleId: z.string().min(1).max(128) }).strict(),
+  z.object({ type: z.literal("SELECT_ENTRY"), roomId: z.string().min(1).max(128) }).strict(),
+  z.object({ type: z.literal("MOVE_INTRUDER"), roomId: z.string().min(1).max(128) }).strict(),
+  z.object({ type: z.literal("HIDE") }).strict(),
+  z.object({ type: z.literal("STEAL"), targetId: z.enum(["silver-coins", "starlight-necklace", "golden-cat"]) }).strict(),
+  z.object({ type: z.literal("MOVE_AND_SEARCH"), path: z.array(z.string().min(1).max(128)).max(2) }).strict(),
+  z.object({
+    type: z.literal("BLOCK_PASSAGE"),
+    passage: z.tuple([z.string().min(1).max(128), z.string().min(1).max(128)]),
+  }).strict(),
+  z.object({ type: z.literal("ACK_ROUND_RESULT") }).strict(),
+  z.object({ type: z.literal("CAST_REMATCH_VOTE"), vote: z.enum(["REMATCH", "END"]) }).strict(),
+  z.object({ type: z.literal("CLAIM_FORFEIT") }).strict(),
 ]);
 
 const requestSchema = z.object({

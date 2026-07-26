@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import type { MidnightFootprintsPlayerRoomView } from "./contracts";
 
 vi.mock("server-only", () => ({}));
 
-import { applyRoomAction, createRoom, getRoomView, joinRoom } from "./room-service";
+import {
+  applyRoomAction,
+  createRoom,
+  getRoomView,
+  joinRoom,
+  setFootprintsRoomMarks,
+} from "./room-service";
 import { resetMemoryStore } from "./repository";
 
 const tokenFrom = (url: string) => new URL(url).hash.slice(1);
@@ -128,5 +135,133 @@ describe("room service", () => {
       now: 3_006,
     });
     expect(readyResult.projection.phase).toBe("SOLVING");
+  });
+
+  it("keeps guard notes on a private revision without changing the room version", async () => {
+    const created = await createRoom("host", "http://localhost", "midnight-footprints", 4_000);
+    const token = tokenFrom(created.joinUrl);
+    await joinRoom({
+      code: created.code,
+      joinToken: token,
+      nickname: "달빛괴도",
+      userId: "host",
+      now: 4_001,
+    });
+    await joinRoom({
+      code: created.code,
+      joinToken: token,
+      nickname: "야간경비",
+      userId: "u2",
+      now: 4_001,
+    });
+    await expect(joinRoom({
+      code: created.code,
+      joinToken: token,
+      nickname: "구경꾼",
+      userId: "u3",
+      now: 4_001,
+    })).rejects.toThrow(/가득/);
+
+    await applyRoomAction({
+      code: created.code,
+      userId: "host",
+      request: {
+        clientActionId: "start-footprints",
+        expectedVersion: 2,
+        action: { type: "START_GAME" },
+      },
+      now: 4_002,
+    });
+    const playerViews = await Promise.all(["host", "u2"].map((userId) =>
+      getRoomView({
+        code: created.code,
+        userId,
+        mode: "private",
+        now: 4_002,
+      }),
+    ));
+    const footprintsViews = playerViews.map((view) => {
+      if (
+        view.projection !== "player"
+        || view.room.gameId !== "midnight-footprints"
+      ) {
+        throw new Error("Expected footprints player projection");
+      }
+      return view as MidnightFootprintsPlayerRoomView;
+    });
+    const intruderIndex = footprintsViews.findIndex(
+      (view) => view.self.role === "INTRUDER",
+    );
+    const intruderUserId = ["host", "u2"][intruderIndex];
+    const guardUserId = ["host", "u2"][1 - intruderIndex];
+    const entryRoomId = footprintsViews[intruderIndex].self.entryRoomIds![0];
+
+    await applyRoomAction({
+      code: created.code,
+      userId: intruderUserId,
+      request: {
+        clientActionId: "entry-footprints",
+        expectedVersion: 3,
+        action: { type: "SELECT_ENTRY", roomId: entryRoomId },
+      },
+      now: 4_003,
+    });
+    await applyRoomAction({
+      code: created.code,
+      userId: intruderUserId,
+      request: {
+        clientActionId: "ready-intruder",
+        expectedVersion: 4,
+        action: { type: "MARK_READY" },
+      },
+      now: 4_004,
+    });
+    await applyRoomAction({
+      code: created.code,
+      userId: guardUserId,
+      request: {
+        clientActionId: "ready-guard",
+        expectedVersion: 5,
+        action: { type: "MARK_READY" },
+      },
+      now: 4_005,
+    });
+
+    const noteResult = await setFootprintsRoomMarks({
+      code: created.code,
+      userId: guardUserId,
+      expectedPrivateRevision: 0,
+      roomMarks: { study: "LIKELY", bathroom: "EXCLUDED" },
+      now: 4_006,
+    });
+    expect(noteResult).toEqual({ privateRevision: 1, roomVersion: 6 });
+
+    await applyRoomAction({
+      code: created.code,
+      userId: guardUserId,
+      request: {
+        clientActionId: "guard-search",
+        expectedVersion: 6,
+        action: { type: "MOVE_AND_SEARCH", path: [] },
+      },
+      now: 4_007,
+    });
+    const privateView = await getRoomView({
+      code: created.code,
+      userId: guardUserId,
+      mode: "private",
+      now: 4_008,
+    });
+    if (
+      privateView.projection !== "player"
+      || privateView.room.gameId !== "midnight-footprints"
+    ) {
+      throw new Error("Expected footprints player projection");
+    }
+    expect(privateView.room.version).toBe(7);
+    expect(privateView.self).toMatchObject({
+      privateStateRevision: 1,
+      roomMarks: { study: "LIKELY", bathroom: "EXCLUDED" },
+    });
   });
 });

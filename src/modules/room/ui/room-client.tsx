@@ -7,6 +7,9 @@ import { PlayerControls } from "@/modules/dark-house/ui/player-controls";
 import { PublicBoard } from "@/modules/dark-house/ui/public-board";
 import { DawnSwitchboardPlayerControls } from "@/modules/dawn-switchboard/ui/player-controls";
 import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public-board";
+import type { FootprintsRoomMark } from "@/modules/midnight-footprints/domain/types";
+import { MidnightFootprintsPlayerControls } from "@/modules/midnight-footprints/ui/player-controls";
+import { MidnightFootprintsPublicBoard } from "@/modules/midnight-footprints/ui/public-board";
 import { roomApiFetch } from "@/modules/room/client/room-api";
 import type {
   DarkHousePlayerRoomView,
@@ -14,6 +17,8 @@ import type {
   DawnSwitchboardPlayerRoomView,
   DawnSwitchboardPublicRoomView,
   LobbyRoomView,
+  MidnightFootprintsPlayerRoomView,
+  MidnightFootprintsPublicRoomView,
   PlayerRoomView,
   RoomAction,
   RoomView,
@@ -31,11 +36,19 @@ const isPlayerView = (view: RoomView): view is PlayerRoomView => view.projection
 const isDarkHousePlayer = (view: PlayerRoomView): view is DarkHousePlayerRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPlayer = (view: PlayerRoomView): view is SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPlayer = (view: PlayerRoomView): view is DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
-type GamePublicView = DarkHousePublicRoomView | SuspiciousInvitePublicRoomView | DawnSwitchboardPublicRoomView;
+const isFootprintsPlayer = (view: PlayerRoomView): view is MidnightFootprintsPlayerRoomView => view.room.gameId === "midnight-footprints";
+type GamePublicView =
+  | DarkHousePublicRoomView
+  | SuspiciousInvitePublicRoomView
+  | DawnSwitchboardPublicRoomView
+  | MidnightFootprintsPublicRoomView;
 const isDarkHousePublic = (view: GamePublicView): view is DarkHousePublicRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPublic = (view: GamePublicView): view is SuspiciousInvitePublicRoomView => view.room.gameId === "suspicious-invite";
+const isSwitchboardPublic = (view: GamePublicView): view is DawnSwitchboardPublicRoomView => view.room.gameId === "dawn-switchboard";
+const isFootprintsPublic = (view: GamePublicView): view is MidnightFootprintsPublicRoomView => view.room.gameId === "midnight-footprints";
 const isDarkHouseView = (view: Exclude<RoomView, LobbyRoomView>): view is DarkHousePublicRoomView | DarkHousePlayerRoomView => view.room.gameId === "dark-house";
 const isSuspiciousView = (view: Exclude<RoomView, LobbyRoomView>): view is SuspiciousInvitePublicRoomView | SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
+const isSwitchboardView = (view: Exclude<RoomView, LobbyRoomView>): view is DawnSwitchboardPublicRoomView | DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
 
 export function RoomClient({ code }: { code: string }) {
   const [mode, setMode] = useState<ViewMode>("private");
@@ -151,6 +164,26 @@ export function RoomClient({ code }: { code: string }) {
     }
   }
 
+  async function saveFootprintsMarks(
+    expectedPrivateRevision: number,
+    roomMarks: Record<string, FootprintsRoomMark>,
+  ) {
+    setBusy(true);
+    setError("");
+    try {
+      await roomApiFetch(`/api/rooms/${code}/room-marks`, {
+        method: "PUT",
+        body: JSON.stringify({ expectedPrivateRevision, roomMarks }),
+      });
+      await loadView("private");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "메모를 저장하지 못했습니다.");
+      await loadView("private");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function copyInvite() {
     if (!links) return;
     await navigator.clipboard.writeText(links.joinUrl);
@@ -187,6 +220,15 @@ export function RoomClient({ code }: { code: string }) {
           {isDarkHousePlayer(playerView) && <PlayerControls view={playerView} busy={busy} onAction={sendAction} />}
           {isSuspiciousPlayer(playerView) && <SuspiciousInvitePlayerControls key={playerView.round} view={playerView} busy={busy} onAction={sendAction} />}
           {isSwitchboardPlayer(playerView) && <DawnSwitchboardPlayerControls key={playerView.stage} view={playerView} busy={busy} onAction={sendAction} />}
+          {isFootprintsPlayer(playerView) && (
+            <MidnightFootprintsPlayerControls
+              key={`${playerView.matchNumber}:${playerView.round}:${playerView.self.role}`}
+              view={playerView}
+              busy={busy}
+              onAction={sendAction}
+              onSaveMarks={saveFootprintsMarks}
+            />
+          )}
           <MiniPublicSummary view={view} onOpen={() => switchMode("public")} />
         </div>
       ) : view.projection === "public" ? (
@@ -195,8 +237,12 @@ export function RoomClient({ code }: { code: string }) {
             ? <PublicBoard view={view} />
             : isSuspiciousPublic(view)
               ? <SuspiciousInvitePublicBoard view={view} />
-              : <DawnSwitchboardPublicBoard view={view} />}
-          {view.phase === "GAME_OVER" && isHost && (
+              : isSwitchboardPublic(view)
+                ? <DawnSwitchboardPublicBoard view={view} />
+                : isFootprintsPublic(view)
+                  ? <MidnightFootprintsPublicBoard view={view} />
+                  : null}
+          {view.viewer.legalAdministrativeActions.includes("START_REMATCH") && (
             <button className="primary-button rematch-button" disabled={busy} onClick={() => sendAction({ type: "START_REMATCH" })}>같은 사람들과 다시 하기</button>
           )}
         </div>
@@ -212,15 +258,21 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
 }) {
   const isSuspicious = view.room.gameId === "suspicious-invite";
   const isSwitchboard = view.room.gameId === "dawn-switchboard";
+  const isFootprints = view.room.gameId === "midnight-footprints";
+  const minimumPlayers = isFootprints ? 2 : 3;
   const title = isSuspicious
     ? "초대받지 않은 사람을 찾으세요"
     : isSwitchboard
       ? "새벽이 오기 전에 전력을 되찾으세요"
+      : isFootprints
+        ? "괴도와 경비, 단둘이 밤을 시작하세요"
       : "빈 방을 믿지 마세요";
   const lead = isSuspicious
     ? "모두 들어오면 호스트가 초대장을 공개합니다. 역할과 비밀 단어는 다른 사람에게 보여주지 마세요."
     : isSwitchboard
       ? "각자의 휴대폰에 서로 다른 회로 단서가 도착합니다. 화면은 숨기고 단서는 말로 공유하세요."
+      : isFootprints
+        ? "괴도는 비밀 입구를 고르고, 경비는 공개 흔적을 추적합니다. 개인 화면은 서로 보여주지 마세요."
       : "모두 들어오면 호스트가 불을 끕니다. 각자의 화면은 다른 사람에게 보여주지 마세요.";
   return (
     <div className="lobby-layout">
@@ -240,13 +292,13 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
               <span className={player.connected ? "online" : "offline"}>{player.connected ? "준비됨" : "연결 끊김"}</span>
             </div>
           ))}
-          {Array.from({ length: Math.max(0, 3 - view.players.length) }, (_, index) => (
+          {Array.from({ length: Math.max(0, minimumPlayers - view.players.length) }, (_, index) => (
             <div className="lobby-player empty" key={`empty-${index}`}><UsersRound size={18} /><span>플레이어를 기다리는 중</span></div>
           ))}
         </div>
         {isHost ? (
-          <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < 3} onClick={onStart}>
-            {busy ? "게임을 준비하는 중…" : view.players.length < 3 ? `${3 - view.players.length}명 더 필요해요` : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : "모두 준비됨 · 게임 시작"}
+          <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < minimumPlayers} onClick={onStart}>
+            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
           </button>
         ) : <p className="waiting-copy">호스트가 게임을 시작할 때까지 기다려 주세요.</p>}
       </section>
@@ -268,7 +320,9 @@ function MiniPublicSummary({ view, onOpen }: { view: Exclude<RoomView, LobbyRoom
     ? view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"
     : isSuspiciousView(view)
       ? `ROUND ${view.round} · ${view.category}`
-      : `PANEL ${view.stage}/${view.stageCount} · 퓨즈 ${view.fusesRemaining}`;
+      : isSwitchboardView(view)
+        ? `PANEL ${view.stage}/${view.stageCount} · 퓨즈 ${view.fusesRemaining}`
+        : `MATCH ${view.matchNumber} · ROUND ${view.round}/2`;
   return (
     <button className="mini-public" onClick={onOpen}>
       <span>공개 보드</span>
