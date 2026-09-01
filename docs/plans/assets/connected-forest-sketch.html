@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>이어지는 숲길 와이어프레임</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f7f7f5; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    header { padding: 28px 34px 18px; border-bottom: 1px solid #aaa; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 24px; }
+    header p { margin-top: 8px; color: #666; max-width: 900px; line-height: 1.5; }
+    /* 개인 화면 넷이 윗줄에, 공용 화면이 아랫줄 전체 폭에 놓인다. */
+    main { display: grid; grid-template-columns: repeat(4, minmax(270px, 340px)); gap: 26px; padding: 28px 34px 44px; align-items: start; }
+    main > section { order: 1; }
+    main > section.wide { order: 2; grid-column: 1 / -1; }
+    .caption { font-size: 13px; color: #666; margin-bottom: 9px; }
+    .phone, .display { border: 2px solid #555; border-radius: 26px; background: #fff; overflow: hidden; }
+    .display { border-radius: 10px; }
+    .topbar { display: flex; justify-content: space-between; align-items: baseline; padding: 13px 15px; border-bottom: 1px solid #bbb; gap: 8px; }
+    .phase { font-weight: 700; font-size: 14px; }
+    .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 13px; border: 1px solid #333; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+    .muted { color: #777; font-size: 12px; }
+    .section { padding: 14px 15px; border-bottom: 1px solid #ddd; }
+    .section:last-child { border-bottom: 0; }
+    .section h3 { font-size: 14px; margin-bottom: 9px; }
+    .hand { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .card { border: 1px solid #777; border-radius: 11px; padding: 8px; background: #fafafa; font-size: 12px; }
+    .card b { font-size: 13px; }
+    .card.selected { border: 3px solid #111; background: #fff; padding: 6px; }
+    .card small { color: #666; display: block; margin-top: 5px; line-height: 1.35; }
+    .ready { display: flex; justify-content: space-between; margin-top: 9px; font-size: 12px; color: #555; }
+
+    /* 반지름 2 · 19칸 육각 보드. 행은 r = -2..2, 각 3/4/5/4/3칸이다. */
+    .board { padding: 6px 0 2px; }
+    .hex-row { display: flex; justify-content: center; gap: 3px; margin-top: -11px; }
+    .hex-row:first-child { margin-top: 0; }
+    .hex { position: relative; width: 46px; height: 53px; background: #555;
+           clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+           display: grid; place-items: center; }
+    .hex::before { content: ""; position: absolute; inset: 2px; background: #fff;
+                   clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+    .hex span { position: relative; z-index: 1; font-size: 10px; line-height: 1.15; text-align: center; }
+    .hex .hid { display: block; color: #999; font-size: 8px; }
+    .hex.legal { background: #666; }
+    .hex.legal::before { background: #ececec; }
+    .hex.legal span { color: #444; }
+    .hex.illegal { background: #d5d5d5; }
+    .hex.illegal::before { background: #fbfbfb; }
+    .hex.target { background: #000; }
+    .hex.target::before { inset: 4px; background: #d8d8d8; }
+    .hex.target span { font-weight: 700; }
+    .hex.figure::before { background: #efefef; }
+    .fig { position: relative; z-index: 1; display: block; font-size: 9px; font-weight: 700; border-top: 1px solid #888; margin-top: 2px; padding-top: 1px; }
+    .legend-row { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; color: #666; margin-top: 8px; }
+    /* clip-path 요소에는 border가 잘려 나가므로 보드 칸과 같은 2겹 방식을 쓴다. */
+    .swatch { position: relative; display: inline-block; width: 13px; height: 15px; vertical-align: -3px; margin-right: 3px;
+              background: #555; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+    .swatch::after { content: ""; position: absolute; inset: 1.5px; background: #fff;
+                     clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+    .swatch.s-legal { background: #666; }
+    .swatch.s-legal::after { background: #ececec; }
+    .swatch.s-illegal { background: #d5d5d5; }
+    .swatch.s-illegal::after { background: #fbfbfb; }
+    .swatch.s-target { background: #000; }
+    .swatch.s-target::after { inset: 3px; background: #d8d8d8; }
+
+    .animals { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .animal-card { border: 1px solid #777; border-radius: 11px; padding: 8px; font-size: 11px; line-height: 1.4; }
+    .animal-card.ready-now { border: 2px solid #111; }
+    .animal-card b { font-size: 12px; }
+    .tokens { display: flex; gap: 7px; margin-top: 9px; font-size: 11px; }
+    .token { border: 1px solid #666; border-radius: 999px; padding: 3px 8px; }
+    .token.spent { border-style: dashed; color: #aaa; }
+    .btn { width: 100%; border: 1px solid #333; background: #eee; padding: 12px; border-radius: 12px; font-weight: 700; text-align: center; font-size: 13px; }
+    .btn.ghost { background: #fff; font-weight: 400; color: #555; margin-top: 7px; }
+
+    .visit { border: 2px dashed #555; border-radius: 13px; padding: 11px; }
+    .choices { display: grid; gap: 8px; margin-top: 10px; }
+    .choice { border: 1px solid #555; border-radius: 10px; padding: 9px; font-size: 12px; line-height: 1.45; }
+    .choice.recommended { border-width: 2px; border-color: #111; }
+    .choice b { font-size: 13px; }
+    .choice .gain { display: block; margin-top: 5px; color: #444; }
+
+    .display-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 22px; border-bottom: 1px solid #aaa; }
+    .trail-list { margin: 18px 22px; border: 1px solid #777; border-radius: 13px; padding: 14px; }
+    .trail { display: grid; grid-template-columns: 120px 64px 1fr; gap: 12px; align-items: center; font-size: 12px; padding: 4px 0; }
+    .pips { letter-spacing: 3px; font-size: 14px; }
+    .players { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 0 22px; }
+    .player { border: 1px solid #777; border-radius: 12px; padding: 10px; }
+    .player .name { font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; align-items: baseline; }
+    .player .hearts { font-size: 15px; font-weight: 700; }
+    .player .breakdown { font-size: 11px; color: #666; margin-top: 3px; line-height: 1.4; }
+    .mini { margin-top: 8px; }
+    .mini-row { display: flex; justify-content: center; gap: 1px; margin-top: -3px; }
+    .mini-row:first-child { margin-top: 0; }
+    .mini-hex { width: 13px; height: 15px; background: #888;
+                clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+    .mini-hex.empty { background: #dcdcdc; }
+    .event { margin: 16px 22px; padding: 12px 14px; border: 2px dashed #555; border-radius: 12px; font-size: 13px; }
+    .note { margin: 18px 22px 22px; font-size: 12px; color: #666; line-height: 1.55; }
+    .summary-row { display: flex; justify-content: space-between; font-size: 12px; padding: 6px 0; border-bottom: 1px dotted #ccc; }
+    .summary-row:last-child { border-bottom: 0; }
+  </style>
+</head>
+<body>
+  <!--
+    의도적으로 무채색이다. 아트 디렉션 전에 계층과 규칙 가독성을 먼저 검증한다.
+    보드는 반지름 2의 19칸이며 행마다 3/4/5/4/3칸으로 실제 육각 인접을 표현한다.
+    수치는 docs/plans/connected-forest.md 본문과 일치시킨다. 5인 게임, 한여름(3/5) 기준.
+  -->
+  <header>
+    <h1>이어지는 숲길 · 화면 흐름 스케치</h1>
+    <p>4–6인 동시 드래프트 → 개인 숲 배치 → 이웃 방문 선택. 5인 게임의 한여름(3/5) 한 시점을 다섯 화면으로 잘랐다. 좌석 순서는 민지 → 나 → 준호 → 유나 → 수현이고 이 계절의 전달 방향은 왼쪽이다.</p>
+  </header>
+  <main>
+
+    <!-- ① 드래프트: 카드 선택과 배치를 한 화면에서 끝낸다 -->
+    <section>
+      <div class="caption">개인 화면 A · 드래프트와 배치</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">한여름 · 선택 2/3</span>
+          <span class="timer">0:38</span>
+        </div>
+
+        <div class="section">
+          <h3>지형 하나를 골라 숲에 놓아주세요</h3>
+          <div class="hand">
+            <div class="card selected"><b>버섯</b><small>선택됨 · 놓을 칸을 고르세요</small></div>
+            <div class="card"><b>물</b><small>남은 한 장은 왼쪽 이웃에게</small></div>
+          </div>
+          <div class="ready"><span>민지 ✓ · 준호 ✓ · 유나 · 수현 · 나</span><span>2/5 잠금</span></div>
+        </div>
+
+        <div class="section">
+          <h3>내 숲 · 버섯을 놓을 칸</h3>
+          <div class="board">
+            <div class="hex-row">
+              <div class="hex"><span>꽃<i class="hid">h12</i></span></div>
+              <div class="hex"><span>꽃<i class="hid">h14</i></span></div>
+              <div class="hex legal"><span>＋<i class="hid">h16</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex legal"><span>＋<i class="hid">h10</i></span></div>
+              <div class="hex"><span>물<i class="hid">h03</i></span></div>
+              <div class="hex"><span>나무<i class="hid">h05</i></span></div>
+              <div class="hex target"><span>여기<i class="hid">h17</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h07</i></span></div>
+              <div class="hex legal"><span>＋<i class="hid">h01</i></span></div>
+              <div class="hex"><span>물<i class="hid">h00</i></span></div>
+              <div class="hex"><span>바위<i class="hid">h06</i></span></div>
+              <div class="hex"><span>나무<i class="hid">h18</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h08</i></span></div>
+              <div class="hex legal"><span>＋<i class="hid">h02</i></span></div>
+              <div class="hex legal"><span>＋<i class="hid">h04</i></span></div>
+              <div class="hex legal"><span>＋<i class="hid">h15</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h09</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h11</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h13</i></span></div>
+            </div>
+          </div>
+          <div class="legend-row">
+            <span><i class="swatch s-legal"></i>놓을 수 있음</span>
+            <span><i class="swatch s-illegal"></i>내 지형과 안 닿음</span>
+            <span><i class="swatch s-target"></i>동물이 완성되는 칸</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>활성 동물 카드</h3>
+          <div class="animals">
+            <div class="animal-card ready-now">
+              <b>다람쥐</b> · bend3 · 하트 3<br />
+              나무 · 버섯 · 바위<br />
+              <span class="muted">h17에 버섯을 놓으면 지금 완성</span>
+            </div>
+            <div class="animal-card">
+              <b>개구리</b> · bend3 · 하트 3<br />
+              물 · 꽃 · 버섯<br />
+              <span class="muted">h00에서 시작 · h04에 꽃, h02에 버섯이 오면 완성</span>
+            </div>
+          </div>
+          <div class="tokens">
+            <span class="token">황금 도토리 1</span>
+            <span class="token spent">새 보금자리 찾기 0</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="btn">h17에 버섯 놓고 다람쥐 맞이하기</div>
+          <div class="btn ghost">동물 맞이 없이 놓기</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 계절 방문 보내기: 대상은 좌우 이웃 둘뿐이다 -->
+    <section>
+      <div class="caption">개인 화면 B · 계절 방문 보내기</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">다람쥐를 어느 이웃에게?</span>
+          <span class="timer">0:24</span>
+        </div>
+
+        <div class="section">
+          <h3>보낼 주민</h3>
+          <div class="hand">
+            <div class="card selected"><b>다람쥐</b><small>이번 계절 완성 · 나무에 머물 수 있음</small></div>
+            <div class="card" style="opacity:.45"><b>—</b><small>아직 방문 안 보낸 주민은 다람쥐뿐</small></div>
+          </div>
+          <p class="muted" style="margin-top:9px">한 주민은 게임당 한 번만 방문객을 보냅니다. 다람쥐는 내 숲에 그대로 남습니다.</p>
+        </div>
+
+        <div class="section">
+          <h3>좌우 이웃 두 명</h3>
+          <div class="choices">
+            <div class="choice recommended">
+              <b>민지에게</b> <span class="muted">왼쪽 이웃</span>
+              <span class="gain">
+                지금 숲길 ●●○ (2칸)<br />
+                민지가 산책을 고르면 <b>3칸 완성</b> · 민지 6잎 · <b>나 4잎</b><br />
+                민지가 머물기를 고르면 나는 잎 1
+              </span>
+            </div>
+            <div class="choice">
+              <b>준호에게</b> <span class="muted">오른쪽 이웃</span>
+              <span class="gain">
+                지금 숲길 ●○○ (1칸)<br />
+                준호가 산책을 고르면 2칸 · 준호 3잎 · 나 1잎<br />
+                준호가 머물기를 고르면 나는 잎 1
+              </span>
+            </div>
+          </div>
+          <p class="muted" style="margin-top:10px">고르는 사람은 나지만 <b>머물기와 산책 중 무엇이 될지는 받는 사람이 정합니다.</b> 여기 적힌 값은 예상입니다.</p>
+        </div>
+
+        <div class="section">
+          <div class="btn">민지에게 다람쥐 보내기</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 방문 응답: 숲길 2→3칸 완성이 걸린 결정 -->
+    <section>
+      <div class="caption">개인 화면 C · 방문 응답</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">민지의 고슴도치가 왔어요</span>
+          <span class="timer">0:16</span>
+        </div>
+
+        <div class="section">
+          <div class="visit">
+            <h3>고슴도치 · 버섯에 머물 수 있어요</h3>
+            <p class="muted">민지 숲에서 완성되어 오른쪽 이웃인 나에게 왔습니다. 이번 계절 내게 온 방문 1/1.</p>
+            <div class="choices">
+              <div class="choice">
+                <b>우리 숲에 머물기</b>
+                <span class="gain">빈 버섯 칸 h17 또는 h01에 배치<br />나 하트 2 (종료 시) · 민지 잎 1</span>
+              </div>
+              <div class="choice recommended">
+                <b>함께 산책하기</b>
+                <span class="gain">민지와의 숲길 2칸 → <b>3칸 완성</b><br />나 잎 3 + 완성 잎 3 = <b>6잎</b> · 민지 잎 1 + 완성 잎 3 = 4잎<br />고슴도치는 귀가</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>내 숲 · 머물 수 있는 칸</h3>
+          <div class="board">
+            <div class="hex-row">
+              <div class="hex"><span>꽃<i class="hid">h12</i></span></div>
+              <div class="hex"><span>꽃<i class="hid">h14</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h16</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h10</i></span></div>
+              <div class="hex"><span>물<i class="hid">h03</i></span></div>
+              <div class="hex figure"><span>나무<i class="hid">h05</i><i class="fig">다람쥐</i></span></div>
+              <div class="hex target"><span>버섯<i class="hid">h17</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h07</i></span></div>
+              <div class="hex target"><span>버섯<i class="hid">h01</i></span></div>
+              <div class="hex"><span>물<i class="hid">h00</i></span></div>
+              <div class="hex"><span>바위<i class="hid">h06</i></span></div>
+              <div class="hex"><span>나무<i class="hid">h18</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h08</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h02</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h04</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h15</i></span></div>
+            </div>
+            <div class="hex-row">
+              <div class="hex illegal"><span><i class="hid">h09</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h11</i></span></div>
+              <div class="hex illegal"><span><i class="hid">h13</i></span></div>
+            </div>
+          </div>
+          <p class="muted" style="margin-top:8px">다람쥐가 올라선 h05에는 방문객을 놓을 수 없습니다. 피규어 슬롯은 칸마다 하나입니다.</p>
+        </div>
+
+        <div class="section">
+          <div class="btn">민지와 함께 산책하기</div>
+          <div class="btn ghost">우리 숲에 머물게 하기</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 공용 디스플레이 -->
+    <section class="wide">
+      <div class="caption">공용 화면 · 모두의 숲길과 방문 공개</div>
+      <div class="display">
+        <div class="display-head">
+          <div>
+            <h2>이어지는 숲길</h2>
+            <p class="muted">한여름 · 3번째 계절 / 5 · 이번 계절 바구니는 왼쪽으로</p>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:700">공동 숲길 7 / 15</div>
+            <div class="muted">이웃 5쌍 × 최대 3칸</div>
+          </div>
+        </div>
+
+        <div class="trail-list">
+          <b style="font-size:13px">공동 숲길</b>
+          <div style="margin-top:8px">
+            <div class="trail"><span>민지 — 나</span><span class="pips">●●○</span><span class="muted">한 칸 남음</span></div>
+            <div class="trail"><span>나 — 준호</span><span class="pips">●○○</span><span class="muted"></span></div>
+            <div class="trail"><span>준호 — 유나</span><span class="pips">●●●</span><span class="muted">완성 · 준호 10잎 · 유나 8잎</span></div>
+            <div class="trail"><span>유나 — 수현</span><span class="pips">○○○</span><span class="muted"></span></div>
+            <div class="trail"><span>수현 — 민지</span><span class="pips">●○○</span><span class="muted"></span></div>
+          </div>
+        </div>
+
+        <div class="players">
+          <div class="player">
+            <div class="name"><span>민지</span><span class="hearts">16</span></div>
+            <div class="breakdown">주민 8 · 방문객 2<br />잎 6 (숲길 5)</div>
+            <div class="mini">
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+            </div>
+          </div>
+          <div class="player">
+            <div class="name"><span>나</span><span class="hearts">11</span></div>
+            <div class="breakdown">주민 3 · 방문객 2<br />잎 6 (숲길 5)</div>
+            <div class="mini">
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+            </div>
+          </div>
+          <div class="player">
+            <div class="name"><span>준호</span><span class="hearts">19</span></div>
+            <div class="breakdown">주민 6 · 방문객 0<br />잎 13 (숲길 13)</div>
+            <div class="mini">
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+            </div>
+          </div>
+          <div class="player">
+            <div class="name"><span>유나</span><span class="hearts">20</span></div>
+            <div class="breakdown">주민 11 · 방문객 0<br />잎 9 (숲길 8)</div>
+            <div class="mini">
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+            </div>
+          </div>
+          <div class="player">
+            <div class="name"><span>수현</span><span class="hearts">10</span></div>
+            <div class="breakdown">주민 3 · 방문객 4<br />잎 3 (숲길 3)</div>
+            <div class="mini">
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="event"><b>방문!</b> 민지의 고슴도치가 옆 숲으로 총총 걸어갑니다. 받는 사람이 선택 중… <span class="muted">남은 응답 0:16</span></div>
+
+        <div class="note">
+          공용 화면은 점수 세부 계산보다 누가 무엇을 완성했고 어느 이웃과 길이 이어졌는지를 먼저 보여준다.
+          잎 옆의 괄호는 그중 숲길에서 나온 몫이다. 이 표시가 없으면 <code>함께 산책하기</code>의 가치가 눈에 보이지 않는다.
+          중간 순위는 매기지 않고 하트 합계만 보여준다.
+        </div>
+      </div>
+    </section>
+
+    <!-- ⑤ 휴대폰 공개 모드: 공용 TV가 없을 때 -->
+    <section>
+      <div class="caption">개인 화면 D · 휴대폰 공개 모드</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">모두의 숲</span>
+          <span class="muted">공용 TV 없이 보기</span>
+        </div>
+        <div class="section">
+          <h3>나와 좌우 이웃</h3>
+          <p class="muted" style="margin-bottom:9px">축소판은 본인과 좌우 이웃만 그린다. 작은 화면에서 5개를 다 그리면 아무것도 안 보인다.</p>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:9px">
+            <div class="player">
+              <div class="name" style="font-size:12px"><span>민지</span><span class="hearts" style="font-size:13px">16</span></div>
+              <div class="breakdown">숲길 ●●○</div>
+              <div class="mini">
+                <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              </div>
+            </div>
+            <div class="player" style="border-width:2px; border-color:#111">
+              <div class="name" style="font-size:12px"><span>나</span><span class="hearts" style="font-size:13px">11</span></div>
+              <div class="breakdown">본인</div>
+              <div class="mini">
+                <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              </div>
+            </div>
+            <div class="player">
+              <div class="name" style="font-size:12px"><span>준호</span><span class="hearts" style="font-size:13px">19</span></div>
+              <div class="breakdown">숲길 ●○○</div>
+              <div class="mini">
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i></div>
+                <div class="mini-row"><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i><i class="mini-hex"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex"></i><i class="mini-hex empty"></i></div>
+                <div class="mini-row"><i class="mini-hex empty"></i><i class="mini-hex empty"></i><i class="mini-hex empty"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <h3>나머지 플레이어</h3>
+          <div class="summary-row"><span>유나</span><span>하트 20 · 주민 3 · 방문객 0</span></div>
+          <div class="summary-row"><span>수현</span><span>하트 10 · 주민 1 · 방문객 2</span></div>
+          <p class="muted" style="margin-top:9px">축소판 대신 요약만 준다. 상세는 공용 TV에서만 본다.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
