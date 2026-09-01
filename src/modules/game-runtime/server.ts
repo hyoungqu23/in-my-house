@@ -118,6 +118,9 @@ const assertNever = (value: never): never => {
   throw new GameRuleError("GAME_NOT_FOUND", `지원하지 않는 게임입니다: ${String(value)}`);
 };
 
+const invalidGameAction = () =>
+  new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
+
 const randomRemovalId = (state: DarkHouseState) => {
   const challenger = state.players.find((player) => player.seat === state.challengerSeat);
   const candidates = challenger ? [...challenger.hand, ...challenger.stack] : [];
@@ -198,57 +201,63 @@ export function transitionGame(
   action: GameAction,
   context: { now: number; sequenceId: string; connectedSeats: number[] },
 ): StoredGame {
-  if (game.type === "dark-house") {
-    if (!isDarkHouseAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
-    return {
-      ...game,
-      state: transitionDarkHouse(game.state, actorSeat, action, {
-        ...context,
-        randomRemovalTokenId: randomRemovalId(game.state),
-      }),
-    };
+  switch (game.type) {
+    case "dark-house": {
+      if (!isDarkHouseAction(action)) throw invalidGameAction();
+      return {
+        ...game,
+        state: transitionDarkHouse(game.state, actorSeat, action, {
+          ...context,
+          randomRemovalTokenId: randomRemovalId(game.state),
+        }),
+      };
+    }
+    case "suspicious-invite": {
+      if (!isSuspiciousAction(action)) throw invalidGameAction();
+      const nextRound = suspiciousSetup(
+        game.state.players.map((player) => player.seat),
+        game.state.usedWordIds,
+      );
+      return {
+        ...game,
+        state: transitionSuspiciousInvite(game.state, actorSeat, action, {
+          now: context.now,
+          nextRound,
+        }),
+      };
+    }
+    case "dawn-switchboard": {
+      if (!isSwitchboardAction(action)) throw invalidGameAction();
+      return {
+        ...game,
+        state: transitionSwitchboard(game.state, actorSeat, action, {
+          now: context.now,
+          connectedSeats: context.connectedSeats,
+        }),
+      };
+    }
+    case "midnight-footprints": {
+      if (!isFootprintsAction(action)) throw invalidGameAction();
+      const otherSeat = game.state.players.find(
+        (player) => player.seat !== game.state.startingIntruderSeat,
+      )!.seat;
+      const nextMatchSetup = createFootprintsSetup({
+        seats: [otherSeat, game.state.startingIntruderSeat],
+        previousLayoutId: game.state.layout.id,
+        randomIndex: (maxExclusive) => randomInt(maxExclusive),
+      });
+      return {
+        ...game,
+        state: transitionFootprints(game.state, actorSeat, action, {
+          now: context.now,
+          connectedSeats: context.connectedSeats,
+          nextMatchSetup,
+        }),
+      };
+    }
+    default:
+      return assertNever(game);
   }
-  if (game.type === "suspicious-invite") {
-    if (!isSuspiciousAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
-    const nextRound = suspiciousSetup(
-      game.state.players.map((player) => player.seat),
-      game.state.usedWordIds,
-    );
-    return {
-      ...game,
-      state: transitionSuspiciousInvite(game.state, actorSeat, action, {
-        now: context.now,
-        nextRound,
-      }),
-    };
-  }
-  if (game.type === "dawn-switchboard") {
-    if (!isSwitchboardAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
-    return {
-      ...game,
-      state: transitionSwitchboard(game.state, actorSeat, action, {
-        now: context.now,
-        connectedSeats: context.connectedSeats,
-      }),
-    };
-  }
-  if (!isFootprintsAction(action)) throw new GameRuleError("INVALID_GAME_ACTION", "이 게임에서 사용할 수 없는 행동입니다.");
-  const otherSeat = game.state.players.find(
-    (player) => player.seat !== game.state.startingIntruderSeat,
-  )!.seat;
-  const nextMatchSetup = createFootprintsSetup({
-    seats: [otherSeat, game.state.startingIntruderSeat],
-    previousLayoutId: game.state.layout.id,
-    randomIndex: (maxExclusive) => randomInt(maxExclusive),
-  });
-  return {
-    ...game,
-    state: transitionFootprints(game.state, actorSeat, action, {
-      now: context.now,
-      connectedSeats: context.connectedSeats,
-      nextMatchSetup,
-    }),
-  };
 }
 
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
