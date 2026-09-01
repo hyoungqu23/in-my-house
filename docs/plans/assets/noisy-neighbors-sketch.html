@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>윗집 아랫집 와이어프레임</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f7f7f5; color: #222; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    header { padding: 28px 34px 18px; border-bottom: 1px solid #aaa; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 24px; }
+    header p { margin-top: 8px; color: #666; max-width: 940px; line-height: 1.55; }
+    /* 개인 화면 둘이 왼쪽, 공용 화면 둘이 아랫줄 전체 폭. */
+    main { display: grid; grid-template-columns: repeat(3, minmax(300px, 360px)); gap: 26px; padding: 28px 34px 44px; align-items: start; }
+    main > section { order: 1; }
+    main > section.wide { order: 2; grid-column: 1 / -1; }
+    .caption { font-size: 13px; color: #666; margin-bottom: 9px; }
+    .phone, .display { border: 2px solid #555; border-radius: 26px; background: #fff; overflow: hidden; }
+    .display { border-radius: 10px; }
+    .topbar { display: flex; justify-content: space-between; align-items: baseline; padding: 13px 15px; border-bottom: 1px solid #bbb; gap: 8px; }
+    .phase { font-weight: 700; font-size: 14px; }
+    .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 13px; border: 1px solid #333; border-radius: 999px; padding: 2px 9px; white-space: nowrap; }
+    .muted { color: #777; font-size: 12px; }
+    .section { padding: 14px 15px; border-bottom: 1px solid #ddd; }
+    .section:last-child { border-bottom: 0; }
+    .section h3 { font-size: 14px; margin-bottom: 9px; }
+
+    /* 건물 도면: 위층이 위로 오도록 행을 3층 → 1층 순서로 쌓는다. */
+    .bldg { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; border: 2px solid #444; border-radius: 8px; padding: 5px; background: #f2f2f2; }
+    .unit { border: 1px solid #888; border-radius: 5px; background: #fff; padding: 7px 8px; min-height: 54px; font-size: 11px; line-height: 1.35; }
+    .unit .no { font-weight: 700; font-size: 12px; }
+    .unit.me { border: 2px solid #111; background: #eee; }
+    .unit.adj { border-style: dashed; border-color: #333; }
+    .unit.vacant { background: #e4e4e4; color: #999; border-style: dotted; }
+    .unit .tag { display: inline-block; border: 1px solid #666; border-radius: 3px; padding: 0 3px; font-size: 9px; margin-top: 3px; }
+    .unit .tag.quiet { border-style: dashed; }
+    .floors { display: grid; gap: 5px; }
+
+    .acts { display: grid; gap: 6px; }
+    .act { border: 1px solid #777; border-radius: 9px; padding: 8px 9px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 12px; }
+    .act.picked { border: 2px solid #111; background: #f0f0f0; padding: 7px 8px; }
+    .act.locked { border-style: dashed; color: #aaa; }
+    .act b { font-size: 13px; }
+    .act .meta { color: #666; font-size: 11px; text-align: right; white-space: nowrap; }
+
+    .rowline { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px dotted #ccc; }
+    .rowline:last-child { border-bottom: 0; }
+    .rowline b { font-weight: 700; }
+
+    .sounds { display: grid; gap: 6px; }
+    .snd { border: 1px solid #777; border-radius: 9px; padding: 8px 9px; display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; }
+    .snd.strong { border-width: 2px; border-color: #111; }
+    .snd .lv { font-weight: 700; }
+    .snd .dir { color: #555; font-size: 11px; }
+
+    .notes { display: grid; gap: 5px; }
+    .note { border: 1px dashed #777; border-radius: 8px; padding: 7px 9px; font-size: 11.5px; }
+    .note .to { font-weight: 700; }
+
+    .pick2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .mini-sel { border: 1px solid #777; border-radius: 8px; padding: 7px; font-size: 11.5px; }
+    .mini-sel.on { border: 2px solid #111; padding: 6px; }
+    .btn { width: 100%; border: 1px solid #333; background: #eee; padding: 12px; border-radius: 12px; font-weight: 700; text-align: center; font-size: 13px; }
+    .btn.ghost { background: #fff; font-weight: 400; color: #555; margin-top: 7px; }
+
+    .display-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 20px 22px; border-bottom: 1px solid #aaa; }
+    .cols { display: grid; grid-template-columns: 300px 1fr 1fr; gap: 20px; padding: 18px 22px 22px; align-items: start; }
+    .cols h3 { font-size: 13px; margin-bottom: 9px; padding-bottom: 4px; border-bottom: 1px solid #bbb; }
+    table { border-collapse: collapse; width: 100%; font-size: 11.5px; }
+    th, td { border: 1px solid #999; padding: 5px 6px; text-align: left; }
+    th { background: #eee; font-weight: 600; }
+    td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+    .grade { font-weight: 700; }
+    .tl { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; letter-spacing: 1px; }
+    .note-box { margin: 0 22px 22px; font-size: 12px; color: #666; line-height: 1.6; }
+    .legend { font-size: 11px; color: #666; margin-top: 8px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <!--
+    의도적으로 무채색이다. 아트 디렉션 전에 계층과 규칙 가독성을 먼저 검증한다.
+    수치는 docs/plans/noisy-neighbors.md 본문과 일치시킨다.
+    6인 게임, 4일째. 좌석 배치는 3층 302 태윤 / 301 수현, 2층 202 나 / 201 유나, 1층 102 준호 / 101 민지.
+    취미 풀 5종을 전사 배정했으므로 드럼(둥둥)만 준호와 내가 겹친다.
+  -->
+  <header>
+    <h1>윗집 아랫집 · 화면 흐름 스케치</h1>
+    <p>3–6인 층간소음 심리전. 6인 게임의 4일째를 네 화면으로 잘랐다. 나는 202호(중간층)라 인접이 102·201·302 셋, 거리 2가 101·301 둘이다. 취미 풀은 5종이고 전사 배정이라 드럼(둥둥)만 준호와 겹친다.</p>
+  </header>
+  <main>
+
+    <!-- ① 밤 행동 제출 -->
+    <section>
+      <div class="caption">개인 화면 A · 밤 행동</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">4일째 밤</span>
+          <span class="timer">0:31</span>
+        </div>
+
+        <div class="section">
+          <h3>내 집과 이웃</h3>
+          <div class="bldg">
+            <div class="unit"><span class="no">301 수현</span><br /><span class="muted">거리 2</span></div>
+            <div class="unit adj"><span class="no">302 태윤</span><br /><span class="muted">인접 · 위</span></div>
+            <div class="unit adj"><span class="no">201 유나</span><br /><span class="muted">인접 · 옆</span></div>
+            <div class="unit me"><span class="no">202 나</span><br />드럼 연습 · 둥둥</div>
+            <div class="unit"><span class="no">101 민지</span><br /><span class="tag">홈트레이닝 적발됨</span></div>
+            <div class="unit adj"><span class="no">102 준호</span><br /><span class="muted">인접 · 아래</span></div>
+          </div>
+          <div class="legend">굵은 테두리가 나, 점선이 인접이다. 내 소음은 인접 셋에게, `신나게`면 거리 2인 101·301까지 닿는다.</div>
+        </div>
+
+        <div class="section">
+          <h3>오늘 밤 무엇을 할까요</h3>
+          <div class="acts">
+            <div class="act"><b>조용히 즐기기</b><span class="meta">+1점 · 소음 없음<br />강 들으면 스트레스 +1</span></div>
+            <div class="act"><b>평소처럼 즐기기</b><span class="meta">+2점 · 인접에 약<br />스트레스 면제</span></div>
+            <div class="act"><b>신나게 즐기기</b><span class="meta">+3점 · 인접 강, 거리2 약<br />스트레스 면제</span></div>
+            <div class="act"><b>푹 자기</b><span class="meta">0점 · 스트레스 면역<br />스트레스 1 회복</span></div>
+            <div class="act picked"><b>귀 기울이기</b><span class="meta">0점 · 방향과 거리를 안다<br />강 들으면 스트레스 +1</span></div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>익명 쪽지 <span class="muted">(선택)</span></h3>
+          <div class="pick2">
+            <div class="mini-sel on">보낼 곳<br /><b>302호</b></div>
+            <div class="mini-sel on">문구<br /><b>다 듣고 있습니다</b></div>
+          </div>
+          <p class="muted" style="margin-top:7px">보낸 사람은 어디에도 남지 않습니다. 자유 입력은 없습니다.</p>
+        </div>
+
+        <div class="section">
+          <h3>내 상태</h3>
+          <div class="rowline"><span>점수</span><b>7</b></div>
+          <div class="rowline"><span>스트레스</span><b>1 <span class="muted">(−1점)</span></b></div>
+          <div class="rowline"><span>남은 신고 용지</span><b>2 / 2</b></div>
+          <div class="rowline"><span>자숙</span><span class="muted">해당 없음</span></div>
+        </div>
+
+        <div class="section">
+          <div class="btn">귀 기울이기 + 쪽지 보내기</div>
+          <div class="btn ghost">쪽지 없이 제출</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ② 아침 신고 -->
+    <section>
+      <div class="caption">개인 화면 B · 아침과 신고</div>
+      <div class="phone">
+        <div class="topbar">
+          <span class="phase">4일째 아침</span>
+          <span class="timer">0:44</span>
+        </div>
+
+        <div class="section">
+          <h3>어젯밤 들린 소리</h3>
+          <div class="sounds">
+            <div class="snd strong"><span>쿵짝 <span class="lv">강</span></span><span class="dir">위 · 거리 1</span></div>
+            <div class="snd"><span>웅웅 <span class="lv">약</span></span><span class="dir">옆 · 거리 1</span></div>
+            <div class="snd"><span>쿵쿵 <span class="lv">약</span></span><span class="dir">아래 · 거리 2</span></div>
+          </div>
+          <div class="legend">
+            어젯밤 <b>귀 기울이기</b>를 했으므로 방향과 거리가 붙었습니다. 202호에서는 다섯 이웃의 방향·거리가 모두 달라 전부 특정됩니다.<br />
+            평소에는 <b>소리 단어와 강·약</b>만 무순서로 보입니다. 그때는 `쿵짝 강`이 인접 셋 중 하나라는 것까지만 알 수 있습니다.
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>어제 붙은 쪽지</h3>
+          <div class="notes">
+            <div class="note"><span class="to">202호에게</span> · 다 듣고 있습니다</div>
+            <div class="note"><span class="to">101호에게</span> · 조용히 좀 합시다</div>
+          </div>
+          <p class="muted" style="margin-top:7px">보낸 사람은 표시되지 않습니다.</p>
+        </div>
+
+        <div class="section">
+          <h3>관리실 신고 <span class="muted">· 용지 2 / 2</span></h3>
+          <div class="pick2">
+            <div class="mini-sel on">호수<br /><b>302호</b></div>
+            <div class="mini-sel on">소리 단어<br /><b>쿵짝</b></div>
+          </div>
+          <div class="legend">
+            판정 대상은 <b>어젯밤 하루</b>입니다. 자기 호수는 지목할 수 없습니다.<br />
+            완전 적발 나 +2 · 상대 −5, 사람만 적중 나 0 · 상대 −1, 무고 나 −2 · 상대 +1
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="btn">302호를 쿵짝으로 신고하기</div>
+          <div class="btn ghost">이번 아침은 넘기기</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ③ 공용 화면 -->
+    <section>
+      <div class="caption">공용 화면 · 게시판과 판정</div>
+      <div class="display">
+        <div class="display-head">
+          <div>
+            <h2 style="font-size:19px">윗집 아랫집</h2>
+            <p class="muted">4일째 판정 공개 · 남은 밤 3</p>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:700">제출 6 / 6</div>
+            <div class="muted">전원 완료</div>
+          </div>
+        </div>
+        <div class="section" style="border-bottom:0; padding:16px 18px">
+          <div class="bldg">
+            <div class="unit"><span class="no">301 수현</span><br /><span class="muted">제출 완료</span></div>
+            <div class="unit"><span class="no">302 태윤</span><br /><span class="tag">노래방 적발됨</span> <span class="tag quiet">내일 자숙</span></div>
+            <div class="unit"><span class="no">201 유나</span><br /><span class="muted">제출 완료</span></div>
+            <div class="unit"><span class="no">202 나</span><br /><span class="muted">제출 완료</span></div>
+            <div class="unit"><span class="no">101 민지</span><br /><span class="tag">홈트레이닝 적발됨</span></div>
+            <div class="unit"><span class="no">102 준호</span><br /><span class="muted">제출 완료</span></div>
+          </div>
+          <div class="legend">공용 보드에는 점수도 스트레스도 들은 소리도 올라가지 않는다. 사건만 올라간다.</div>
+        </div>
+        <div class="cols" style="grid-template-columns:1fr; padding-top:0">
+          <div>
+            <h3>익명 쪽지 게시판</h3>
+            <div class="notes">
+              <div class="note"><span class="to">202호에게</span> · 다 듣고 있습니다 <span class="muted">4일째</span></div>
+              <div class="note"><span class="to">101호에게</span> · 조용히 좀 합시다 <span class="muted">4일째</span></div>
+              <div class="note"><span class="to">302호에게</span> · 다음엔 신고합니다 <span class="muted">3일째</span></div>
+            </div>
+          </div>
+          <div>
+            <h3>관리실 판정 이력</h3>
+            <table>
+              <tr><th>일차</th><th>신고자</th><th>대상</th><th>판정</th><th>공개</th></tr>
+              <tr><td>2</td><td>102 준호</td><td>101 민지</td><td class="grade">완전 적발</td><td>쿵쿵 · 홈트레이닝</td></tr>
+              <tr><td>3</td><td>201 유나</td><td>302 태윤</td><td class="grade">무고</td><td>—</td></tr>
+              <tr><td>4</td><td>202 나</td><td>302 태윤</td><td class="grade">완전 적발</td><td>쿵짝 · 노래방</td></tr>
+            </table>
+            <div class="legend">소리 단어와 취미는 <b>완전 적발일 때만</b> 공개된다. 무고와 사람만 적중은 등급만 남는다.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ④ 최종 정산 -->
+    <section class="wide">
+      <div class="caption">공용 화면 · 최종 정산 (7일째 판정 후)</div>
+      <div class="display">
+        <div class="display-head">
+          <div>
+            <h2 style="font-size:19px">7일이 끝났습니다</h2>
+            <p class="muted">공동 승리 · 102 준호, 202 나 (12점)</p>
+          </div>
+          <div style="text-align:right" class="muted">이제 전원의 취미와 밤별 행동이 공개됩니다</div>
+        </div>
+        <div class="cols">
+          <div>
+            <h3>취미 공개</h3>
+            <table>
+              <tr><th>호수</th><th>취미</th><th>소리</th></tr>
+              <tr><td>101 민지</td><td>홈트레이닝</td><td>쿵쿵</td></tr>
+              <tr><td>102 준호</td><td>드럼 연습</td><td>둥둥</td></tr>
+              <tr><td>201 유나</td><td>심야 세탁</td><td>웅웅</td></tr>
+              <tr><td>202 나</td><td>드럼 연습</td><td>둥둥</td></tr>
+              <tr><td>301 수현</td><td>러닝머신</td><td>드르륵</td></tr>
+              <tr><td>302 태윤</td><td>노래방 기계</td><td>쿵짝</td></tr>
+            </table>
+            <div class="legend">5종 풀에서 전사 배정했으므로 <b>드럼만 둘</b>이고 나머지는 하나씩이다. 소리 종류만으로 신원이 확정되지 않는 이유다.</div>
+          </div>
+          <div>
+            <h3>점수 내역</h3>
+            <table>
+              <tr><th>호수</th><th class="n">취미</th><th class="n">신고</th><th class="n">벌점</th><th class="n">스트레스</th><th class="n">합계</th></tr>
+              <tr><td>101 민지</td><td class="n">14</td><td class="n">0</td><td class="n">−5</td><td class="n">−2</td><td class="n">7</td></tr>
+              <tr><td>102 준호</td><td class="n">11</td><td class="n">+2</td><td class="n">0</td><td class="n">−1</td><td class="n"><b>12</b></td></tr>
+              <tr><td>201 유나</td><td class="n">13</td><td class="n">−2</td><td class="n">−1</td><td class="n">−3</td><td class="n">7</td></tr>
+              <tr><td>202 나</td><td class="n">12</td><td class="n">+2</td><td class="n">0</td><td class="n">−2</td><td class="n"><b>12</b></td></tr>
+              <tr><td>301 수현</td><td class="n">9</td><td class="n">0</td><td class="n">0</td><td class="n">0</td><td class="n">9</td></tr>
+              <tr><td>302 태윤</td><td class="n">16</td><td class="n">+1</td><td class="n">−5</td><td class="n">−1</td><td class="n">11</td></tr>
+            </table>
+            <div class="legend">태윤은 취미 점수 1위(16)였지만 완전 적발 −5로 뒤집혔다. 수현은 조용히 버텨 무실점이지만 상단에 닿지 못했다.</div>
+          </div>
+          <div>
+            <h3>밤별 행동 타임라인</h3>
+            <table>
+              <tr><th>호수</th><th class="tl">1 2 3 4 5 6 7</th></tr>
+              <tr><td>101 민지</td><td class="tl">평 평 조 신 조 평 신</td></tr>
+              <tr><td>102 준호</td><td class="tl">조 귀 신 조 귀 신 신</td></tr>
+              <tr><td>201 유나</td><td class="tl">신 평 평 평 평 평 자</td></tr>
+              <tr><td>202 나</td><td class="tl">평 신 평 귀 신 평 귀</td></tr>
+              <tr><td>301 수현</td><td class="tl">조 자 평 자 평 조 신</td></tr>
+              <tr><td>302 태윤</td><td class="tl">신 평 신 신 조 평 평</td></tr>
+            </table>
+            <div class="legend">신 신나게 · 평 평소처럼 · 조 조용히 · 자 푹 자기 · 귀 귀 기울이기<br />다섯 행동이 모두 쓰였는지가 밸런스 1차 점검이다. 특정 행동이 5% 미만이면 죽은 것이다.</div>
+          </div>
+        </div>
+        <div class="note-box">
+          마지막까지 숨겨야 하는 것은 취미, 밤별 행동, 스트레스, 남의 들은 소리, 쪽지 발신자다. 이 화면 전까지 어떤 응답에도 담기지 않는다.
+          쪽지 발신자는 여기서도 공개하지 않는다. 상태에 아예 담지 않기 때문이다.
+        </div>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
