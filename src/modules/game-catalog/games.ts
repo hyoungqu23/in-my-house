@@ -3,6 +3,7 @@ export const GAME_IDS = [
   "suspicious-invite",
   "dawn-switchboard",
   "midnight-footprints",
+  "connected-forest",
 ] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
@@ -48,6 +49,14 @@ export const games = [
     minPlayers: 2,
     maxPlayers: 2,
     durationMinutes: [15, 25],
+    availability: "playable",
+  },
+  {
+    id: "connected-forest",
+    title: "이어지는 숲길",
+    minPlayers: 4,
+    maxPlayers: 6,
+    durationMinutes: [12, 25],
     availability: "playable",
   },
 ] as const satisfies readonly GameDefinition[];

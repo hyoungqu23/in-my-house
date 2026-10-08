@@ -1,6 +1,17 @@
 import "server-only";
 
 import { randomInt } from "node:crypto";
+import { CONNECTED_FOREST_CURRENT_RULES_VERSION, createMatchSetup as createForestSetup } from "@/modules/connected-forest/domain/content";
+import {
+  advanceTimedState as advanceForest,
+  createInitialState as createForest,
+  transition as transitionForest,
+} from "@/modules/connected-forest/domain/reducer";
+import type { ConnectedForestAction } from "@/modules/connected-forest/domain/types";
+import {
+  projectPlayer as projectForestPlayer,
+  projectPublic as projectForestPublic,
+} from "@/modules/connected-forest/projection/game-view";
 import {
   advanceTimedState as advanceDarkHouse,
   createInitialState as createDarkHouse,
@@ -114,6 +125,12 @@ const isSwitchboardAction = (action: GameAction): action is SwitchboardAction =>
 const isFootprintsAction = (action: GameAction): action is FootprintsAction =>
   footprintsActionTypes.has(action.type as FootprintsAction["type"]);
 
+const forestActionTypes = new Set<ConnectedForestAction["type"]>([
+  "LOCK_TERRAIN_PICK", "CHOOSE_SEASON_VISIT", "RESOLVE_VISIT", "CLAIM_FORFEIT",
+]);
+const isForestAction = (action: GameAction): action is ConnectedForestAction =>
+  forestActionTypes.has(action.type as ConnectedForestAction["type"]);
+
 const assertNever = (value: never): never => {
   throw new GameRuleError("GAME_NOT_FOUND", `지원하지 않는 게임입니다: ${String(value)}`);
 };
@@ -139,6 +156,10 @@ export function createGame(
   switch (gameId) {
     case "dark-house":
       return { type: gameId, state: createDarkHouse(roster) };
+    case "connected-forest": {
+      const setup = createForestSetup({ seats: roster.map((player) => player.seat), randomIndex: randomInt, rulesVersion: CONNECTED_FOREST_CURRENT_RULES_VERSION });
+      return { type: gameId, state: createForest(roster, setup, now) };
+    }
     case "suspicious-invite": {
       const setup = suspiciousSetup(roster.map((player) => player.seat), []);
       return { type: gameId, state: createSuspiciousInvite(roster, setup, now) };
@@ -176,6 +197,8 @@ export function advanceGame(
   context: { now: number; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "connected-forest":
+      return { ...game, state: advanceForest(game.state, context) };
     case "dark-house":
       return {
         ...game,
@@ -202,6 +225,10 @@ export function transitionGame(
   context: { now: number; sequenceId: string; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "connected-forest": {
+      if (!isForestAction(action)) throw invalidGameAction();
+      return { ...game, state: transitionForest(game.state, actorSeat, action, context) };
+    }
     case "dark-house": {
       if (!isDarkHouseAction(action)) throw invalidGameAction();
       return {
@@ -262,6 +289,8 @@ export function transitionGame(
 
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
   switch (game.type) {
+    case "connected-forest":
+      return projectForestPublic(game.state, context);
     case "dark-house":
       return projectDarkHousePublic(game.state, context);
     case "suspicious-invite":
@@ -281,6 +310,8 @@ export function projectGamePlayer(
   privateState?: FootprintsPrivatePlayerState,
 ): PlayerRoomView {
   switch (game.type) {
+    case "connected-forest":
+      return projectForestPlayer(game.state, context);
     case "dark-house":
       return projectDarkHousePlayer(game.state, context);
     case "suspicious-invite":

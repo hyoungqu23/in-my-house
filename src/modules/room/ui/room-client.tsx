@@ -5,15 +5,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getAuthHeaders, getBrowserSupabase } from "@/modules/auth/client";
 import { PlayerControls } from "@/modules/dark-house/ui/player-controls";
 import { PublicBoard } from "@/modules/dark-house/ui/public-board";
+import { ConnectedForestPlayerControls } from "@/modules/connected-forest/ui/player-controls";
+import type { ForestDraft } from "@/modules/connected-forest/ui/draft-options";
+import { ConnectedForestPublicBoard } from "@/modules/connected-forest/ui/public-board";
+import forestStyles from "@/modules/connected-forest/ui/game.module.css";
+import { findGame } from "@/modules/game-catalog/games";
 import { DawnSwitchboardPlayerControls } from "@/modules/dawn-switchboard/ui/player-controls";
 import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public-board";
 import type { FootprintsRoomMark } from "@/modules/midnight-footprints/domain/types";
 import { MidnightFootprintsPlayerControls } from "@/modules/midnight-footprints/ui/player-controls";
 import { MidnightFootprintsPublicBoard } from "@/modules/midnight-footprints/ui/public-board";
-import { roomApiFetch } from "@/modules/room/client/room-api";
+import { RoomApiError, roomApiFetch } from "@/modules/room/client/room-api";
 import type {
   DarkHousePlayerRoomView,
   DarkHousePublicRoomView,
+  ConnectedForestPlayerRoomView,
+  ConnectedForestPublicRoomView,
   DawnSwitchboardPlayerRoomView,
   DawnSwitchboardPublicRoomView,
   LobbyRoomView,
@@ -28,6 +35,7 @@ import type {
 import { SuspiciousInvitePlayerControls } from "@/modules/suspicious-invite/ui/player-controls";
 import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
 import { QrCode } from "@/shared/ui/qr-code";
+import { createBrowserId } from "@/shared/browser/uuid";
 
 type ViewMode = "private" | "public";
 type RoomLinks = { code: string; joinUrl: string; displayUrl: string };
@@ -37,50 +45,92 @@ const isDarkHousePlayer = (view: PlayerRoomView): view is DarkHousePlayerRoomVie
 const isSuspiciousPlayer = (view: PlayerRoomView): view is SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPlayer = (view: PlayerRoomView): view is DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
 const isFootprintsPlayer = (view: PlayerRoomView): view is MidnightFootprintsPlayerRoomView => view.room.gameId === "midnight-footprints";
+const isForestPlayer = (view: PlayerRoomView): view is ConnectedForestPlayerRoomView => view.room.gameId === "connected-forest";
 type GamePublicView =
   | DarkHousePublicRoomView
   | SuspiciousInvitePublicRoomView
   | DawnSwitchboardPublicRoomView
-  | MidnightFootprintsPublicRoomView;
+  | MidnightFootprintsPublicRoomView
+  | ConnectedForestPublicRoomView;
 const isDarkHousePublic = (view: GamePublicView): view is DarkHousePublicRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPublic = (view: GamePublicView): view is SuspiciousInvitePublicRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPublic = (view: GamePublicView): view is DawnSwitchboardPublicRoomView => view.room.gameId === "dawn-switchboard";
 const isFootprintsPublic = (view: GamePublicView): view is MidnightFootprintsPublicRoomView => view.room.gameId === "midnight-footprints";
+const isForestPublic = (view: GamePublicView): view is ConnectedForestPublicRoomView => view.room.gameId === "connected-forest";
+const isForestView = (view: Exclude<RoomView, LobbyRoomView>): view is ConnectedForestPublicRoomView | ConnectedForestPlayerRoomView => view.room.gameId === "connected-forest";
 const isDarkHouseView = (view: Exclude<RoomView, LobbyRoomView>): view is DarkHousePublicRoomView | DarkHousePlayerRoomView => view.room.gameId === "dark-house";
 const isSuspiciousView = (view: Exclude<RoomView, LobbyRoomView>): view is SuspiciousInvitePublicRoomView | SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardView = (view: Exclude<RoomView, LobbyRoomView>): view is DawnSwitchboardPublicRoomView | DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
+
+type Drafts = {
+  forest?: { key: string; value: ForestDraft };
+};
+const forestDraftKey = (view: ConnectedForestPlayerRoomView | ConnectedForestPublicRoomView) =>
+  `${view.room.code}:${view.phaseKey}:${view.viewer.playerSeat}`;
+
+function retainDrafts(drafts: Drafts, next: RoomView): Drafts {
+  if (next.phase === "LOBBY" || next.phase === "GAME_OVER") return {};
+  if (isForestView(next)) {
+    return { forest: drafts.forest?.key === forestDraftKey(next)
+      && !(next.projection === "player" && next.self.lockedPick) ? drafts.forest : undefined };
+  }
+  return {};
+}
 
 export function RoomClient({ code }: { code: string }) {
   const [mode, setMode] = useState<ViewMode>("private");
   const [view, setView] = useState<RoomView>();
   const [links, setLinks] = useState<RoomLinks>();
-  const [error, setError] = useState("");
+  const [viewError, setViewError] = useState("");
+  const [actionError, setActionError] = useState("");
+  const [drafts, setDrafts] = useState<Drafts>({});
   const [busy, setBusy] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [manualCopy, setManualCopy] = useState(false);
+  const modeRef = useRef<ViewMode>("private");
+  const requestEpoch = useRef(0);
+  const lastAccepted = useRef<{ code: string; version: number; serverNow: string } | undefined>(undefined);
   const lastPrivateActivity = useRef(0);
 
-  const loadView = useCallback(async (requestedMode: ViewMode = mode) => {
+  const receiveView = useCallback((next: RoomView, requestedMode: ViewMode, epoch: number) => {
+    if (epoch !== requestEpoch.current || requestedMode !== modeRef.current) return;
+    const previous = lastAccepted.current;
+    if (previous?.code === code && (next.room.version < previous.version
+      || (next.room.version === previous.version && next.serverNow < previous.serverNow))) return;
+    lastAccepted.current = { code, version: next.room.version, serverNow: next.serverNow };
+    setView(next);
+    setViewError("");
+    setDrafts((current) => retainDrafts(current, next));
+  }, [code]);
+
+  const loadView = useCallback(async (requestedMode: ViewMode = modeRef.current) => {
+    const epoch = requestEpoch.current;
     try {
       const next = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=${requestedMode}`);
-      setView(next);
-      setError("");
+      receiveView(next, requestedMode, epoch);
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "방 상태를 불러오지 못했습니다.");
+      if (epoch !== requestEpoch.current || requestedMode !== modeRef.current) return;
+      setViewError(cause instanceof Error ? cause.message : "방 상태를 불러오지 못했습니다.");
+      if (cause instanceof RoomApiError && [401, 404, 410].includes(cause.status)) {
+        setView(undefined);
+        setDrafts({});
+      }
     }
-  }, [code, mode]);
+  }, [code, receiveView]);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(`in-my-house:links:${code}`);
     queueMicrotask(() => {
       if (stored) setLinks(JSON.parse(stored));
       lastPrivateActivity.current = Date.now();
-      void loadView(mode);
+      void loadView();
     });
-  }, [code, loadView, mode]);
+    return () => { requestEpoch.current += 1; };
+  }, [code, loadView]);
 
   const pollingPhase = view?.phase;
   useEffect(() => {
-    const intervalMs = pollingPhase && ["REVEALING", "ROUND_INTRO", "CLUE_REVEAL", "ROUND_RESULT", "PANEL_RESULT"].includes(pollingPhase)
+    const intervalMs = pollingPhase && ["REVEALING", "ROUND_INTRO", "CLUE_REVEAL", "ROUND_RESULT", "PANEL_RESULT", "SEASON_REVEAL"].includes(pollingPhase)
       ? 500
       : 1_500;
     const timer = window.setInterval(() => void loadView(mode), intervalMs);
@@ -114,8 +164,11 @@ export function RoomClient({ code }: { code: string }) {
   useEffect(() => {
     const hideSecrets = () => {
       if (mode !== "private") return;
+      modeRef.current = "public";
+      requestEpoch.current += 1;
       setView(undefined);
       setMode("public");
+      void loadView("public");
     };
     const onVisibility = () => document.hidden && hideSecrets();
     const onActivity = () => { lastPrivateActivity.current = Date.now(); };
@@ -131,10 +184,12 @@ export function RoomClient({ code }: { code: string }) {
       window.removeEventListener("pointerdown", onActivity);
       window.removeEventListener("keydown", onActivity);
     };
-  }, [mode]);
+  }, [mode, loadView]);
 
   async function switchMode(nextMode: ViewMode) {
     if (nextMode === mode) return;
+    modeRef.current = nextMode;
+    requestEpoch.current += 1;
     setView(undefined);
     setMode(nextMode);
     lastPrivateActivity.current = Date.now();
@@ -142,23 +197,39 @@ export function RoomClient({ code }: { code: string }) {
   }
 
   async function sendAction(action: RoomAction) {
-    if (!view) return;
+    if (!view || busy) return;
+    const epoch = requestEpoch.current;
     setBusy(true);
-    setError("");
+    setActionError("");
     try {
-      const result = await roomApiFetch<{ projection: RoomView }>(`/api/rooms/${code}/actions`, {
-        method: "POST",
-        body: JSON.stringify({
-          clientActionId: crypto.randomUUID(),
-          expectedVersion: view.room.version,
-          action,
-        }),
-      });
-      if (mode === "private") setView(result.projection);
-      else await loadView("public");
+      const clientActionId = createBrowserId();
+      let latest = view;
+      let result: { projection: RoomView } | undefined;
+      for (let attempt = 0; attempt < 4; attempt += 1) {
+        try {
+          result = await roomApiFetch<{ projection: RoomView }>(`/api/rooms/${code}/actions`, {
+            method: "POST",
+            body: JSON.stringify({ clientActionId, expectedVersion: latest.room.version, action }),
+          });
+          break;
+        } catch (cause) {
+          const forestAction = ["LOCK_TERRAIN_PICK", "CHOOSE_SEASON_VISIT", "RESOLVE_VISIT"].includes(action.type);
+          if (attempt === 3 || !forestAction || !(cause instanceof RoomApiError) || cause.code !== "STALE_VERSION"
+            || latest.phase === "LOBBY" || !isForestView(latest)) throw cause;
+          const fresh = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=private`);
+          if (fresh.phase === "LOBBY" || !isForestView(fresh) || fresh.projection !== "player"
+            || fresh.phaseKey !== latest.phaseKey
+            || !fresh.self.legalActions.includes(action.type as "LOCK_TERRAIN_PICK" | "CHOOSE_SEASON_VISIT" | "RESOLVE_VISIT")
+            || (action.type === "RESOLVE_VISIT" && fresh.self.currentVisit?.visitId !== action.visitId)) throw cause;
+          latest = fresh;
+        }
+      }
+      if (!result) throw new Error("선택을 보내지 못했습니다. 다시 시도해 주세요.");
+      if (modeRef.current === "private" && epoch === requestEpoch.current) receiveView(result.projection, "private", epoch);
+      else await loadView();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "행동을 처리하지 못했습니다.");
-      await loadView(mode);
+      setActionError(cause instanceof Error ? cause.message : "행동을 처리하지 못했습니다.");
+      await loadView();
     } finally {
       setBusy(false);
     }
@@ -169,16 +240,16 @@ export function RoomClient({ code }: { code: string }) {
     roomMarks: Record<string, FootprintsRoomMark>,
   ) {
     setBusy(true);
-    setError("");
+    setActionError("");
     try {
       await roomApiFetch(`/api/rooms/${code}/room-marks`, {
         method: "PUT",
         body: JSON.stringify({ expectedPrivateRevision, roomMarks }),
       });
-      await loadView("private");
+      await loadView();
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "메모를 저장하지 못했습니다.");
-      await loadView("private");
+      setActionError(cause instanceof Error ? cause.message : "메모를 저장하지 못했습니다.");
+      await loadView();
     } finally {
       setBusy(false);
     }
@@ -186,17 +257,23 @@ export function RoomClient({ code }: { code: string }) {
 
   async function copyInvite() {
     if (!links) return;
-    await navigator.clipboard.writeText(links.joinUrl);
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 2_000);
+    try {
+      if (!navigator.clipboard?.writeText) { setManualCopy(true); return; }
+      await navigator.clipboard.writeText(links.joinUrl);
+      setCopied(true);
+      setManualCopy(false);
+      window.setTimeout(() => setCopied(false), 2_000);
+    } catch {
+      setManualCopy(true);
+    }
   }
 
   if (!view) {
     return (
       <main className="room-loading">
         <span className="loader" aria-hidden="true" />
-        <p>{error || "집 안의 불을 확인하는 중…"}</p>
-        {error && <button className="secondary-button" onClick={() => loadView(mode)}><RefreshCw size={18} /> 다시 시도</button>}
+        <p>{viewError || "집 안의 불을 확인하는 중…"}</p>
+        {viewError && <button className="secondary-button" onClick={() => loadView()}><RefreshCw size={18} /> 다시 시도</button>}
       </main>
     );
   }
@@ -205,7 +282,7 @@ export function RoomClient({ code }: { code: string }) {
   const playerView = isPlayerView(view) ? view : undefined;
 
   return (
-    <main className="room-page">
+    <main className={`room-page ${view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
       <nav className="mode-switcher" aria-label="화면 모드">
         <button className={mode === "private" ? "active" : ""} onClick={() => switchMode("private")} disabled={!view.viewer.roles.includes("PLAYER")}>
           내 화면
@@ -214,9 +291,12 @@ export function RoomClient({ code }: { code: string }) {
       </nav>
 
       {view.phase === "LOBBY" ? (
-        <Lobby view={view} links={links} isHost={isHost} busy={busy} copied={copied} onCopy={copyInvite} onStart={() => sendAction({ type: "START_GAME" })} />
+        <Lobby view={view} links={links} isHost={isHost} busy={busy} copied={copied} manualCopy={manualCopy} onCopy={copyInvite} onStart={() => sendAction({ type: "START_GAME" })} />
       ) : mode === "private" && playerView ? (
         <div className="game-layout private-layout">
+          {isForestPlayer(playerView) && <ConnectedForestPlayerControls view={playerView} busy={busy} onAction={sendAction}
+            draft={drafts.forest?.key === forestDraftKey(playerView) ? drafts.forest.value : undefined}
+            onDraftChange={(value) => { setDrafts((current) => ({ ...current, forest: { key: forestDraftKey(playerView), value } })); setActionError(""); }} />}
           {isDarkHousePlayer(playerView) && <PlayerControls view={playerView} busy={busy} onAction={sendAction} />}
           {isSuspiciousPlayer(playerView) && <SuspiciousInvitePlayerControls key={playerView.round} view={playerView} busy={busy} onAction={sendAction} />}
           {isSwitchboardPlayer(playerView) && <DawnSwitchboardPlayerControls key={playerView.stage} view={playerView} busy={busy} onAction={sendAction} />}
@@ -241,33 +321,38 @@ export function RoomClient({ code }: { code: string }) {
                 ? <DawnSwitchboardPublicBoard view={view} />
                 : isFootprintsPublic(view)
                   ? <MidnightFootprintsPublicBoard view={view} />
-                  : null}
+                  : isForestPublic(view)
+                    ? <ConnectedForestPublicBoard view={view} />
+                    : null}
           {view.viewer.legalAdministrativeActions.includes("START_REMATCH") && (
             <button className="primary-button rematch-button" disabled={busy} onClick={() => sendAction({ type: "START_REMATCH" })}>같은 사람들과 다시 하기</button>
           )}
         </div>
       ) : null}
 
-      {error && <div className="toast" role="alert">{error}</div>}
+      {(actionError || viewError) && <div className="toast" role="alert"><span>{actionError || viewError}</span>
+        {actionError && <button className="text-button" aria-label="오류 메시지 닫기" onClick={() => setActionError("")}>닫기</button>}
+      </div>}
     </main>
   );
 }
 
-function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
-  view: LobbyRoomView; links?: RoomLinks; isHost: boolean; busy: boolean; copied: boolean; onCopy: () => void; onStart: () => void;
+function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart }: {
+  view: LobbyRoomView; links?: RoomLinks; isHost: boolean; busy: boolean; copied: boolean; manualCopy: boolean; onCopy: () => void; onStart: () => void;
 }) {
   const isSuspicious = view.room.gameId === "suspicious-invite";
   const isSwitchboard = view.room.gameId === "dawn-switchboard";
   const isFootprints = view.room.gameId === "midnight-footprints";
-  const minimumPlayers = isFootprints ? 2 : 3;
-  const title = isSuspicious
+  const isForest = view.room.gameId === "connected-forest";
+  const minimumPlayers = findGame(view.room.gameId)!.minPlayers;
+  const title = isForest ? "우리의 작은 숲을 시작해요" : isSuspicious
     ? "초대받지 않은 사람을 찾으세요"
     : isSwitchboard
       ? "새벽이 오기 전에 전력을 되찾으세요"
       : isFootprints
         ? "괴도와 경비, 단둘이 밤을 시작하세요"
       : "빈 방을 믿지 마세요";
-  const lead = isSuspicious
+  const lead = isForest ? "4–6명이 각자의 숲을 만들고 이웃과 동물을 주고받아요. 모두 모이면 첫 계절이 시작됩니다." : isSuspicious
     ? "모두 들어오면 호스트가 초대장을 공개합니다. 역할과 비밀 단어는 다른 사람에게 보여주지 마세요."
     : isSwitchboard
       ? "각자의 휴대폰에 서로 다른 회로 단서가 도착합니다. 화면은 숨기고 단서는 말로 공유하세요."
@@ -277,7 +362,7 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
   return (
     <div className="lobby-layout">
       <section className="lobby-stage">
-        <div className="eyebrow"><span /> {isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
+        <div className="eyebrow"><span /> {isForest ? "OUR LITTLE FOREST" : isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
         <h1>{title}</h1>
         <p className="lobby-lead">{lead}</p>
         <div className="lobby-code-block">
@@ -298,7 +383,7 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
         </div>
         {isHost ? (
           <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < minimumPlayers} onClick={onStart}>
-            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
+            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isForest ? "모두 준비됨 · 숲길 시작" : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
           </button>
         ) : <p className="waiting-copy">호스트가 게임을 시작할 때까지 기다려 주세요.</p>}
       </section>
@@ -308,6 +393,9 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
           <div className="panel-heading"><Share2 size={19} /><h2>친구 초대</h2></div>
           <QrCode value={links.joinUrl} label="게임 참가 QR 코드" />
           <button className="secondary-button" onClick={onCopy}><Copy size={18} /> {copied ? "복사했습니다" : "초대 링크 복사"}</button>
+          {manualCopy && <label className="manual-copy">링크를 길게 누르거나 선택해서 복사해 주세요.
+            <input aria-label="직접 복사할 초대 링크" readOnly value={links.joinUrl} onFocus={(event) => event.currentTarget.select()} />
+          </label>}
           <a className="text-link" href={links.displayUrl} target="_blank" rel="noreferrer"><MonitorUp size={17} /> TV용 공개 화면 열기 <ExternalLink size={14} /></a>
         </aside>
       )}
@@ -316,7 +404,7 @@ function Lobby({ view, links, isHost, busy, copied, onCopy, onStart }: {
 }
 
 function MiniPublicSummary({ view, onOpen }: { view: Exclude<RoomView, LobbyRoomView>; onOpen: () => void }) {
-  const summary = isDarkHouseView(view)
+  const summary = isForestView(view) ? `계절 ${view.seasonIndex + 1}/5 · 이웃의 숲 보기` : isDarkHouseView(view)
     ? view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"
     : isSuspiciousView(view)
       ? `ROUND ${view.round} · ${view.category}`

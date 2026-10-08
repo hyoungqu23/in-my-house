@@ -1,0 +1,154 @@
+.page { --ink: #384739; --muted: #626951; --cream: #f9f5e9; --green: #496b4c; --line: #d8dccc; color: var(--ink); background: var(--cream); min-height: 100dvh; color-scheme: light; font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", sans-serif; }
+.page * { box-sizing: border-box; }
+.page button { color: inherit; }
+.page :focus-visible { outline: 3px solid #526f8b; outline-offset: 5px; }
+.page button:disabled { opacity: 1; }
+.previewNote { background: #e7eadd; color: #53624c; text-align: center; font-size: 12px; padding: 8px 20px; }
+.shell { width: min(1200px, calc(100% - 64px)); margin: auto; }
+.nav { height: 86px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--line); }
+.back, .catalogLink { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; text-decoration: none; min-height: 44px; }
+.wordmark { display: flex; align-items: center; gap: 6px; text-decoration: none; font-size: 21px; font-weight: 800; letter-spacing: -.07em; }
+.wordmark svg { width: 42px; height: 42px; }
+.intro { padding: 52px 0 42px; display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+.eyebrow { font-size: 11px; letter-spacing: .1em; font-weight: 700; color: var(--muted); }
+.intro h1 { font-size: clamp(38px, 4vw, 57px); line-height: 1.2; margin: 13px 0 0; letter-spacing: -.07em; font-weight: 800; }
+.intro h1 span { color: #728568; }
+.introText { line-height: 1.9; font-size: 16px; margin: 0 4px 4px; color: #586451; }
+.introText span { display: block; margin-top: 14px; font-size: 12px; color: var(--muted); }
+.gameLayout { display: grid; grid-template-columns: minmax(0, 1fr) 304px; gap: 28px; align-items: start; }
+.forest { border: 1px solid var(--line); border-radius: 28px; overflow: hidden; background: #fefcf4; box-shadow: 0 12px 32px #44533508; }
+.forestTop { display: flex; align-items: center; justify-content: space-between; padding: 26px 30px 0; gap: 12px; }
+.forestTop h2 { margin: 4px 0 0; font-size: 23px; letter-spacing: -.05em; }
+.season { border: 1px solid #d9dfce; border-radius: 30px; padding: 8px 13px; display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: #58704e; background: #f0f3e7; }
+.boardFrame { background: radial-gradient(ellipse at center, #edf0dd 0%, #f9f9ed 52%, #fefcf4 72%); }
+.board { width: min(100%, 600px); aspect-ratio: 1.16; margin: auto; position: relative; isolation: isolate; }
+.landShadow { position: absolute; width: 79%; height: 62%; left: 10%; top: 23%; border-radius: 50%; background: #d2dcc533; }
+.hex { position: absolute; width: 18%; aspect-ratio: .87; transform: translate(-50%, -50%); background: none; border: 0; padding: 0; border-radius: 18px; display: grid; place-items: center; }
+.hex > svg { width: 118%; height: auto; display: block; overflow: visible; pointer-events: none; }
+.hex .resident { position: absolute; width: 88%; top: -7%; left: 4%; filter: drop-shadow(0 4px 2px #5f533624); }
+.hex.occupied { pointer-events: none; }
+.hex > svg.emptyHex { width: 87%; height: 76%; overflow: visible; }
+.emptyHex path { fill: #e8edda80; stroke: #819271; stroke-width: 1.5; stroke-dasharray: 4 3; }
+.emptyHex text { font-size: 25px; fill: #6c805c; }
+.empty:disabled .emptyHex path { stroke: #d9decc; fill: #f3f4e7; }
+.empty:not(:disabled):hover .emptyHex path { fill: #dbe6c9; }
+.selected .emptyHex path { fill: #d1dfbe; stroke: #547249; stroke-width: 3; stroke-dasharray: none; }
+.selected .emptyHex .hexCheck { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.boardFooter { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 0 25px 20px; font-size: 12px; color: var(--muted); }
+.boardFooter span { display: inline-flex; align-items: center; gap: 6px; }
+.boardFooter i { width: 11px; height: 11px; border: 1px dashed #688359; border-radius: 3px; }
+.boardFooter button { display: inline-flex; align-items: center; gap: 7px; background: none; border: 0; padding: 8px 0; min-height: 44px; }
+.basket { padding: 22px 26px 24px; border-top: 1px solid var(--line); background: #f3efdf; }
+.basketTitle { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.basketTitle h3 { font-size: 16px; margin: 0; letter-spacing: -.04em; }
+.basketTitle > span { font-size: 12px; color: var(--muted); }
+.terrainChoices { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 16px 0; }
+.terrainChoice { position: relative; background: #fcf9ef; border: 1px solid #dddccc; border-radius: 15px; padding: 0 2px 8px; min-width: 0; transition: background 180ms, border-color 180ms; }
+.terrainChoice svg { width: 100%; height: auto; }
+.terrainChoice > span { font-size: 13px; font-weight: 600; }
+.terrainChoice[aria-pressed="true"] { border: 2px solid #688558; background: #e6ecd7; padding: 0 1px 7px; }
+.terrainChoice .chosen { position: absolute; width: 17px; height: 17px; top: 6px; right: 6px; padding: 2px; border-radius: 50%; background: #52724c; color: #fff; }
+.placeRow { display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+.placeRow p { font-size: 13px; margin: 0; color: #5d674f; max-width: 260px; }
+.primary { display: flex; justify-content: center; align-items: center; gap: 14px; border: 0; border-radius: 13px; background: var(--green); padding: 13px 19px; min-height: 48px; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.page .primary { color: #fffdf3; }
+.primary:disabled { background: #d4d7c8; }
+.page .primary:disabled { color: #636b5c; }
+.side { display: grid; gap: 20px; }
+.animalCard { border: 1px solid #dcd3c0; border-radius: 24px; padding: 20px 22px 0; text-align: center; overflow: hidden; box-shadow: 0 6px 0 #e6dfcf; }
+.cardTop { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #78614c; }
+.heart { display: flex; align-items: center; gap: 5px; color: #9e624e; }
+.portrait { position: relative; margin: 7px auto -4px; width: 232px; max-width: 100%; aspect-ratio: 1; }
+.portrait > svg { position: relative; width: 100%; height: 100%; }
+.portraitHalo { position: absolute; inset: 20px 5px; border-radius: 50%; background: #fff5dc75; }
+.leafOne, .leafTwo { position: absolute; color: #9aa97a; }
+.leafOne { top: 44px; left: 0; transform: rotate(-32deg); }
+.leafTwo { bottom: 49px; right: -4px; transform: rotate(45deg); }
+.animalCard h2 { font-size: 26px; letter-spacing: -.05em; margin: 0 0 7px; }
+.animalCard p { font-size: 13px; color: #75624d; margin: 0 0 22px; min-height: 40px; }
+.cardStamp { border-top: 1px dashed #bea58290; padding: 13px 0; display: flex; justify-content: space-between; font-size: 10px; letter-spacing: .13em; color: #7c6952; }
+.visit { border: 1px solid var(--line); background: #fcfbf2; border-radius: 23px; padding: 16px 20px; }
+.visitHeading { display: flex; align-items: center; gap: 8px; }
+.visitHeading > svg { width: 68px; height: 68px; }
+.visitHeading h3 { margin: 2px 0 0; font-size: 17px; letter-spacing: -.04em; }
+.visit > p { color: #626951; font-size: 14px; margin: 6px 0 14px; }
+.visitChoices { display: grid; gap: 8px; }
+.visitChoices button { display: flex; align-items: center; gap: 10px; background: #f0f1e5; border: 1px solid #d9ddcc; padding: 12px; min-height: 48px; border-radius: 12px; font-size: 13px; }
+.visitChoices button[aria-pressed="true"] { border-color: #54764d; background: #dfe9d2; box-shadow: inset 0 0 0 1px #54764d; }
+.visit p.visitResult { font-size: 12px; min-height: 36px; margin-top: 14px; margin-bottom: 0; }
+.friends { padding: 66px 0 52px; scroll-margin-top: 24px; }
+.sectionHead { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 28px; }
+.sectionHead h2 { font-size: 30px; margin: 8px 0 0; letter-spacing: -.055em; }
+.sectionHead p { font-size: 13px; color: var(--muted); }
+.friendGrid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 26px 20px; }
+.friend { display: flex; align-items: center; flex-direction: column; background: none; border: 0; padding: 6px 4px; border-radius: 20px; }
+.friendCircle { border-radius: 45% 48% 43% 48%; width: 100%; aspect-ratio: 1.05; display: grid; place-items: center; border: 2px solid transparent; transition: border-color 180ms, box-shadow 180ms; }
+.friendCircle svg { width: 100%; height: auto; }
+.friend:hover .friendCircle { box-shadow: 0 8px 16px #4a513314; }
+.friend[aria-pressed="true"] .friendCircle { border-color: #6c8359; }
+.friend > span:nth-child(2) { font-size: 15px; margin-top: 12px; font-weight: 700; }
+.friend small { font-size: 11px; color: var(--muted); margin-top: 3px; }
+.mobilePortrait { display: none; }
+.footer { border-top: 1px solid var(--line); display: flex; align-items: center; gap: 14px; padding: 30px 0 44px; }
+.footer > svg { width: 60px; height: 60px; }
+.footer p { font-size: 15px; font-weight: 600; }
+.footer p span { font-size: 11px; font-weight: 400; color: var(--muted); }
+.footer a { margin-left: auto; font-size: 12px; min-height: 44px; display: grid; align-items: center; }
+@media (max-width: 900px) {
+  .shell { width: calc(100% - 36px); }
+  .gameLayout { grid-template-columns: minmax(0, 1fr) 260px; gap: 16px; }
+  .forestTop { padding: 20px 18px 0; }
+  .forestTop h2 { font-size: 20px; }
+  .season { padding: 6px 10px; }
+  .basket { padding: 18px; }
+  .basketTitle > span { display: none; }
+  .placeRow { flex-direction: column; align-items: stretch; }
+  .placeRow p { max-width: none; }
+  .friendGrid { grid-template-columns: repeat(4, 1fr); }
+  .boardFooter { padding: 0 16px 12px; flex-wrap: wrap; }
+}
+@media (max-width: 640px) {
+  .previewNote { font-size: 11px; padding: 8px 16px; }
+  .shell { width: calc(100% - 28px); }
+  .nav { height: 72px; }
+  .wordmark { font-size: 18px; }
+  .back { font-size: 12px; }
+  .catalogLink { display: none; }
+  .intro { padding: 32px 6px 28px; display: block; }
+  .intro h1 { font-size: 40px; }
+  .introText { font-size: 14px; margin-top: 20px; }
+  .introText br { display: none; }
+  .introText span { margin-top: 8px; font-size: 12px; }
+  .gameLayout { grid-template-columns: 1fr; }
+  .forest { border-radius: 22px; }
+  .forestTop { padding: 18px 16px 0; }
+  .forestTop .eyebrow { font-size: 9px; }
+  .season { font-size: 11px; }
+  .board { aspect-ratio: 1.02; }
+  .emptyHex { border-radius: 12px; }
+  .boardFooter { font-size: 11px; gap: 0; }
+  .terrainChoices { gap: 8px; }
+  .terrainChoice { border-radius: 10px; }
+  .terrainChoice > span { font-size: 12px; }
+  .basket { padding: 16px 12px; }
+  .placeRow p { min-height: 40px; font-size: 13px; }
+  .primary { width: 100%; }
+  .side { grid-template-columns: 1fr; gap: 18px; margin-top: 4px; }
+  .animalCard { padding-top: 18px; }
+  .portrait { width: 235px; }
+  .animalCard p { min-height: 0; }
+  .visit { padding: 18px; }
+  .visitChoices { grid-template-columns: 1fr 1fr; }
+  .visitChoices button { flex-direction: column; padding: 14px 8px; font-size: 12px; }
+  .friends { padding: 42px 4px; }
+  .sectionHead { display: block; }
+  .sectionHead h2 { font-size: 25px; }
+  .friendGrid { grid-template-columns: repeat(3, 1fr); gap: 19px 8px; }
+  .friend > span:nth-child(2) { font-size: 14px; }
+  .friend small { font-size: 10px; }
+  .mobilePortrait { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: 28px; border-radius: 22px; background: #ecebdc; padding: 8px 14px 20px; }
+  .mobilePortrait svg { width: 200px; height: 200px; }
+  .mobilePortrait p { font-size: 14px; margin: 0; }
+  .mobilePortrait strong { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) { .page *, .page *::before, .page *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }

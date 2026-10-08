@@ -1,0 +1,1912 @@
+{
+  "formatVersion": 1,
+  "engineSha256": "683d75ec6a36e780135c494d98611728a2913514a07841b5579af673d0ea6492",
+  "stage": "validate",
+  "startedAt": "2026-10-08T00:22:58.683Z",
+  "updatedAt": "2026-10-08T00:26:57.837Z",
+  "runs": 1000,
+  "seedBase": 314159,
+  "tools": false,
+  "order": "SEAT",
+  "skill": "GREEDY",
+  "candidates": [
+    {
+      "id": "alternate-s1-w2-r2-t1-d1",
+      "rules": {
+        "version": "prototype-1",
+        "stayReceiverHearts": 1,
+        "staySenderLeaves": 1,
+        "walkReceiverLeaves": 2,
+        "walkSenderLeaves": 1,
+        "pathCompletionReceiverLeaves": 2,
+        "pathCompletionSenderLeaves": 1,
+        "pathCap": 3,
+        "draftDeadlineMs": 60000,
+        "visitSelectDeadlineMs": 30000,
+        "visitResponseDeadlineMs": 20000,
+        "revealDurationMs": 1800,
+        "forfeitClaimDelayMs": 180000,
+        "balanceBonusHearts": 5,
+        "visitRouting": "ALTERNATE",
+        "visitorDiversityHearts": 1
+      }
+    }
+  ],
+  "cases": [
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "A_SHORTEST",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 348,
+          "winRate": 0.2608695652173913,
+          "tieSplitWinRate": 0.2563718140929535,
+          "meanScore": 24.75487256371814,
+          "meanIncoming": 3.1724137931034484,
+          "meanSent": 2.971514242878561,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 6.247376311844078
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 318,
+          "winRate": 0.2385596399099775,
+          "tieSplitWinRate": 0.23668417104276068,
+          "meanScore": 25.192048012003,
+          "meanIncoming": 2.806451612903226,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.277569392348087
+        },
+        "MIXED": {
+          "exposures": 1333,
+          "wins": 348,
+          "winRate": 0.26106526631657917,
+          "tieSplitWinRate": 0.2569392348087022,
+          "meanScore": 25.230307576894223,
+          "meanIncoming": 2.9624906226556638,
+          "meanSent": 2.9684921230307575,
+          "freeWalkRate": 0.5696932887944124,
+          "meanVisitPoints": 6.722430607651913
+        }
+      },
+      "winGap": 0.02250562640660167,
+      "incomingGap": 0.3659621802002224,
+      "freeRate": 0.8204999161214561,
+      "senderFreedom": 0.5829558798859251,
+      "farewellRate": 0.0012581781580271766,
+      "pathsPerGame": 1.032,
+      "pathScoreShare": 0.23500538728600504,
+      "visitorScoreShare": 0.25602577916117963,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.007518796992481203,
+        0.05747589694958119
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "A_SHORTEST",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 367,
+          "winRate": 0.22028811524609843,
+          "tieSplitWinRate": 0.21818727490996398,
+          "meanScore": 23.959783913565428,
+          "meanIncoming": 3.100840336134454,
+          "meanSent": 2.908763505402161,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 6.11344537815126
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 296,
+          "winRate": 0.1775644871025795,
+          "tieSplitWinRate": 0.17456508698260348,
+          "meanScore": 24.10857828434313,
+          "meanIncoming": 2.7390521895620874,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.139172165566887
+        },
+        "MIXED": {
+          "exposures": 1667,
+          "wins": 349,
+          "winRate": 0.20935812837432513,
+          "tieSplitWinRate": 0.20725854829034193,
+          "meanScore": 24.69466106778644,
+          "meanIncoming": 2.8650269946010796,
+          "meanSent": 2.9304139172165566,
+          "freeWalkRate": 0.5677729921459336,
+          "meanVisitPoints": 6.468506298740252
+        }
+      },
+      "winGap": 0.04272362814351893,
+      "incomingGap": 0.36178814657236646,
+      "freeRate": 0.8212710228839261,
+      "senderFreedom": 0.5816790736145575,
+      "farewellRate": 0.0013785497656465398,
+      "pathsPerGame": 1.23,
+      "pathScoreShare": 0.23654264793192162,
+      "visitorScoreShare": 0.2572893990368758,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.01736526946107783,
+        0.07152795131249862
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "A_SHORTEST",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 335,
+          "winRate": 0.1675,
+          "tieSplitWinRate": 0.16475,
+          "meanScore": 23.562,
+          "meanIncoming": 3.036,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.995
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 310,
+          "winRate": 0.155,
+          "tieSplitWinRate": 0.1515,
+          "meanScore": 23.8155,
+          "meanIncoming": 2.6685,
+          "meanSent": 2.853,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 5.953
+        },
+        "MIXED": {
+          "exposures": 2000,
+          "wins": 374,
+          "winRate": 0.187,
+          "tieSplitWinRate": 0.18375,
+          "meanScore": 24.0595,
+          "meanIncoming": 2.8635,
+          "meanSent": 2.8545,
+          "freeWalkRate": 0.5707081319604959,
+          "meanVisitPoints": 6.4815
+        }
+      },
+      "winGap": 0.032,
+      "incomingGap": 0.36750000000000016,
+      "freeRate": 0.825688608776844,
+      "senderFreedom": 0.585142390289449,
+      "farewellRate": 0.001342203548085901,
+      "pathsPerGame": 1.447,
+      "pathScoreShare": 0.2363481109229111,
+      "visitorScoreShare": 0.2579825580581491,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.00899999999999998,
+        0.05399999999999999
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "B_RANDOM",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 314,
+          "winRate": 0.2353823088455772,
+          "tieSplitWinRate": 0.2331334332833583,
+          "meanScore": 24.43928035982009,
+          "meanIncoming": 2.970014992503748,
+          "meanSent": 2.973013493253373,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.883058470764618
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 345,
+          "winRate": 0.25881470367591897,
+          "tieSplitWinRate": 0.2576894223555889,
+          "meanScore": 25.79819954988747,
+          "meanIncoming": 3.0015003750937734,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.849962490622656
+        },
+        "MIXED": {
+          "exposures": 1333,
+          "wins": 349,
+          "winRate": 0.2618154538634659,
+          "tieSplitWinRate": 0.2591897974493623,
+          "meanScore": 25.365341335333834,
+          "meanIncoming": 2.9722430607651913,
+          "meanSent": 2.9692423105776444,
+          "freeWalkRate": 0.5902045877247365,
+          "meanVisitPoints": 6.7944486121530385
+        }
+      },
+      "winGap": 0.026433145017888682,
+      "incomingGap": 0.031485382590025424,
+      "freeRate": 0.8084696016771489,
+      "senderFreedom": 0.5829769392033544,
+      "farewellRate": 0.0022641509433962265,
+      "pathsPerGame": 1.208,
+      "pathScoreShare": 0.24279039314306122,
+      "visitorScoreShare": 0.2582859637113975,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.007501875468867242,
+        0.06348077400708979
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "B_RANDOM",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 308,
+          "winRate": 0.18487394957983194,
+          "tieSplitWinRate": 0.18247298919567828,
+          "meanScore": 23.66386554621849,
+          "meanIncoming": 2.911764705882353,
+          "meanSent": 2.909363745498199,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.756302521008403
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 351,
+          "winRate": 0.21055788842231554,
+          "tieSplitWinRate": 0.20785842831433712,
+          "meanScore": 24.646670665866825,
+          "meanIncoming": 2.905218956208758,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.631673665266947
+        },
+        "MIXED": {
+          "exposures": 1667,
+          "wins": 354,
+          "winRate": 0.21235752849430115,
+          "tieSplitWinRate": 0.20965806838632273,
+          "meanScore": 24.896820635872825,
+          "meanIncoming": 2.8878224355128976,
+          "meanSent": 2.9298140371925614,
+          "freeWalkRate": 0.5886010362694301,
+          "meanVisitPoints": 6.632273545290942
+        }
+      },
+      "winGap": 0.027483578914469203,
+      "incomingGap": 0.023942270369455176,
+      "freeRate": 0.8047284256961676,
+      "senderFreedom": 0.5816790736145575,
+      "farewellRate": 0.0028949545078577337,
+      "pathsPerGame": 1.474,
+      "pathScoreShare": 0.24540827616729366,
+      "visitorScoreShare": 0.2598165769221312,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.010467289178931777,
+        0.059880239520958084
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "B_RANDOM",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 310,
+          "winRate": 0.155,
+          "tieSplitWinRate": 0.1525,
+          "meanScore": 23.2615,
+          "meanIncoming": 2.8625,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.6625
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 355,
+          "winRate": 0.1775,
+          "tieSplitWinRate": 0.17525,
+          "meanScore": 24.358,
+          "meanIncoming": 2.8445,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.4995
+        },
+        "MIXED": {
+          "exposures": 2000,
+          "wins": 350,
+          "winRate": 0.175,
+          "tieSplitWinRate": 0.17225,
+          "meanScore": 24.0855,
+          "meanIncoming": 2.861,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.5752920813500649,
+          "meanVisitPoints": 6.4505
+        }
+      },
+      "winGap": 0.022499999999999992,
+      "incomingGap": 0.017999999999999794,
+      "freeRate": 0.808765172735761,
+      "senderFreedom": 0.5852591036414565,
+      "farewellRate": 0.0027427637721755367,
+      "pathsPerGame": 1.626,
+      "pathScoreShare": 0.24197057387908794,
+      "visitorScoreShare": 0.259570462310857,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.008016032064128265,
+        0.048000000000000015
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 274,
+          "winRate": 0.20539730134932535,
+          "tieSplitWinRate": 0.20314842578710646,
+          "meanScore": 24.4047976011994,
+          "meanIncoming": 2.922038980509745,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.782608695652174
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 380,
+          "winRate": 0.28507126781695424,
+          "tieSplitWinRate": 0.28169542385596397,
+          "meanScore": 26.131282820705177,
+          "meanIncoming": 3.083270817704426,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.162790697674419
+        },
+        "MIXED": {
+          "exposures": 1333,
+          "wins": 358,
+          "winRate": 0.2685671417854464,
+          "tieSplitWinRate": 0.2651912978244561,
+          "meanScore": 25.45536384096024,
+          "meanIncoming": 2.9369842460615154,
+          "meanSent": 2.9684921230307575,
+          "freeWalkRate": 0.6144278606965174,
+          "meanVisitPoints": 6.851462865716429
+        }
+      },
+      "winGap": 0.07967396646762889,
+      "incomingGap": 0.16123183719468104,
+      "freeRate": 0.8074310156839721,
+      "senderFreedom": 0.5829908580055355,
+      "farewellRate": 0.0030193743185439907,
+      "pathsPerGame": 1.383,
+      "pathScoreShare": 0.25176419498425795,
+      "visitorScoreShare": 0.26050868033280367,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.04743277273591265,
+        0.11641628548066552
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 296,
+          "winRate": 0.17767106842737096,
+          "tieSplitWinRate": 0.17647058823529413,
+          "meanScore": 23.584633853541416,
+          "meanIncoming": 2.859543817527011,
+          "meanSent": 2.9063625450180073,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.657863145258103
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 370,
+          "winRate": 0.22195560887822435,
+          "tieSplitWinRate": 0.22015596880623875,
+          "meanScore": 24.925614877024596,
+          "meanIncoming": 2.9592081583683263,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.899820035992802
+        },
+        "MIXED": {
+          "exposures": 1667,
+          "wins": 343,
+          "winRate": 0.20575884823035392,
+          "tieSplitWinRate": 0.20335932813437313,
+          "meanScore": 25.004199160167968,
+          "meanIncoming": 2.8824235152969404,
+          "meanSent": 2.929214157168566,
+          "freeWalkRate": 0.6126380683277678,
+          "meanVisitPoints": 6.682663467306539
+        }
+      },
+      "winGap": 0.044284540450853394,
+      "incomingGap": 0.09966434084131537,
+      "freeRate": 0.8127154875189629,
+      "senderFreedom": 0.5818507792028687,
+      "farewellRate": 0.0021376361881119844,
+      "pathsPerGame": 1.657,
+      "pathScoreShare": 0.252805549887778,
+      "visitorScoreShare": 0.26172617833095285,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.019161676646706566,
+        0.07437712831588802
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 270,
+          "winRate": 0.135,
+          "tieSplitWinRate": 0.1315,
+          "meanScore": 23.1655,
+          "meanIncoming": 2.7735,
+          "meanSent": 2.8615,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.505
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 388,
+          "winRate": 0.194,
+          "tieSplitWinRate": 0.19025,
+          "meanScore": 24.7535,
+          "meanIncoming": 2.93,
+          "meanSent": 2.853,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.835
+        },
+        "MIXED": {
+          "exposures": 2000,
+          "wins": 359,
+          "winRate": 0.1795,
+          "tieSplitWinRate": 0.17825,
+          "meanScore": 24.3355,
+          "meanIncoming": 2.866,
+          "meanSent": 2.855,
+          "freeWalkRate": 0.6040904198062432,
+          "meanVisitPoints": 6.6425
+        }
+      },
+      "winGap": 0.059,
+      "incomingGap": 0.1565000000000003,
+      "freeRate": 0.8106073866619989,
+      "senderFreedom": 0.5850983137872687,
+      "farewellRate": 0.0022171655289106714,
+      "pathsPerGame": 1.965,
+      "pathScoreShare": 0.25337522230449316,
+      "visitorScoreShare": 0.2627172010047817,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.035928143712574856,
+        0.08466933867735472
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "D_LOW_SCORE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 306,
+          "winRate": 0.22938530734632684,
+          "tieSplitWinRate": 0.2252623688155922,
+          "meanScore": 24.4407796101949,
+          "meanIncoming": 2.9835082458770614,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.9032983508245875
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 354,
+          "winRate": 0.26556639159789946,
+          "tieSplitWinRate": 0.26481620405101275,
+          "meanScore": 25.765191297824455,
+          "meanIncoming": 2.9834958739684923,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.801950487621905
+        },
+        "MIXED": {
+          "exposures": 1333,
+          "wins": 353,
+          "winRate": 0.26481620405101275,
+          "tieSplitWinRate": 0.25993998499624904,
+          "meanScore": 25.41635408852213,
+          "meanIncoming": 2.9767441860465116,
+          "meanSent": 2.969992498124531,
+          "freeWalkRate": 0.5989551321450522,
+          "meanVisitPoints": 6.840210052513128
+        }
+      },
+      "winGap": 0.036181084251572626,
+      "incomingGap": 0.00676405983054984,
+      "freeRate": 0.8162683438155136,
+      "senderFreedom": 0.5828930817610063,
+      "farewellRate": 0.0016771488469601676,
+      "pathsPerGame": 1.212,
+      "pathScoreShare": 0.24704202164059944,
+      "visitorScoreShare": 0.2584573882513959,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.012724550898203596,
+        0.08000970895707735
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "D_LOW_SCORE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 319,
+          "winRate": 0.1914765906362545,
+          "tieSplitWinRate": 0.18967587034813926,
+          "meanScore": 23.64405762304922,
+          "meanIncoming": 2.9141656662665065,
+          "meanSent": 2.910564225690276,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.767707082833133
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 331,
+          "winRate": 0.1985602879424115,
+          "tieSplitWinRate": 0.1931613677264547,
+          "meanScore": 24.663467306538692,
+          "meanIncoming": 2.9022195560887822,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.620275944811038
+        },
+        "MIXED": {
+          "exposures": 1667,
+          "wins": 370,
+          "winRate": 0.22195560887822435,
+          "tieSplitWinRate": 0.21715656868626274,
+          "meanScore": 24.894421115776844,
+          "meanIncoming": 2.890221955608878,
+          "meanSent": 2.9304139172165566,
+          "freeWalkRate": 0.5977186311787073,
+          "meanVisitPoints": 6.62747450509898
+        }
+      },
+      "winGap": 0.030479018241969857,
+      "incomingGap": 0.023943710657628348,
+      "freeRate": 0.8190338363999724,
+      "senderFreedom": 0.5816966439252981,
+      "farewellRate": 0.0017228309558266143,
+      "pathsPerGame": 1.459,
+      "pathScoreShare": 0.2486721746827973,
+      "visitorScoreShare": 0.25977017146978787,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.009478536465576032,
+        0.062275449101796415
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "D_LOW_SCORE",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 298,
+          "winRate": 0.149,
+          "tieSplitWinRate": 0.146,
+          "meanScore": 23.248,
+          "meanIncoming": 2.8595,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.6715
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 341,
+          "winRate": 0.1705,
+          "tieSplitWinRate": 0.16583333333333333,
+          "meanScore": 24.324,
+          "meanIncoming": 2.8365,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.4105
+        },
+        "MIXED": {
+          "exposures": 2000,
+          "wins": 386,
+          "winRate": 0.193,
+          "tieSplitWinRate": 0.18816666666666665,
+          "meanScore": 24.1785,
+          "meanIncoming": 2.872,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.5879492600422833,
+          "meanVisitPoints": 6.5645
+        }
+      },
+      "winGap": 0.04400000000000001,
+      "incomingGap": 0.035499999999999865,
+      "freeRate": 0.8239962651727357,
+      "senderFreedom": 0.5852591036414565,
+      "farewellRate": 0.0019257703081232494,
+      "pathsPerGame": 1.645,
+      "pathScoreShare": 0.2456637932836705,
+      "visitorScoreShare": 0.25987972209252896,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.021956087824351295,
+        0.06836327345309381
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "HETEROGENEOUS",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 305,
+          "winRate": 0.22863568215892055,
+          "tieSplitWinRate": 0.22563718140929534,
+          "meanScore": 24.496251874062967,
+          "meanIncoming": 3.007496251874063,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.935532233883058
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 349,
+          "winRate": 0.2618154538634659,
+          "tieSplitWinRate": 0.25881470367591897,
+          "meanScore": 25.739684921230307,
+          "meanIncoming": 2.9692423105776444,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.785446361590398
+        },
+        "MIXED": {
+          "exposures": 1333,
+          "wins": 362,
+          "winRate": 0.27156789197299325,
+          "tieSplitWinRate": 0.26556639159789946,
+          "meanScore": 25.364591147786946,
+          "meanIncoming": 2.966991747936984,
+          "meanSent": 2.969992498124531,
+          "freeWalkRate": 0.5889060092449923,
+          "meanVisitPoints": 6.804951237809452
+        }
+      },
+      "winGap": 0.0429322098140727,
+      "incomingGap": 0.04050450393707905,
+      "freeRate": 0.8128301886792453,
+      "senderFreedom": 0.5828930817610063,
+      "farewellRate": 0.0020964360587002098,
+      "pathsPerGame": 1.205,
+      "pathScoreShare": 0.24369047619047618,
+      "visitorScoreShare": 0.2582738095238095,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.01422155688622756,
+        0.08226760595181648
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "HETEROGENEOUS",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 311,
+          "winRate": 0.18667466986794717,
+          "tieSplitWinRate": 0.18547418967587034,
+          "meanScore": 23.721488595438174,
+          "meanIncoming": 2.9459783913565425,
+          "meanSent": 2.908763505402161,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.830732292917167
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 335,
+          "winRate": 0.20095980803839233,
+          "tieSplitWinRate": 0.19766046790641872,
+          "meanScore": 24.59088182363527,
+          "meanIncoming": 2.871625674865027,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.570485902819436
+        },
+        "MIXED": {
+          "exposures": 1667,
+          "wins": 365,
+          "winRate": 0.21895620875824834,
+          "tieSplitWinRate": 0.21685662867426514,
+          "meanScore": 24.88962207558488,
+          "meanIncoming": 2.886622675464907,
+          "meanSent": 2.9298140371925614,
+          "freeWalkRate": 0.5945254540803274,
+          "meanVisitPoints": 6.622675464907019
+        }
+      },
+      "winGap": 0.032281538890301165,
+      "incomingGap": 0.07435271649151565,
+      "freeRate": 0.813607224098711,
+      "senderFreedom": 0.5817881022954436,
+      "farewellRate": 0.001723305990211622,
+      "pathsPerGame": 1.47,
+      "pathScoreShare": 0.2463853644142815,
+      "visitorScoreShare": 0.25988492180584244,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.010179640718562866,
+        0.06168358165101673
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "HETEROGENEOUS",
+      "cohort": "CORE",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 309,
+          "winRate": 0.1545,
+          "tieSplitWinRate": 0.15075,
+          "meanScore": 23.3475,
+          "meanIncoming": 2.8945,
+          "meanSent": 2.8615,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.7505
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 353,
+          "winRate": 0.1765,
+          "tieSplitWinRate": 0.173,
+          "meanScore": 24.3325,
+          "meanIncoming": 2.824,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.445
+        },
+        "MIXED": {
+          "exposures": 2000,
+          "wins": 357,
+          "winRate": 0.1785,
+          "tieSplitWinRate": 0.17625,
+          "meanScore": 24.142,
+          "meanIncoming": 2.8505,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.5890119250425895,
+          "meanVisitPoints": 6.497
+        }
+      },
+      "winGap": 0.023999999999999994,
+      "incomingGap": 0.07050000000000001,
+      "freeRate": 0.8204574629478352,
+      "senderFreedom": 0.585249153926946,
+      "farewellRate": 0.0022756447660170383,
+      "pathsPerGame": 1.688,
+      "pathScoreShare": 0.24479268190805045,
+      "visitorScoreShare": 0.26026147976943,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.007499999999999979,
+        0.05170682730923695
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "A_SHORTEST",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 332,
+          "winRate": 0.24887556221889057,
+          "tieSplitWinRate": 0.24700149925037482,
+          "meanScore": 24.839580209895054,
+          "meanIncoming": 3.1971514242878563,
+          "meanSent": 2.971514242878561,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 6.321589205397301
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 345,
+          "winRate": 0.25881470367591897,
+          "tieSplitWinRate": 0.2558139534883721,
+          "meanScore": 25.602400600150037,
+          "meanIncoming": 2.892723180795199,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.682670667666916
+        },
+        "ADAPTIVE": {
+          "exposures": 1333,
+          "wins": 333,
+          "winRate": 0.24981245311327832,
+          "tieSplitWinRate": 0.2471867966991748,
+          "meanScore": 25.305326331582897,
+          "meanIncoming": 2.851462865716429,
+          "meanSent": 2.9684921230307575,
+          "freeWalkRate": 0.8547308059891685,
+          "meanVisitPoints": 6.632408102025506
+        }
+      },
+      "winGap": 0.0099391414570284,
+      "incomingGap": 0.34568855857142733,
+      "freeRate": 0.8174802885421909,
+      "adaptiveWalkRate": 0.8547308059891685,
+      "senderFreedom": 0.5829558798859251,
+      "farewellRate": 0.0011742996141586982,
+      "pathsPerGame": 1.275,
+      "pathScoreShare": 0.26665412491583823,
+      "visitorScoreShare": 0.25923798962335143,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.0048793154056311905,
+        0.05239520958083835
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "A_SHORTEST",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 354,
+          "winRate": 0.21248499399759904,
+          "tieSplitWinRate": 0.2118847539015606,
+          "meanScore": 24.073829531812724,
+          "meanIncoming": 3.1380552220888354,
+          "meanSent": 2.908763505402161,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 6.217286914765906
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 332,
+          "winRate": 0.19916016796640673,
+          "tieSplitWinRate": 0.1949610077984403,
+          "meanScore": 24.4751049790042,
+          "meanIncoming": 2.8020395920815835,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.497900419916017
+        },
+        "ADAPTIVE": {
+          "exposures": 1667,
+          "wins": 327,
+          "winRate": 0.19616076784643072,
+          "tieSplitWinRate": 0.1931613677264547,
+          "meanScore": 24.772645470905818,
+          "meanIncoming": 2.7648470305938813,
+          "meanSent": 2.9304139172165566,
+          "freeWalkRate": 0.8458289334741288,
+          "meanVisitPoints": 6.385122975404919
+        }
+      },
+      "winGap": 0.016324226151168325,
+      "incomingGap": 0.3732081914949541,
+      "freeRate": 0.8189964157706093,
+      "adaptiveWalkRate": 0.8458289334741288,
+      "senderFreedom": 0.5816790736145575,
+      "farewellRate": 0.0013785497656465398,
+      "pathsPerGame": 1.529,
+      "pathScoreShare": 0.26687560861844634,
+      "visitorScoreShare": 0.2605009696979616,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.004206730769230754,
+        0.05149700598802395
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "A_SHORTEST",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 329,
+          "winRate": 0.1645,
+          "tieSplitWinRate": 0.16075,
+          "meanScore": 23.6405,
+          "meanIncoming": 3.0625,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 6.0675
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 339,
+          "winRate": 0.1695,
+          "tieSplitWinRate": 0.1645,
+          "meanScore": 24.1665,
+          "meanIncoming": 2.734,
+          "meanSent": 2.853,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.297
+        },
+        "ADAPTIVE": {
+          "exposures": 2000,
+          "wins": 358,
+          "winRate": 0.179,
+          "tieSplitWinRate": 0.17475,
+          "meanScore": 24.122,
+          "meanIncoming": 2.7725,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.8432055749128919,
+          "meanVisitPoints": 6.3955
+        }
+      },
+      "winGap": 0.014499999999999985,
+      "incomingGap": 0.3285,
+      "freeRate": 0.8247170031508928,
+      "adaptiveWalkRate": 0.8432055749128919,
+      "senderFreedom": 0.5851324541953553,
+      "farewellRate": 0.0012836970474967907,
+      "pathsPerGame": 1.762,
+      "pathScoreShare": 0.2668673275035104,
+      "visitorScoreShare": 0.2608127459022091,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.0034999999999999754,
+        0.03992015968063872
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "B_RANDOM",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 301,
+          "winRate": 0.22563718140929534,
+          "tieSplitWinRate": 0.22376311844077962,
+          "meanScore": 24.476011994003,
+          "meanIncoming": 2.970014992503748,
+          "meanSent": 2.973013493253373,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.9077961019490255
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 361,
+          "winRate": 0.27081770442610653,
+          "tieSplitWinRate": 0.26744186046511625,
+          "meanScore": 25.98574643660915,
+          "meanIncoming": 3.0015003750937734,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.016504126031508
+        },
+        "ADAPTIVE": {
+          "exposures": 1333,
+          "wins": 348,
+          "winRate": 0.26106526631657917,
+          "tieSplitWinRate": 0.25881470367591897,
+          "meanScore": 25.671417854463616,
+          "meanIncoming": 2.9722430607651913,
+          "meanSent": 2.9692423105776444,
+          "freeWalkRate": 0.8350997506234414,
+          "meanVisitPoints": 6.9684921230307575
+        }
+      },
+      "winGap": 0.04518052301681119,
+      "incomingGap": 0.031485382590025424,
+      "freeRate": 0.8050314465408805,
+      "adaptiveWalkRate": 0.8350997506234414,
+      "senderFreedom": 0.5829769392033544,
+      "farewellRate": 0.0022641509433962265,
+      "pathsPerGame": 1.43,
+      "pathScoreShare": 0.2694414343414442,
+      "visitorScoreShare": 0.2612846025022165,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.017332328560663135,
+        0.08233532934131735
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "B_RANDOM",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 298,
+          "winRate": 0.1788715486194478,
+          "tieSplitWinRate": 0.17707082833133253,
+          "meanScore": 23.69267707082833,
+          "meanIncoming": 2.911764705882353,
+          "meanSent": 2.909363745498199,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.774309723889556
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 351,
+          "winRate": 0.21055788842231554,
+          "tieSplitWinRate": 0.20785842831433712,
+          "meanScore": 24.814637072585484,
+          "meanIncoming": 2.9058188362327533,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.790641871625675
+        },
+        "ADAPTIVE": {
+          "exposures": 1667,
+          "wins": 362,
+          "winRate": 0.21715656868626274,
+          "tieSplitWinRate": 0.21505698860227954,
+          "meanScore": 25.184763047390522,
+          "meanIncoming": 2.8878224355128976,
+          "meanSent": 2.9304139172165566,
+          "freeWalkRate": 0.8363731109953101,
+          "meanVisitPoints": 6.784043191361728
+        }
+      },
+      "winGap": 0.038285020066814945,
+      "incomingGap": 0.023942270369455176,
+      "freeRate": 0.8015025156799228,
+      "adaptiveWalkRate": 0.8363731109953101,
+      "senderFreedom": 0.5816389827003929,
+      "farewellRate": 0.0028258322420566546,
+      "pathsPerGame": 1.73,
+      "pathScoreShare": 0.27190789848641517,
+      "visitorScoreShare": 0.26256910463194405,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.01952222599056333,
+        0.06948454246725683
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "B_RANDOM",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 298,
+          "winRate": 0.149,
+          "tieSplitWinRate": 0.148,
+          "meanScore": 23.294,
+          "meanIncoming": 2.8625,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.686
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 357,
+          "winRate": 0.1785,
+          "tieSplitWinRate": 0.177,
+          "meanScore": 24.5135,
+          "meanIncoming": 2.8445,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.6365
+        },
+        "ADAPTIVE": {
+          "exposures": 2000,
+          "wins": 354,
+          "winRate": 0.177,
+          "tieSplitWinRate": 0.175,
+          "meanScore": 24.3685,
+          "meanIncoming": 2.861,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.8351743556421919,
+          "meanVisitPoints": 6.6095
+        }
+      },
+      "winGap": 0.0295,
+      "incomingGap": 0.017999999999999794,
+      "freeRate": 0.8068394024276377,
+      "adaptiveWalkRate": 0.8351743556421919,
+      "senderFreedom": 0.5852591036414565,
+      "farewellRate": 0.0027427637721755367,
+      "pathsPerGame": 1.929,
+      "pathScoreShare": 0.27035995344712926,
+      "visitorScoreShare": 0.2623032587009532,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.013499999999999984,
+        0.05471887550200802
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 259,
+          "winRate": 0.19415292353823088,
+          "tieSplitWinRate": 0.1934032983508246,
+          "meanScore": 24.34407796101949,
+          "meanIncoming": 2.8770614692653673,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.711394302848576
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 376,
+          "winRate": 0.2820705176294073,
+          "tieSplitWinRate": 0.2786946736684171,
+          "meanScore": 26.288822205551387,
+          "meanIncoming": 3.061515378844711,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.295573893473368
+        },
+        "ADAPTIVE": {
+          "exposures": 1333,
+          "wins": 373,
+          "winRate": 0.2798199549887472,
+          "tieSplitWinRate": 0.2779444861215304,
+          "meanScore": 25.920480120030007,
+          "meanIncoming": 3.003750937734434,
+          "meanSent": 2.9684921230307575,
+          "freeWalkRate": 0.8481051344743277,
+          "meanVisitPoints": 7.171042760690172
+        }
+      },
+      "winGap": 0.08791759409117644,
+      "incomingGap": 0.18445390957934382,
+      "freeRate": 0.8039084123123375,
+      "adaptiveWalkRate": 0.8481051344743277,
+      "senderFreedom": 0.5829908580055355,
+      "farewellRate": 0.0029355028096955463,
+      "pathsPerGame": 1.624,
+      "pathScoreShare": 0.27889683550504557,
+      "visitorScoreShare": 0.26357401783090034,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.0592687445818767,
+        0.12425149700598803
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 273,
+          "winRate": 0.1638655462184874,
+          "tieSplitWinRate": 0.16326530612244897,
+          "meanScore": 23.540216086434572,
+          "meanIncoming": 2.824129651860744,
+          "meanSent": 2.9063625450180073,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.604441776710685
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 375,
+          "winRate": 0.22495500899820037,
+          "tieSplitWinRate": 0.22165566886622676,
+          "meanScore": 25.07258548290342,
+          "meanIncoming": 2.9472105578884222,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.028194361127775
+        },
+        "ADAPTIVE": {
+          "exposures": 1667,
+          "wins": 364,
+          "winRate": 0.21835632873425315,
+          "tieSplitWinRate": 0.21505698860227954,
+          "meanScore": 25.416916616676666,
+          "meanIncoming": 2.9304139172165566,
+          "meanSent": 2.9298140371925614,
+          "freeWalkRate": 0.8468354430379746,
+          "meanVisitPoints": 6.9562087582483505
+        }
+      },
+      "winGap": 0.06108946277971297,
+      "incomingGap": 0.12308090602767807,
+      "freeRate": 0.8101082534648004,
+      "adaptiveWalkRate": 0.8468354430379746,
+      "senderFreedom": 0.5818106598634765,
+      "farewellRate": 0.0019995862924912086,
+      "pathsPerGame": 1.931,
+      "pathScoreShare": 0.279712118264929,
+      "visitorScoreShare": 0.264612915775141,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.03648537999482934,
+        0.09281437125748504
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 256,
+          "winRate": 0.128,
+          "tieSplitWinRate": 0.12508333333333332,
+          "meanScore": 23.0965,
+          "meanIncoming": 2.7225,
+          "meanSent": 2.8615,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.427
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 384,
+          "winRate": 0.192,
+          "tieSplitWinRate": 0.18566666666666667,
+          "meanScore": 24.8975,
+          "meanIncoming": 2.9195,
+          "meanSent": 2.853,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.9615
+        },
+        "ADAPTIVE": {
+          "exposures": 2000,
+          "wins": 387,
+          "winRate": 0.1935,
+          "tieSplitWinRate": 0.18925,
+          "meanScore": 24.753,
+          "meanIncoming": 2.928,
+          "meanSent": 2.8555,
+          "freeWalkRate": 0.8429717180244829,
+          "meanVisitPoints": 6.9265
+        }
+      },
+      "winGap": 0.0655,
+      "incomingGap": 0.2054999999999998,
+      "freeRate": 0.8092765460910152,
+      "adaptiveWalkRate": 0.8429717180244829,
+      "senderFreedom": 0.5851225204200701,
+      "farewellRate": 0.002333722287047841,
+      "pathsPerGame": 2.283,
+      "pathScoreShare": 0.2815580023918512,
+      "visitorScoreShare": 0.265509230621194,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.04990019960079842,
+        0.09231536926147706
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "D_LOW_SCORE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 289,
+          "winRate": 0.2166416791604198,
+          "tieSplitWinRate": 0.21401799100449775,
+          "meanScore": 24.488005997001498,
+          "meanIncoming": 2.9865067466266866,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.942278860569715
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 368,
+          "winRate": 0.2760690172543136,
+          "tieSplitWinRate": 0.27344336084021004,
+          "meanScore": 26.05026256564141,
+          "meanIncoming": 2.9872468117029256,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.0765191297824455
+        },
+        "ADAPTIVE": {
+          "exposures": 1333,
+          "wins": 355,
+          "winRate": 0.2663165791447862,
+          "tieSplitWinRate": 0.2625656414103526,
+          "meanScore": 25.786196549137284,
+          "meanIncoming": 2.969992498124531,
+          "meanSent": 2.969992498124531,
+          "freeWalkRate": 0.8681047765793528,
+          "meanVisitPoints": 7.003750937734433
+        }
+      },
+      "winGap": 0.059427338093893806,
+      "incomingGap": 0.017254313578394687,
+      "freeRate": 0.8150104821802935,
+      "adaptiveWalkRate": 0.8681047765793528,
+      "senderFreedom": 0.5828930817610063,
+      "farewellRate": 0.0015932914046121593,
+      "pathsPerGame": 1.514,
+      "pathScoreShare": 0.2784650911413551,
+      "visitorScoreShare": 0.26232987765931315,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.029940119760479028,
+        0.10179640718562871
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "D_LOW_SCORE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 295,
+          "winRate": 0.17707082833133253,
+          "tieSplitWinRate": 0.17617046818727491,
+          "meanScore": 23.67406962785114,
+          "meanIncoming": 2.9183673469387754,
+          "meanSent": 2.910564225690276,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.7899159663865545
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 350,
+          "winRate": 0.20995800839832032,
+          "tieSplitWinRate": 0.20245950809838031,
+          "meanScore": 24.8872225554889,
+          "meanIncoming": 2.9034193161367727,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.839832033593281
+        },
+        "ADAPTIVE": {
+          "exposures": 1667,
+          "wins": 381,
+          "winRate": 0.22855428914217157,
+          "tieSplitWinRate": 0.22135572885422916,
+          "meanScore": 25.239352129574087,
+          "meanIncoming": 2.8848230353929214,
+          "meanSent": 2.9304139172165566,
+          "freeWalkRate": 0.8608430675469781,
+          "meanVisitPoints": 6.79124175164967
+        }
+      },
+      "winGap": 0.05148346081083904,
+      "incomingGap": 0.03354431154585402,
+      "freeRate": 0.8184136172558748,
+      "adaptiveWalkRate": 0.8608430675469781,
+      "senderFreedom": 0.5816966439252981,
+      "farewellRate": 0.0016539177175935497,
+      "pathsPerGame": 1.781,
+      "pathScoreShare": 0.2790198533357181,
+      "visitorScoreShare": 0.2631583226289003,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.022836538461538464,
+        0.08328430352344898
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "D_LOW_SCORE",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 280,
+          "winRate": 0.14,
+          "tieSplitWinRate": 0.13825,
+          "meanScore": 23.276,
+          "meanIncoming": 2.8635,
+          "meanSent": 2.8605,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.6925
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 365,
+          "winRate": 0.1825,
+          "tieSplitWinRate": 0.17524999999999996,
+          "meanScore": 24.543,
+          "meanIncoming": 2.8385,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.624
+        },
+        "ADAPTIVE": {
+          "exposures": 2000,
+          "wins": 385,
+          "winRate": 0.1925,
+          "tieSplitWinRate": 0.18649999999999997,
+          "meanScore": 24.5055,
+          "meanIncoming": 2.8665,
+          "meanSent": 2.856,
+          "freeWalkRate": 0.8517503163222269,
+          "meanVisitPoints": 6.7155
+        }
+      },
+      "winGap": 0.05249999999999999,
+      "incomingGap": 0.028000000000000025,
+      "freeRate": 0.8247651280854292,
+      "adaptiveWalkRate": 0.8517503163222269,
+      "senderFreedom": 0.5852833051292525,
+      "farewellRate": 0.0020423644745287974,
+      "pathsPerGame": 2.018,
+      "pathScoreShare": 0.2764208532378378,
+      "visitorScoreShare": 0.26314734287827773,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.033066132264529036,
+        0.07734530938123751
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 4,
+      "sender": "HETEROGENEOUS",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1334,
+          "wins": 288,
+          "winRate": 0.2158920539730135,
+          "tieSplitWinRate": 0.21476761619190404,
+          "meanScore": 24.520989505247375,
+          "meanIncoming": 3.0037481259370313,
+          "meanSent": 2.972263868065967,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.951274362818591
+        },
+        "WALK": {
+          "exposures": 1333,
+          "wins": 355,
+          "winRate": 0.2663165791447862,
+          "tieSplitWinRate": 0.26406601650412603,
+          "meanScore": 26.01425356339085,
+          "meanIncoming": 2.989497374343586,
+          "meanSent": 3.0015003750937734,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 7.034508627156789
+        },
+        "ADAPTIVE": {
+          "exposures": 1333,
+          "wins": 366,
+          "winRate": 0.2745686421605401,
+          "tieSplitWinRate": 0.2711927981995499,
+          "meanScore": 25.68867216804201,
+          "meanIncoming": 2.9504876219054763,
+          "meanSent": 2.969992498124531,
+          "freeWalkRate": 0.8566096423017108,
+          "meanVisitPoints": 6.965491372843211
+        }
+      },
+      "winGap": 0.05867658818752661,
+      "incomingGap": 0.05326050403155502,
+      "freeRate": 0.8115723270440252,
+      "adaptiveWalkRate": 0.8566096423017108,
+      "senderFreedom": 0.5828930817610063,
+      "farewellRate": 0.0019287211740041928,
+      "pathsPerGame": 1.471,
+      "pathScoreShare": 0.274493018862355,
+      "visitorScoreShare": 0.261741004221153,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.028443113772455064,
+        0.09767621815498853
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 5,
+      "sender": "HETEROGENEOUS",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 1666,
+          "wins": 304,
+          "winRate": 0.18247298919567828,
+          "tieSplitWinRate": 0.18157262905162064,
+          "meanScore": 23.75030012004802,
+          "meanIncoming": 2.9471788715486196,
+          "meanSent": 2.908763505402161,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.848739495798319
+        },
+        "WALK": {
+          "exposures": 1667,
+          "wins": 349,
+          "winRate": 0.20935812837432513,
+          "tieSplitWinRate": 0.20455908818236354,
+          "meanScore": 24.780443911217755,
+          "meanIncoming": 2.8788242351529694,
+          "meanSent": 2.865626874625075,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.754049190161967
+        },
+        "ADAPTIVE": {
+          "exposures": 1667,
+          "wins": 362,
+          "winRate": 0.21715656868626274,
+          "tieSplitWinRate": 0.21385722855428915,
+          "meanScore": 25.18836232753449,
+          "meanIncoming": 2.878224355128974,
+          "meanSent": 2.9298140371925614,
+          "freeWalkRate": 0.8442559753276793,
+          "meanVisitPoints": 6.773245350929814
+        }
+      },
+      "winGap": 0.034683579490584454,
+      "incomingGap": 0.06895451641964545,
+      "freeRate": 0.8121596470669332,
+      "adaptiveWalkRate": 0.8442559753276793,
+      "senderFreedom": 0.5817881022954436,
+      "farewellRate": 0.001723305990211622,
+      "pathsPerGame": 1.745,
+      "pathScoreShare": 0.2741034948643237,
+      "visitorScoreShare": 0.2628391906629987,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.010778443113772462,
+        0.06648550241932405
+      ]
+    },
+    {
+      "candidateId": "alternate-s1-w2-r2-t1-d1",
+      "playerCount": 6,
+      "sender": "HETEROGENEOUS",
+      "cohort": "SMART",
+      "seedBase": 314159,
+      "runs": 1000,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "SEAT",
+      "policy": {
+        "STAY": {
+          "exposures": 2000,
+          "wins": 297,
+          "winRate": 0.1485,
+          "tieSplitWinRate": 0.1465,
+          "meanScore": 23.368,
+          "meanIncoming": 2.8925,
+          "meanSent": 2.8615,
+          "freeWalkRate": 0,
+          "meanVisitPoints": 5.7655
+        },
+        "WALK": {
+          "exposures": 2000,
+          "wins": 367,
+          "winRate": 0.1835,
+          "tieSplitWinRate": 0.178,
+          "meanScore": 24.536,
+          "meanIncoming": 2.838,
+          "meanSent": 2.852,
+          "freeWalkRate": 1,
+          "meanVisitPoints": 6.636
+        },
+        "ADAPTIVE": {
+          "exposures": 2000,
+          "wins": 359,
+          "winRate": 0.1795,
+          "tieSplitWinRate": 0.1755,
+          "meanScore": 24.401,
+          "meanIncoming": 2.839,
+          "meanSent": 2.856,
+          "freeWalkRate": 0.8446726572528883,
+          "meanVisitPoints": 6.617
+        }
+      },
+      "winGap": 0.035,
+      "incomingGap": 0.05449999999999999,
+      "freeRate": 0.8198261275453643,
+      "adaptiveWalkRate": 0.8446726572528883,
+      "senderFreedom": 0.5852733531711302,
+      "farewellRate": 0.0022171655289106714,
+      "pathsPerGame": 2,
+      "pathScoreShare": 0.27392296521679,
+      "visitorScoreShare": 0.263031602240509,
+      "toolsUsage": {
+        "goldPerGame": 0,
+        "refreshPerGame": 0
+      },
+      "gap95": [
+        0.017034068136272562,
+        0.0615
+      ]
+    }
+  ]
+}
