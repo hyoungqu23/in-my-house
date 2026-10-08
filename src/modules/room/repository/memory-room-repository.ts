@@ -26,15 +26,20 @@ const privateKey = (code: string, userId: string) =>
 export class MemoryRoomRepository implements RoomRepository {
   async insert(room: RoomRecord) {
     if (rooms.has(room.code)) return false;
-    rooms.set(room.code, room);
+    rooms.set(room.code, structuredClone(room));
     return true;
   }
 
   async find(code: string) {
-    return rooms.get(code.toUpperCase());
+    const room = rooms.get(code.toUpperCase());
+    return room ? structuredClone(room) : undefined;
   }
 
-  async commit() {
+  async commit(room: RoomRecord, expectedRevision: number) {
+    const current = rooms.get(room.code);
+    if (!current || current.storageRevision !== expectedRevision) return false;
+    room.storageRevision = expectedRevision + 1;
+    rooms.set(room.code, structuredClone(room));
     return true;
   }
 
