@@ -58,6 +58,8 @@ Status: DIGITAL PLAYTEST READY — 전체 경기 구현·production 검증 완�
 
 테스트 호스트의 Node 26 자체 Web Storage가 jsdom과 충돌하는 재현을 확인했다. 지원되는 런타임에서는 Vitest 워커의 해당 Node 옵션을 끄도록 설정해 jsdom의 브라우저 저장소를 사용한다. 게임 로직과 브라우저의 저장소 동작은 변경하지 않았다. 권장 실행 버전은 계속 `.nvmrc`의 Node 24다. PR 검증은 원본 로컬 서버와 분리된 작업 공간·포트 3104에서 진행했다.
 
+재경기 경계 수정은 새 빌드·포트 3105에서 검증한다. 기존 발자국 E2E가 새 라운드의 polling 반영 전에 이전 역할을 읽는 타이밍 실패도 발견해, 역할 비교 전에 양쪽 브라우저의 해당 라운드 표기를 확인하도록 보완했다. 역할 교대 assertion은 그대로 유지했고 4회 반복을 통과했다. 발자국 게임 로직은 변경하지 않았다.
+
 아래 150개 테스트 수치는 다른 작업 변경도 함께 있었던 2026-10-08 원본 작업 공간의 역사적 결과다. PR의 현재 검증 수치는 위 137개를 따른다.
 
 2026-10-08 `balanced-2` 변경 뒤 저장소 테스트 150개가 통과했다. 핵심 도메인 `content.ts`, `rules.ts`, `reducer.ts`의 statements/branches/functions/lines는 모두 100%다. 실제 자동 선택의 좌석 편향 회귀 테스트와 두 balanced 버전의 전체 행동 재현을 포함한다. 전체 ESLint, TypeScript, 격리된 Next production build를 확인했다.
