@@ -53,6 +53,12 @@ Status: DIGITAL PLAYTEST READY — 전체 경기 구현·production 검증 완�
 
 ## 자동 검증 결과
 
+2026-10-09 PR 범위 분리 후에도 다시 검증했다. 다른 게임의 복구·메모·별도 Supabase 변경은 이 PR에서 제외했고, 숲길과 필요한 공통 변경만 포함한 스냅샷에서 **테스트 134개, 핵심 도메인 커버리지 100%, TypeScript·ESLint·production 빌드, 전체 Playwright 17개**가 통과했다. 큰 경기를 두 프로젝트에서 중복 실행하지 않는 7개 skip은 의도된 것이다. 기존 네 게임도 전체 경기·재경기 회귀를 확인했다.
+
+테스트 호스트의 Node 26 자체 Web Storage가 jsdom과 충돌하는 재현을 확인했다. 지원되는 런타임에서는 Vitest 워커의 해당 Node 옵션을 끄도록 설정해 jsdom의 브라우저 저장소를 사용한다. 게임 로직과 브라우저의 저장소 동작은 변경하지 않았다. 권장 실행 버전은 계속 `.nvmrc`의 Node 24다. PR 검증은 원본 로컬 서버와 분리된 작업 공간·포트 3104에서 진행했다.
+
+아래 150개 테스트 수치는 다른 작업 변경도 함께 있었던 2026-10-08 원본 작업 공간의 역사적 결과다. PR의 현재 검증 수치는 위 134개를 따른다.
+
 2026-10-08 `balanced-2` 변경 뒤 저장소 테스트 150개가 통과했다. 핵심 도메인 `content.ts`, `rules.ts`, `reducer.ts`의 statements/branches/functions/lines는 모두 100%다. 실제 자동 선택의 좌석 편향 회귀 테스트와 두 balanced 버전의 전체 행동 재현을 포함한다. 전체 ESLint, TypeScript, 격리된 Next production build를 확인했다.
 
 격리된 `balanced-2` production 서버에서 Playwright 10개 테스트가 통과했다. 첫 경기와 최종 상태의 규칙 버전도 검사했다. 4인·6인 경기는 모두 375px 개인 브라우저로 로비부터 최종 점수·재경기까지 진행했고, 실제 방문 보내기·머물기 버튼도 사용했다. 6인 경기는 reduced-motion으로 실행했다. 두 프로젝트에서 중복되는 큰 경기 2개는 의도적으로 skip했다. 기존 SVG 미리보기와 HTTP LAN 흐름도 같은 production 서버에서 통과했다. 기존 서버의 판이나 `.next` 빌드 파일은 재시작·교체하지 않았다.

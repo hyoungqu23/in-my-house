@@ -1,8 +1,10 @@
 # 이어지는 숲길 · Gate 2 도메인 구현 계획
 
-Status: IMPLEMENTED — BALANCE GATE PENDING  
-Reviewed: 2026-09-05 — 구현 리뷰 5개 이슈 수정  
+Status: IMPLEMENTED — 당시 BALANCE GATE PENDING\
+Reviewed: 2026-09-05 — 구현 리뷰 5개 이슈 수정\
 Source: [`connected-forest.md`](./connected-forest.md)
+
+이 문서는 도메인 슬라이스 당시의 구현 계획이다. 전체 경기 연결과 `balanced-2` 검증은 [게임 구현](./connected-forest-game.md)과 [밸런스 실험](./connected-forest-balance.md)에서 완료했다. 아래의 후속 Gate 문구는 당시 기록으로 보존한다.
 
 ## 목표와 범위
 

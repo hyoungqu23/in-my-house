@@ -67,7 +67,7 @@ function AnimalShape({ species, coat, shade }: { species: ForestSpeciesId; coat:
       <path d="M57 96Q78 86 100 112Q122 84 145 96Q136 126 100 137Q65 123 57 96" fill="#fff0d5" /><Face y={98} eyes={19} />
     </>;
     case "hedgehog": return <>
-      
+
       <path d="M39 132L36 110L48 103L43 82L63 82L64 59L84 68L99 47L111 66L130 57L135 80L156 78L154 98L173 108L160 125L167 142L139 163H67Z" fill={coat} />
       {paws}
       <ellipse cx="100" cy="127" rx="43" ry="37" fill="#edd1ab" /><Face y={120} />
