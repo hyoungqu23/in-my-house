@@ -26,12 +26,16 @@ describe("connected forest room integration", () => {
   it.each(["prototype-1", "balanced-1"] as const)("starts new matches with balanced-2 and preserves existing %s matches", async (historicalVersion) => {
     const room = await setup();
     await act(room.code, 1, { type: "START_GAME" }, 1002);
-    expect((await privateView(room.code, 1, 1003)).rulesVersion).toBe("balanced-2");
+    const started = await privateView(room.code, 1, 1003);
+    expect(started.rulesVersion).toBe("balanced-2");
+    expect(started.matchId).toMatch(/^[\da-f-]{36}$/);
     const record = (await getRoomRecord(room.code))!;
     record.game = { type: "connected-forest", state: createInitialState(record.players.map(({ seat, userId, nickname }) => ({ seat, userId, nickname })), createMatchSetup({ seats: record.players.map((player) => player.seat), rulesVersion: historicalVersion, randomIndex: () => 0 }), 1004) };
     await saveRoomRecord(record, record.storageRevision);
     const old = await privateView(room.code, 1, 1005);
     expect(old.rulesVersion).toBe(historicalVersion);
+    expect(old.matchId).toBeUndefined();
+    expect(old.phaseKey).toBe("connected-forest:0:0");
     expect(connectedForestRules(old.rulesVersion).walkReceiverLeaves).toBe(historicalVersion === "prototype-1" ? 3 : 2);
     expect(old.self.visitTargetSeats).toEqual(old.self.neighborSeats);
   });
@@ -54,6 +58,7 @@ describe("connected forest room integration", () => {
     const room = await setup(count);
     let now = 1002;
     await act(room.code, 1, { type: "START_GAME" }, now);
+    const firstMatch = await privateView(room.code, 1, now);
     const phaseSeen = new Set<string>();
     let steps = 0;
     while (steps++ < 250) {
@@ -93,6 +98,9 @@ describe("connected forest room integration", () => {
     expect(phaseSeen.has("SEASON_REVEAL")).toBe(true);
     await act(room.code, 1, { type: "START_REMATCH" }, now + 1);
     const fresh = await privateView(room.code, 1, now + 2);
+    expect(fresh.matchId).toMatch(/^[\da-f-]{36}$/);
+    expect(fresh.matchId).not.toBe(firstMatch.matchId);
+    expect(fresh.phaseKey).not.toBe(firstMatch.phaseKey);
     expect(fresh.phase).toBe("SEASON_DRAFT");
     expect(fresh.seasonIndex).toBe(0);
     expect(fresh.self.hand).toHaveLength(3);

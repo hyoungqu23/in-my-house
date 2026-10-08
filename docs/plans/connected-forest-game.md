@@ -15,6 +15,7 @@ Status: DIGITAL PLAYTEST READY — 전체 경기 구현·production 검증 완�
 - 런타임의 생성·시간 전이·행동·공개 투영·개인 투영을 기존 순수 reducer에 연결했다.
 - HTTP 행동은 Zod의 strict schema로 검사하며, 동물 ID는 48장 콘텐츠 목록을 기준으로 검증한다. 공유 `CLAIM_FORFEIT`은 게임 판별자로 분리한다.
 - 룸의 저장 revision 비교·교환과 `{ clientActionId, expectedVersion }` 계약을 재사용한다. 같은 pick의 동시 제출로 발생한 stale 응답만 같은 행동 ID·payload로 재시도한다. phase가 바뀌거나 방문 ID가 달라졌으면 재시도하지 않는다.
+- 새 경기에는 서버가 만든 고유 `matchId`를 저장한다. 공개·개인 투영의 opaque `phaseKey`에 이를 포함하고 재시도에서도 경기 ID를 대조하므로, 같은 카드·계절 번호가 반복되는 재경기에 이전 선택이나 미제출 초안이 넘어가지 않는다. 경기 ID가 없는 기존 저장 판의 투영은 그대로 유지한다. 점수·드래프트·방문 규칙의 reducer와 밸런스 엔진은 변경하지 않았다.
 - 메모리와 Supabase 저장소 모두 기존 `StoredGame` 직렬화를 사용한다. 새 테이블이나 비밀 payload가 포함된 Realtime 이벤트는 추가하지 않았다.
 
 ## 화면
@@ -53,11 +54,11 @@ Status: DIGITAL PLAYTEST READY — 전체 경기 구현·production 검증 완�
 
 ## 자동 검증 결과
 
-2026-10-09 PR 범위 분리 후에도 다시 검증했다. 다른 게임의 복구·메모·별도 Supabase 변경은 이 PR에서 제외했고, 숲길과 필요한 공통 변경만 포함한 스냅샷에서 **테스트 134개, 핵심 도메인 커버리지 100%, TypeScript·ESLint·production 빌드, 전체 Playwright 17개**가 통과했다. 큰 경기를 두 프로젝트에서 중복 실행하지 않는 7개 skip은 의도된 것이다. 기존 네 게임도 전체 경기·재경기 회귀를 확인했다.
+2026-10-09 PR 범위 분리 후에도 다시 검증했다. 다른 게임의 복구·메모·별도 Supabase 변경은 이 PR에서 제외했다. 분리 직후 테스트 134개와 전체 Playwright 17개가 통과했고, 설계 리뷰에서 찾은 재경기 입력 경계에 회귀 테스트 3개를 추가해 **테스트 137개, 핵심 도메인 커버리지 100%, TypeScript·ESLint·production 빌드**가 다시 통과했다. 큰 경기를 두 프로젝트에서 중복 실행하지 않는 7개 skip은 의도된 것이다. 기존 네 게임도 전체 경기·재경기 회귀를 확인했다.
 
 테스트 호스트의 Node 26 자체 Web Storage가 jsdom과 충돌하는 재현을 확인했다. 지원되는 런타임에서는 Vitest 워커의 해당 Node 옵션을 끄도록 설정해 jsdom의 브라우저 저장소를 사용한다. 게임 로직과 브라우저의 저장소 동작은 변경하지 않았다. 권장 실행 버전은 계속 `.nvmrc`의 Node 24다. PR 검증은 원본 로컬 서버와 분리된 작업 공간·포트 3104에서 진행했다.
 
-아래 150개 테스트 수치는 다른 작업 변경도 함께 있었던 2026-10-08 원본 작업 공간의 역사적 결과다. PR의 현재 검증 수치는 위 134개를 따른다.
+아래 150개 테스트 수치는 다른 작업 변경도 함께 있었던 2026-10-08 원본 작업 공간의 역사적 결과다. PR의 현재 검증 수치는 위 137개를 따른다.
 
 2026-10-08 `balanced-2` 변경 뒤 저장소 테스트 150개가 통과했다. 핵심 도메인 `content.ts`, `rules.ts`, `reducer.ts`의 statements/branches/functions/lines는 모두 100%다. 실제 자동 선택의 좌석 편향 회귀 테스트와 두 balanced 버전의 전체 행동 재현을 포함한다. 전체 ESLint, TypeScript, 격리된 Next production build를 확인했다.
 

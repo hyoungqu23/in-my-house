@@ -9,4 +9,4 @@ export type StoredGame =
   | { type: "suspicious-invite"; state: SuspiciousInviteState }
   | { type: "dawn-switchboard"; state: SwitchboardState }
   | { type: "midnight-footprints"; state: FootprintsState }
-  | { type: "connected-forest"; state: ConnectedForestState };
+  | { type: "connected-forest"; state: ConnectedForestState; matchId?: string };

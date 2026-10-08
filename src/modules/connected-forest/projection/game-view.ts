@@ -13,6 +13,7 @@ type ProjectionContext = {
   viewerUserId?: string;
   display?: boolean;
   connectedSeats: number[];
+  matchId?: string;
 };
 const timestamp = (value: number | undefined) => value === undefined ? undefined : new Date(value).toISOString();
 
@@ -21,6 +22,7 @@ export function projectPublic(state: ConnectedForestState, context: ProjectionCo
   const isHost = context.viewerUserId === context.hostUserId;
   return {
     projection: "public",
+    matchId: context.matchId,
     room: { code: context.code, gameId: "connected-forest", status: context.status, version: context.version },
     serverNow: new Date(context.now).toISOString(),
     phase: state.phase,
@@ -28,7 +30,7 @@ export function projectPublic(state: ConnectedForestState, context: ProjectionCo
     seasonIndex: state.seasonIndex,
     pickIndex: state.pickIndex,
     passDirection: state.passDirection,
-    phaseKey: state.phaseKey,
+    phaseKey: context.matchId ? `${context.matchId}:${state.phaseKey}` : state.phaseKey,
     phaseEndsAt: timestamp(state.phaseEndsAt),
     viewer: {
       roles: [...(context.display ? ["DISPLAY" as const] : []), ...(isHost ? ["HOST" as const] : []), ...(self ? ["PLAYER" as const] : [])],

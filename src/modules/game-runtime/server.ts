@@ -1,6 +1,6 @@
 import "server-only";
 
-import { randomInt } from "node:crypto";
+import { randomInt, randomUUID } from "node:crypto";
 import { CONNECTED_FOREST_CURRENT_RULES_VERSION, createMatchSetup as createForestSetup } from "@/modules/connected-forest/domain/content";
 import {
   advanceTimedState as advanceForest,
@@ -158,7 +158,7 @@ export function createGame(
       return { type: gameId, state: createDarkHouse(roster) };
     case "connected-forest": {
       const setup = createForestSetup({ seats: roster.map((player) => player.seat), randomIndex: randomInt, rulesVersion: CONNECTED_FOREST_CURRENT_RULES_VERSION });
-      return { type: gameId, state: createForest(roster, setup, now) };
+      return { type: gameId, state: createForest(roster, setup, now), matchId: randomUUID() };
     }
     case "suspicious-invite": {
       const setup = suspiciousSetup(roster.map((player) => player.seat), []);
@@ -290,7 +290,7 @@ export function transitionGame(
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
   switch (game.type) {
     case "connected-forest":
-      return projectForestPublic(game.state, context);
+      return projectForestPublic(game.state, { ...context, matchId: game.matchId });
     case "dark-house":
       return projectDarkHousePublic(game.state, context);
     case "suspicious-invite":
@@ -311,7 +311,7 @@ export function projectGamePlayer(
 ): PlayerRoomView {
   switch (game.type) {
     case "connected-forest":
-      return projectForestPlayer(game.state, context);
+      return projectForestPlayer(game.state, { ...context, matchId: game.matchId });
     case "dark-house":
       return projectDarkHousePlayer(game.state, context);
     case "suspicious-invite":

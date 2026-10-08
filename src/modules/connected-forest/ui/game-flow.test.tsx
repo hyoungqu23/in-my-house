@@ -14,16 +14,17 @@ vi.mock("@/modules/auth/client", () => ({ getAuthHeaders: async () => ({}), getB
 vi.mock("@/shared/ui/qr-code", () => ({ QrCode: () => null }));
 
 const api = vi.mocked(roomApiFetch);
-const context = { code: "ABC234", version: 1, now: 100000, status: "playing" as const, hostUserId: "u1", viewerUserId: "u1", connectedSeats: [1, 2, 3, 4] };
+const context = { code: "ABC234", version: 1, now: 100000, status: "playing" as const, hostUserId: "u1", viewerUserId: "u1", connectedSeats: [1, 2, 3, 4], matchId: "match-one" };
 let state: ConnectedForestState;
 let requests: ActionRequest[];
-let stale: "NONE" | "SAME_PICK" | "NEXT_PICK";
+let stale: "NONE" | "SAME_PICK" | "NEXT_PICK" | "NEXT_MATCH";
 beforeEach(() => {
   vi.useFakeTimers();
   vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true }));
   // Use jsdom's browser storage, not Node's optional native localStorage.
   window.localStorage.clear();
   context.version = 1;
+  context.matchId = "match-one";
   requests = [];
   stale = "NONE";
   state = createInitialState([1, 2, 3, 4].map((seat) => ({ seat, userId: `u${seat}`, nickname: `숲친구${seat}` })), createMatchSetup({ seats: [1, 2, 3, 4], randomIndex: () => 0 }), context.now);
@@ -34,6 +35,10 @@ beforeEach(() => {
       if (stale !== "NONE") {
         context.version += 1;
         if (stale === "NEXT_PICK") state.phaseKey = "connected-forest:0:1";
+        if (stale === "NEXT_MATCH") {
+          context.matchId = "match-two";
+          state = createInitialState([1, 2, 3, 4].map((seat) => ({ seat, userId: `u${seat}`, nickname: `숲친구${seat}` })), createMatchSetup({ seats: [1, 2, 3, 4], rulesVersion: state.rulesVersion, randomIndex: () => 0 }), context.now);
+        }
         stale = "NONE";
         throw new RoomApiError("STALE_VERSION", 409, "게임 상태가 바뀌었습니다.");
       }
@@ -89,6 +94,31 @@ describe("forest player interaction and recovery", () => {
     expect(requests).toHaveLength(1);
     expect(state.draftSubmissions[1]).toBeUndefined();
     expect(screen.getByRole("alert").textContent).toContain("상태가 바뀌");
+    expect(screen.getByRole("button", { name: "선택 잠그기" }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("does not retry an old pick into a rematch with the same domain phase key and card IDs", async () => {
+    await mount();
+    await draftPick();
+    const oldPhaseKey = state.phaseKey;
+    const oldCardIds = state.players[0].hand.map((card) => card.id);
+    stale = "NEXT_MATCH";
+    await click("선택 잠그기");
+    expect(state.phaseKey).toBe(oldPhaseKey);
+    expect(state.players[0].hand.map((card) => card.id)).toEqual(oldCardIds);
+    expect(context.matchId).toBe("match-two");
+    expect(requests).toHaveLength(1);
+    expect(state.draftSubmissions[1]).toBeUndefined();
+    expect(screen.getByRole("alert").textContent).toContain("상태가 바뀌");
+  });
+
+  it("clears an unsent draft when polling a rematch even if cards and counters repeat", async () => {
+    await mount();
+    await draftPick();
+    context.matchId = "match-two";
+    context.version += 1;
+    await act(async () => { vi.advanceTimersByTime(1500); });
+    expect(screen.getByRole("button", { name: /지형 카드 1/ }).getAttribute("aria-pressed")).toBe("false");
     expect(screen.getByRole("button", { name: "선택 잠그기" }).hasAttribute("disabled")).toBe(true);
   });
 

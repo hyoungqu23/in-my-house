@@ -76,7 +76,9 @@ async function playForest(browser: Browser, playerCount: 4 | 6, testInfo: TestIn
       }
       throw new Error("Forest action did not commit");
     };
-    expect((await view(0)).rulesVersion).toBe(CONNECTED_FOREST_CURRENT_RULES_VERSION);
+    const firstMatch = await view(0);
+    expect(firstMatch.rulesVersion).toBe(CONNECTED_FOREST_CURRENT_RULES_VERSION);
+    expect(firstMatch.matchId).toMatch(/^[\da-f-]{36}$/);
     let loops = 0;
     let usedAcorn = false;
     let refreshedAnimal = false;
@@ -184,6 +186,10 @@ async function playForest(browser: Browser, playerCount: 4 | 6, testInfo: TestIn
     await host.getByRole("button", { name: "같은 사람들과 다시 하기", exact: true }).click();
     await host.getByRole("button", { name: "내 화면", exact: true }).click();
     await expect(host.getByRole("heading", { name: "새싹의 작은 숲", exact: true })).toBeVisible({ timeout: 8000 });
+    const rematch = await view(0);
+    expect(rematch.matchId).toMatch(/^[\da-f-]{36}$/);
+    expect(rematch.matchId).not.toBe(firstMatch.matchId);
+    expect(rematch.phaseKey).not.toBe(firstMatch.phaseKey);
     expect(errors).toEqual([]);
   } finally {
     await Promise.all(contexts.map((context) => context.close()));

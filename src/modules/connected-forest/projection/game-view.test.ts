@@ -10,6 +10,17 @@ const initial = () => createInitialState(roster, createMatchSetup({ seats: [1, 2
 afterEach(() => vi.restoreAllMocks());
 
 describe("connected forest privacy boundary", () => {
+  it("scopes public and private phase keys to a match while preserving legacy views and state", () => {
+    const state = initial();
+    const firstContext = { ...context, matchId: "match-one" };
+    const secondContext = { ...context, matchId: "match-two" };
+    const first = projectPublic(state, firstContext);
+    const second = projectPublic(state, secondContext);
+    expect(first.phaseKey).not.toBe(second.phaseKey);
+    expect(projectPlayer(state, firstContext).phaseKey).toBe(first.phaseKey);
+    expect(projectPublic(state, context).phaseKey).toBe(state.phaseKey);
+    expect(state.phaseKey).toBe("connected-forest:0:0");
+  });
   it("publishes only applied boards and readiness, never decks, hands, animals or locked payloads", () => {
     const state = initial();
     const card = state.players[0].hand[0];

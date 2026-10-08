@@ -272,6 +272,7 @@ export type MidnightFootprintsPlayerRoomView =
 
 export type ConnectedForestPublicRoomView = RoomViewBase<"connected-forest", ConnectedForestPhase> & {
   projection: "public";
+  matchId?: string;
   rulesVersion: ConnectedForestRulesVersion;
   seasonIndex: number;
   pickIndex: number;

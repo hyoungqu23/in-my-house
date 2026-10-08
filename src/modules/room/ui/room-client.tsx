@@ -218,6 +218,7 @@ export function RoomClient({ code }: { code: string }) {
             || latest.phase === "LOBBY" || !isForestView(latest)) throw cause;
           const fresh = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=private`);
           if (fresh.phase === "LOBBY" || !isForestView(fresh) || fresh.projection !== "player"
+            || fresh.matchId !== latest.matchId
             || fresh.phaseKey !== latest.phaseKey
             || !fresh.self.legalActions.includes(action.type as "LOCK_TERRAIN_PICK" | "CHOOSE_SEASON_VISIT" | "RESOLVE_VISIT")
             || (action.type === "RESOLVE_VISIT" && fresh.self.currentVisit?.visitId !== action.visitId)) throw cause;
