@@ -7,10 +7,17 @@ docs/plans/connected-forest.md 의 규칙을 그대로 옮긴 설계 검증 도�
 
 밸런스는 반드시 혼합 테이블 승률로 본다. 전원이 같은 정책을 쓰는 판끼리
 평균 점수를 비교하면 대칭 보상이 실제보다 좋아 보이는 함정이 있다.
+
+그리고 승률은 반드시 발신자 모델을 바꿔 가며 본다. 이 게임의 균형을
+지배하는 변수는 보상표가 아니라 `발신자가 두 이웃 중 누구에게 보내는가`다.
+한 발신자 모델에서만 균형인 보상 구성은 채택하지 않는다. --grid 참고.
 """
 from __future__ import annotations
 
+import argparse
+import json
 import random
+import unicodedata
 from collections import Counter, defaultdict
 from itertools import product
 
@@ -74,7 +81,7 @@ SPECIES = [
     ("deer", "사슴", "FLOWER", "TREE", "WATER", "FLOWER"),
     ("mole", "두더지", "ROCK", "MUSHROOM", "TREE", "ROCK"),
     ("duck", "오리", "WATER", "FLOWER", "TREE", "WATER"),
-    ("dormouse", "겨울잠쥐", "MUSHROOM", "FLOWER", "TREE", "MUSHROOM"),
+    ("tanuki", "너구리", "MUSHROOM", "FLOWER", "TREE", "MUSHROOM"),
 ]
 
 
@@ -209,7 +216,7 @@ class Cfg:
 
 class P:
     __slots__ = ("seat", "terrain", "figure", "hand", "active", "residents",
-                 "hosted", "leaves", "lp", "welcomed")
+                 "sent", "hosted", "leaves", "lp", "welcomed")
 
     def __init__(self, seat):
         self.seat = seat
@@ -218,6 +225,7 @@ class P:
         self.hand = []
         self.active = []
         self.residents = []
+        self.sent = set()
         self.hosted = 0
         self.leaves = 0
         self.lp = 0
@@ -298,13 +306,79 @@ def decide(policy, path_len, season, cap):
     return "WALK" if (4 - season) >= 2 else "STAY"
 
 
-def play(n, assign, seed, cfg):
+# ---------------------------------------------------------------- 발신자 모델
+#
+# 수신자 정책(STAY/WALK/MIXED)만 바꿔서는 균형을 판정할 수 없다. 누가 누구에게
+# 보내는가가 승률을 더 크게 흔든다. 아래 세 모델을 모두 통과해야 채택 가능하다.
+
+
+def _pair(a, b):
+    """공동 숲길 키. 항상 (작은 좌석, 큰 좌석)."""
+    return (a, b) if a < b else (b, a)
+
+
+def send_shortest(seat, cands, paths, cfg, rng):
+    """A. 공동 숲길이 가장 짧은 이웃.
+
+    게임 규칙이 아니라 마감 때 서버가 쓰는 자동 선택 규칙이다. 여기에는 음의
+    되먹임이 있다. 내가 WALK 를 하면 내 숲길이 길어지고, 그러면 이웃의 발신이
+    나를 피해 흘러 내가 받는 방문 자체가 줄어든다. 이 되먹임이 WALK 의 산술적
+    우위를 상쇄하므로, 이 모델로만 측정하면 보상표가 실제보다 균형 잡혀 보인다.
+    """
+    return min(cands, key=lambda s: (paths[_pair(seat, s)], s))
+
+
+def send_random(seat, cands, paths, cfg, rng):
+    """B. 무작위 이웃. 되먹임이 전혀 없는 대조군."""
+    return rng.choice(cands)
+
+
+def send_nearly_done(seat, cands, paths, cfg, rng):
+    """C. 완성에 가장 가까운 숲길 우선. 아직 상한 미만인 쪽을 먼저 본다.
+
+    connected-forest.md 의 `발신자도 파트너를 원한다` 절이 예측하는 행동이다.
+    한 파트너와 숲길을 3칸까지 밀어 완성 보너스를 받으려는 플레이다.
+    """
+    return max(cands, key=lambda s: (paths[_pair(seat, s)] < cfg.cap,
+                                     paths[_pair(seat, s)], -s))
+
+
+SENDERS = {
+    "A최단": send_shortest,
+    "B무작위": send_random,
+    "C완성임박": send_nearly_done,
+}
+DEFAULT_SENDER = "A최단"
+
+
+def play(n, assign, seed, cfg, sender=DEFAULT_SENDER, trace=None):
+    """한 판을 끝까지 돌린다.
+
+    sender 는 SENDERS 의 키이거나 같은 시그니처의 함수다. rng 는 덱 셔플 이후
+    발신 대상 선택에만 쓰이므로, 발신자 모델을 바꿔도 같은 seed 면 보드 전개와
+    카드 배분은 완전히 동일하다. 즉 발신 규칙만 격리해 비교할 수 있다.
+    """
+    pick_target = SENDERS[sender] if isinstance(sender, str) else sender
     rng = random.Random(seed)
     players = [P(i) for i in range(n)]
     deck = [t for t in TERRAINS for _ in range(3 * n)]
     rng.shuffle(deck)
     adeck = list(ANIMALS)
     rng.shuffle(adeck)
+    if trace is not None:
+        draw_kinds = list(reversed(deck))
+        copies = Counter()
+        terrain_draw_order = []
+        for kind in draw_kinds:
+            copies[kind] += 1
+            terrain_draw_order.append({
+                "id": f"terrain-{kind.lower()}-{copies[kind]:02d}",
+                "kind": kind,
+            })
+        trace["terrainDeck"] = terrain_draw_order
+        trace["animalDeck"] = [animal.id for animal in reversed(adeck)]
+        trace["senderTargets"] = []
+        trace["placementChoices"] = []
     for p in players:
         p.active = [adeck.pop(), adeck.pop()]
     paths = {(i, (i + 1) % n) if i < (i + 1) % n else ((i + 1) % n, i): 0 for i in range(n)}
@@ -317,6 +391,23 @@ def play(n, assign, seed, cfg):
         direction = -1 if season % 2 == 0 else 1
         for pick in range(3):
             moves = [pick_move(p, season == 0 and pick == 0) for p in players]
+            if trace is not None:
+                for p, (ci, cell) in zip(players, moves):
+                    choice = {
+                        "seasonIndex": season,
+                        "pickIndex": pick,
+                        "seat": p.seat + 1,
+                        "handIndex": ci,
+                        "hexId": HEX_ID[cell],
+                    }
+                    if not p.welcomed:
+                        for animal in p.active:
+                            anchor = p.complete(animal, cell, p.hand[ci])
+                            if anchor:
+                                choice["welcomeAnimalCardId"] = animal.id
+                                choice["residentHexId"] = HEX_ID[anchor]
+                                break
+                    trace["placementChoices"].append(choice)
             for p, (ci, cell) in zip(players, moves):
                 ct = p.hand.pop(ci)
                 p.terrain[cell] = ct
@@ -336,16 +427,20 @@ def play(n, assign, seed, cfg):
                 for idx, p in enumerate(players):
                     p.hand = hands[(idx - direction) % n]
 
-        sent = set()
         queues = defaultdict(list)
         for p in players:
-            avail = [i for i, (a, _) in enumerate(p.residents) if (p.seat, i) not in sent]
+            avail = [i for i, (a, _) in enumerate(p.residents) if a.id not in p.sent]
             if not avail:
                 continue
             i = min(avail, key=lambda i: p.residents[i][0].id)
-            sent.add((p.seat, i))
+            p.sent.add(p.residents[i][0].id)
             cands = sorted({(p.seat - 1) % n, (p.seat + 1) % n})
-            tgt = min(cands, key=lambda s: (paths[(min(p.seat, s), max(p.seat, s))], s))
+            tgt = pick_target(p.seat, cands, paths, cfg, rng)
+            if trace is not None:
+                trace["senderTargets"].append({
+                    "sourceSeat": p.seat + 1,
+                    "targetSeat": tgt + 1,
+                })
             queues[tgt].append((p.seat, p.residents[i][0]))
 
         for tgt in sorted(queues):
@@ -360,13 +455,22 @@ def play(n, assign, seed, cfg):
                 if not can_stay and not can_walk:
                     recv.leaves += 1
                     src.leaves += 1
+                    stats["waved"] += 1
                     continue
+                # 강제와 자유를 구분해 센다. 전체 방문을 분모로 한 WALK 선택률은
+                # 강제 상황을 포함해 보상표를 바꿔도 거의 움직이지 않으므로
+                # 지표로 쓸 수 없다. 판단이 실제로 일어난 방문만 따로 집계한다.
                 if can_stay and not can_walk:
                     ch = "STAY"
+                    stats["forced_stay"] += 1
                 elif can_walk and not can_stay:
                     ch = "WALK"
+                    stats["forced_walk"] += 1
                 else:
                     ch = decide(assign[tgt], paths[key], season, cfg.cap)
+                    stats["free"] += 1
+                    if ch == "WALK":
+                        stats["free_walk"] += 1
                 if ch == "STAY":
                     cell = max(stay_cells, key=lambda c: (dist_from_center(c), -SORT_INDEX[c]))
                     recv.figure.add(cell)
@@ -383,33 +487,68 @@ def play(n, assign, seed, cfg):
                     stats["walk"] += 1
                     if done:
                         stats["done"] += 1
+    if trace is not None:
+        trace["scores"] = [player.score(cfg) for player in players]
+        trace["stats"] = dict(stats)
+        trace["winnerSeats"] = [seat + 1 for seat in winner_seats(players, cfg)]
     return players, stats
 
 
-def evaluate(cfg, runs=500, sizes=(4, 5, 6)):
+def winner_seats(players, cfg):
+    """총점 → 방문객 수 → 주민 수. 세 값이 모두 같을 때만 공동 승리."""
+    ranks = [(p.score(cfg), p.hosted, len(p.residents)) for p in players]
+    best = max(ranks)
+    return [p.seat for p, rank in zip(players, ranks) if rank == best]
+
+
+def policy_schedule(n, runs, seed_base=70000):
+    """덱과 별도 스트림. 세 판마다 모든 좌석이 세 정책을 한 번씩 사용한다."""
+    rng = random.Random(seed_base ^ 0x85EBCA6B)
+    policies = ("STAY", "WALK", "MIXED")
+    schedule = []
+    while len(schedule) < runs:
+        labels = [seat % 3 for seat in range(n)]
+        rng.shuffle(labels)
+        offset = rng.randrange(3)
+        for rotation in range(3):
+            if len(schedule) == runs:
+                break
+            schedule.append([policies[(label + offset + rotation) % 3] for label in labels])
+    return schedule
+
+
+def evaluate(cfg, runs=500, sizes=(4, 5, 6), sender=DEFAULT_SENDER, seed_base=70000):
     out = {}
     for n in sizes:
         wins = Counter()
         seen = Counter()
         st = Counter()
         shares = []
-        for s in range(runs):
-            rng = random.Random(70000 + s)
-            assign = [rng.choice(["STAY", "WALK", "MIXED"]) for _ in range(n)]
-            players, stats = play(n, assign, 70000 + s, cfg)
+        for s, assign in enumerate(policy_schedule(n, runs, seed_base)):
+            players, stats = play(n, assign, seed_base + s, cfg, sender)
             st += stats
             totals = [p.score(cfg) for p in players]
-            best = max(totals)
+            winners = winner_seats(players, cfg)
             for pol, p, t in zip(assign, players, totals):
                 seen[pol] += 1
-                if t == best:
+                if p.seat in winners:
                     wins[pol] += 1
                 if t:
                     shares.append(p.lp / t)
         tot = st["stay"] + st["walk"]
+        visits = tot + st["waved"]
+        free = st["free"]
         out[n] = {
             "win": {k: wins[k] / max(seen[k], 1) for k in ("STAY", "WALK", "MIXED")},
+            # 전체 방문 기준. 강제 선택을 포함하므로 진단용으로만 읽는다.
             "walk_rate": st["walk"] / tot if tot else 0,
+            # 두 선택이 모두 합법이었던 방문의 비율과 그 안에서의 WALK 비율.
+            # 성공 기준에 쓰는 값은 이 둘이다.
+            "free_rate": free / visits if visits else 0,
+            "free_walk_rate": st["free_walk"] / free if free else 0,
+            "forced_stay": st["forced_stay"] / visits if visits else 0,
+            "forced_walk": st["forced_walk"] / visits if visits else 0,
+            "waved": st["waved"] / visits if visits else 0,
             "done": st["done"] / runs,
             "share": sum(shares) / len(shares) if shares else 0,
         }
@@ -425,42 +564,175 @@ def spread(res):
     return sum(vals) / len(vals)
 
 
+def sweep(cfgs, senders=tuple(SENDERS), runs=150, sizes=(4, 5, 6), seed_base=70000):
+    """보상 구성 × 발신자 모델 격자.
+
+    판정 기준은 각 구성의 평균이 아니라 **최악값**이다. 한 발신자 모델에서만
+    10%p 미만인 구성은 채택하지 않는다. 사람이 실제로 어느 모델에 가깝게
+    행동하는지는 Delivery Gate 1 의 종이 프로토타입에서 관찰한다.
+    """
+    rows = []
+    for cfg in cfgs:
+        gaps = {snd: spread(evaluate(cfg, runs=runs, sizes=sizes,
+                                     sender=snd, seed_base=seed_base))
+                for snd in senders}
+        rows.append((cfg, gaps, max(gaps.values())))
+    return rows
+
+
 
 
 # ---------------------------------------------------------------- 실행
 
-ADOPTED = Cfg(name="채택안 WALK 3/1 · 완성 3/3 · 상한 3")
+# Delivery Gate 1 까지의 잠정값이다. 확정은 Gate 2 에서, 사람의 실제 발신
+# 행동을 관찰해 발신자 모델을 고른 뒤에 한다.
+PROVISIONAL = Cfg(name="잠정안 WALK 3/1 · 완성 3/3 · 상한 3")
 REJECTED = Cfg(2, 1, 2, 2, 3, 3, 3, name="폐기한 대칭안 WALK 2/2")
+STAY3 = Cfg(3, 1, 3, 1, 3, 3, 3, name="대안 STAY 3하트")
+
+# 발신자 격자에 걸어 볼 후보들. 2026-09-02 기준 세 발신자 모델을 모두
+# 통과하는 구성은 아직 없다.
+GRID = [
+    PROVISIONAL,
+    STAY3,
+    Cfg(2, 1, 3, 1, 3, 3, 2, name="잠정안 · 상한 2"),
+    Cfg(3, 1, 3, 1, 3, 3, 2, name="STAY 3하트 · 상한 2"),
+    Cfg(3, 1, 2, 1, 3, 3, 3, name="STAY 3 · WALK 2"),
+    Cfg(2, 1, 2, 1, 3, 3, 3, name="STAY 2 · WALK 2"),
+    Cfg(4, 1, 3, 1, 3, 3, 3, name="STAY 4하트"),
+]
 
 
-def main():
+def _dw(text):
+    """동아시아 문자를 2칸으로 세는 표시 폭."""
+    return sum(2 if unicodedata.east_asian_width(ch) in "WF" else 1 for ch in text)
+
+
+def _pad(text, width):
+    """표시 폭 기준 왼쪽 정렬. 표 열이 어긋나지 않게 한다."""
+    return text + " " * max(width - _dw(text), 0)
+
+
+def _rpad(text, width):
+    """표시 폭 기준 오른쪽 정렬."""
+    return " " * max(width - _dw(text), 0) + text
+
+
+def parse_args(argv=None):
+    ap = argparse.ArgumentParser(
+        description="이어지는 숲길 · 콘텐츠 전수 검증 + 밸런스 시뮬레이터",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="예) python3 %(prog)s --grid --sweep-runs 1000   # Gate 2 확정용 판정",
+    )
+    ap.add_argument("--runs", type=int, default=300,
+                    help="기준 실행의 인원수당 판수 (기본 300)")
+    ap.add_argument("--sender", default=DEFAULT_SENDER, choices=list(SENDERS),
+                    help=f"기준 실행에 쓸 발신자 모델 (기본 {DEFAULT_SENDER})")
+    ap.add_argument("--seed", type=int, default=70000,
+                    help="시드 기준값. 견고성 확인 때 바꾼다 (기본 70000)")
+    ap.add_argument("--sweep-runs", type=int, default=150,
+                    help="발신자 격자의 조합당 판수 (기본 150)")
+    ap.add_argument("--grid", action="store_true",
+                    help="후보 보상 구성 전체를 세 발신자 모델에 건다 (느리다)")
+    ap.add_argument("--no-sweep", action="store_true",
+                    help="발신자 모델 비교를 건너뛰고 기준 실행만 한다")
+    ap.add_argument("--golden-json",
+                    help="Python→TypeScript parity용 작은 고정 입력·결과 corpus를 JSON으로 저장")
+    return ap.parse_args(argv)
+
+
+def golden_corpus():
+    cases = []
+    for n in (4, 5, 6):
+        for sender_index, sender in enumerate(SENDERS):
+            seed = 73000 + n * 100 + sender_index
+            policy_rng = random.Random(seed)
+            policies = [policy_rng.choice(["STAY", "WALK", "MIXED"]) for _ in range(n)]
+            trace = {
+                "name": f"{n}p-{sender}",
+                "playerCount": n,
+                "seed": seed,
+                "senderModel": sender,
+                "policies": policies,
+            }
+            play(n, policies, seed, PROVISIONAL, sender, trace)
+            cases.append(trace)
+    return {
+        "formatVersion": 2,
+        "rules": PROVISIONAL.name,
+        "note": "덱과 무작위 발신 대상을 공유한다. TypeScript가 Python MT19937을 재구현하지 않는다.",
+        "cases": cases,
+    }
+
+
+def main(argv=None):
+    args = parse_args(argv)
+
+    if args.golden_json:
+        with open(args.golden_json, "w", encoding="utf-8") as target:
+            json.dump(golden_corpus(), target, ensure_ascii=False, indent=2)
+            target.write("\n")
+        print(args.golden_json)
+        return
+
     print("=" * 70)
     print("콘텐츠 전수 검증")
     print("=" * 70)
     errs, notes = validate_content()
-    for n in notes:
-        print("  ·", n)
+    for note in notes:
+        print("  ·", note)
     print("  오류:", errs if errs else "없음")
 
     print()
     print("=" * 70)
-    print("혼합 테이블 승률 · 좌석마다 정책을 무작위 배정한 판을 비교한다")
+    print(f"기준 실행 · 혼합 테이블 승률 · 발신자 모델 {args.sender}")
     print("=" * 70)
-    for cfg in (REJECTED, ADOPTED):
-        res = evaluate(cfg, runs=300)
+    for cfg in (REJECTED, PROVISIONAL):
+        res = evaluate(cfg, runs=args.runs, sender=args.sender, seed_base=args.seed)
         print(f"\n{cfg.name}")
         print(f"  {cfg}")
         for n in (4, 5, 6):
             r = res[n]
             w = r["win"]
             print(f"   {n}인 · 승률 STAY {w['STAY']*100:4.1f}% / WALK {w['WALK']*100:4.1f}% / "
-                  f"MIXED {w['MIXED']*100:4.1f}% · WALK 선택률 {r['walk_rate']*100:.0f}% · "
-                  f"3칸 완성 {r['done']:.2f}개/판 · 숲길 몫 {r['share']*100:.1f}%")
+                  f"MIXED {w['MIXED']*100:4.1f}% · 3칸 완성 {r['done']:.2f}개/판 · "
+                  f"숲길 몫 {r['share']*100:.1f}%")
+            print(f"        자유 선택 {r['free_rate']*100:4.1f}% 중 WALK "
+                  f"{r['free_walk_rate']*100:4.1f}%  |  강제 STAY {r['forced_stay']*100:4.1f}% · "
+                  f"강제 WALK {r['forced_walk']*100:4.1f}% · 배웅 {r['waved']*100:.1f}% · "
+                  f"전체 WALK율 {r['walk_rate']*100:.0f}%")
         print(f"   승률 격차 평균 {spread(res)*100:.1f}%p  (0에 가까울수록 균형)")
 
     print()
-    print("주의: 전원이 같은 정책을 쓰는 판끼리 평균 점수를 비교하면 결론이 뒤집힌다.")
-    print("      대칭 보상은 상대도 같이 올려주므로 그 방식에서만 좋아 보인다.")
+    print("주의 1: 전원이 같은 정책을 쓰는 판끼리 평균 점수를 비교하면 결론이 뒤집힌다.")
+    print("        대칭 보상은 상대도 같이 올려주므로 그 방식에서만 좋아 보인다.")
+    print("주의 2: `전체 WALK율`은 강제 선택을 포함해 보상표를 바꿔도 거의 움직이지")
+    print("        않는다. 성공 기준으로 쓸 값은 `자유 선택` 두 수치다.")
+
+    if args.no_sweep:
+        return
+
+    cfgs = GRID if args.grid else (PROVISIONAL, STAY3)
+    print()
+    print("=" * 70)
+    print(f"발신자 모델 격자 · 조합당 {args.sweep_runs}판 · 판정은 최악값 기준")
+    print("=" * 70)
+    print("  이 게임의 균형을 지배하는 변수는 보상표가 아니라 발신 대상 선택이다.")
+    print("  A최단은 마감 자동 규칙이라 사람의 행동이 아니고, 문서가 예측하는")
+    print("  실제 행동은 C완성임박이다. 세 모델 모두 10%p 미만이어야 채택한다.")
+    print()
+    names = list(SENDERS)
+    width = max(_dw(c.name) for c in cfgs) + 2
+    print("  " + _pad("보상 구성", width)
+          + "".join(_rpad(k, 10) for k in names) + _rpad("최악", 9))
+    print("  " + "-" * (width + 10 * len(names) + 9))
+    for cfg, gaps, worst in sweep(cfgs, runs=args.sweep_runs, seed_base=args.seed):
+        cells = "".join(f"{gaps[k] * 100:9.1f}p" for k in names)
+        mark = "   <= 전 모델 통과" if worst < 0.10 else ""
+        print("  " + _pad(cfg.name, width) + cells + f"{worst * 100:8.1f}p" + mark)
+    if not args.grid:
+        print()
+        print("  후보 전체를 보려면 --grid, 확정 판정은 --sweep-runs 1000 이상으로 돌린다.")
 
 
 if __name__ == "__main__":

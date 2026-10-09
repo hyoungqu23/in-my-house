@@ -2,6 +2,8 @@ import Link from "next/link";
 import { Footprints, Gem, Shield } from "lucide-react";
 import { games } from "@/modules/game-catalog/games";
 import { CreateRoomButton } from "@/modules/room/ui/create-room-button";
+import { ForestAnimalArt } from "@/modules/connected-forest/ui/forest-art";
+import forestStyles from "@/modules/connected-forest/ui/game.module.css";
 import { AppMark, CircleHelp, DoorClosed, Ghost, MessageSquareText, Moon, ScanLine, UsersRound, Vote, Zap } from "@/shared/ui/icons";
 
 const steps = [
@@ -138,6 +140,10 @@ export default function Home() {
             </ul>
             <CreateRoomButton gameId="midnight-footprints" label="야간 잠입 시작하기" />
           </div>
+        </article>
+        <article className={forestStyles.homeCard}>
+          <div className={forestStyles.homeArt}><ForestAnimalArt species="squirrel" /><ForestAnimalArt species="otter" /></div>
+          <div><span>플레이테스트 · 4–6명 · 12–25분</span><h3>이어지는 숲길</h3><p>나무 한 그루, 꽃 한 송이. 작은 숲을 만들면 친구들이 찾아와요. 이웃과 동물을 주고받고 우리 사이에 오솔길을 이어보세요.</p><CreateRoomButton gameId="connected-forest" label="나의 숲 만들기" /></div>
         </article>
       </section>
 

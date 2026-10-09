@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type {
   DarkHousePublicRoomView,
+  ConnectedForestPublicRoomView,
   DawnSwitchboardPublicRoomView,
   MidnightFootprintsPublicRoomView,
   PublicRoomView,
@@ -12,6 +13,8 @@ import { PublicBoard } from "@/modules/dark-house/ui/public-board";
 import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public-board";
 import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
 import { MidnightFootprintsPublicBoard } from "@/modules/midnight-footprints/ui/public-board";
+import { ConnectedForestPublicBoard } from "@/modules/connected-forest/ui/public-board";
+import forestStyles from "@/modules/connected-forest/ui/game.module.css";
 
 export function DisplayClient({ code }: { code: string }) {
   const [token, setToken] = useState("");
@@ -41,7 +44,7 @@ export function DisplayClient({ code }: { code: string }) {
 
   useEffect(() => { queueMicrotask(() => void load()); }, [load]);
   useEffect(() => {
-    const timer = window.setInterval(load, view?.phase === "REVEALING" ? 500 : 2_000);
+    const timer = window.setInterval(load, ["REVEALING", "SEASON_REVEAL"].includes(view?.phase ?? "") ? 500 : 2_000);
     return () => window.clearInterval(timer);
   }, [load, view?.phase]);
   useEffect(() => {
@@ -60,7 +63,9 @@ export function DisplayClient({ code }: { code: string }) {
     | DarkHousePublicRoomView
     | SuspiciousInvitePublicRoomView
     | DawnSwitchboardPublicRoomView
-    | MidnightFootprintsPublicRoomView;
+    | MidnightFootprintsPublicRoomView
+    | ConnectedForestPublicRoomView;
+  const isForest = (candidate: GamePublicView): candidate is ConnectedForestPublicRoomView => candidate.room.gameId === "connected-forest";
   const isDarkHouse = (candidate: GamePublicView): candidate is DarkHousePublicRoomView =>
     candidate.room.gameId === "dark-house";
   const isSuspicious = (candidate: GamePublicView): candidate is SuspiciousInvitePublicRoomView =>
@@ -68,8 +73,8 @@ export function DisplayClient({ code }: { code: string }) {
   const isSwitchboard = (candidate: GamePublicView): candidate is DawnSwitchboardPublicRoomView =>
     candidate.room.gameId === "dawn-switchboard";
   return (
-    <main className="display-page">
-      {isDarkHouse(view)
+    <main className={`display-page ${view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
+      {isForest(view) ? <ConnectedForestPublicBoard view={view} display /> : isDarkHouse(view)
         ? <PublicBoard view={view} />
         : isSuspicious(view)
           ? <SuspiciousInvitePublicBoard view={view} />

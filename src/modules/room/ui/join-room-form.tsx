@@ -51,6 +51,7 @@ export function JoinRoomForm({ code }: { code: string }) {
         id="nickname"
         name="nickname"
         value={nickname}
+        disabled={!token || loading}
         onChange={(event) => setNickname(event.target.value)}
         minLength={2}
         maxLength={16}

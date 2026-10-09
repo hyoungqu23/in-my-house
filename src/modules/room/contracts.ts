@@ -7,6 +7,21 @@ import type {
 } from "@/modules/dark-house/domain/types";
 import type { GameId } from "@/modules/game-catalog/games";
 import type {
+  ConnectedForestAction,
+  ConnectedForestPhase,
+  ConnectedForestResult,
+  ConnectedForestRulesVersion,
+  ForestAnimalCard,
+  ForestBoardCell,
+  ForestFigure,
+  ForestLockedPick,
+  ForestNeighborPath,
+  ForestPendingVisit,
+  ForestPlayerScore,
+  ForestTerrainCard,
+  ForestVisitResult,
+} from "@/modules/connected-forest/domain/types";
+import type {
   CircuitModule,
   PuzzleDifficulty,
   SwitchboardAction,
@@ -37,6 +52,7 @@ export type RoomAction =
   | SuspiciousInviteAction
   | SwitchboardAction
   | FootprintsAction
+  | ConnectedForestAction
   | AdministrativeAction;
 
 export type ActionRequest = {
@@ -254,15 +270,69 @@ export type MidnightFootprintsPlayerRoomView =
     };
   };
 
+export type ConnectedForestPublicRoomView = RoomViewBase<"connected-forest", ConnectedForestPhase> & {
+  projection: "public";
+  matchId?: string;
+  rulesVersion: ConnectedForestRulesVersion;
+  seasonIndex: number;
+  pickIndex: number;
+  passDirection: "LEFT" | "RIGHT";
+  phaseKey: string;
+  phaseEndsAt?: string;
+  players: Array<{
+    seat: number;
+    nickname: string;
+    connected: boolean;
+    isHost: boolean;
+    board: ForestBoardCell[];
+    figures: ForestFigure[];
+    score: ForestPlayerScore;
+    locked: boolean;
+    visitSelected: boolean;
+  }>;
+  neighborPaths: ForestNeighborPath[];
+  seasonVisitResults: ForestVisitResult[];
+  pause?: { disconnectedSeats: number[]; pausedAt: string; forfeitClaimAt: string };
+  result?: ConnectedForestResult;
+};
+
+export type ConnectedForestPlayerRoomView = Omit<ConnectedForestPublicRoomView, "projection"> & {
+  projection: "player";
+  self: {
+    seat: number;
+    hand: ForestTerrainCard[];
+    activeAnimals: ForestAnimalCard[];
+    goldenAcornAvailable: boolean;
+    animalRefreshAvailable: boolean;
+    welcomedThisSeason: boolean;
+    legalActions: ConnectedForestAction["type"][];
+    legalPlacementHexIds: string[];
+    lockedPick?: Omit<ForestLockedPick, "seat" | "submittedAt">;
+    neighborSeats: number[];
+    visitTargetSeats: number[];
+    visitAnimalCardIds: ForestAnimalCard["id"][];
+    visitSelection?: ForestPendingVisit | "NONE";
+    currentVisit?: ForestPendingVisit;
+    visitQueueIndex: number;
+    visitQueueTotal: number;
+    respondEndsAt?: string;
+    stayHexIds: string[];
+    canWalk: boolean;
+    stayHearts?: number;
+  };
+};
+
 export type PublicRoomView =
   | LobbyRoomView
   | DarkHousePublicRoomView
   | SuspiciousInvitePublicRoomView
   | DawnSwitchboardPublicRoomView
-  | MidnightFootprintsPublicRoomView;
+  | MidnightFootprintsPublicRoomView
+  | ConnectedForestPublicRoomView;
 export type PlayerRoomView =
   | DarkHousePlayerRoomView
   | SuspiciousInvitePlayerRoomView
   | DawnSwitchboardPlayerRoomView
-  | MidnightFootprintsPlayerRoomView;
+  | MidnightFootprintsPlayerRoomView
+  | ConnectedForestPlayerRoomView;
 export type RoomView = PublicRoomView | PlayerRoomView;

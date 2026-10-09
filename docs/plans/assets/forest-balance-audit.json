@@ -1,0 +1,54 @@
+{
+  "checkedAt": "2026-10-08T01:33:28.782Z",
+  "files": [
+    "docs/plans/assets/forest-balance-guests2-validation-tools.json",
+    "docs/plans/assets/forest-balance-guests2-validation-no-tools.json"
+  ],
+  "rows": 34,
+  "runs": [
+    {
+      "path": "docs/plans/assets/forest-balance-guests2-validation-tools.json",
+      "runs": 1500,
+      "seed": 539605,
+      "engineSha256": "8b8a6674dfbcc07eb49bb7dd208c10495c22a9c8ed8d74feaa26c2eece2bc291"
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-guests2-validation-no-tools.json",
+      "runs": 1500,
+      "seed": 645751,
+      "engineSha256": "8b8a6674dfbcc07eb49bb7dd208c10495c22a9c8ed8d74feaa26c2eece2bc291"
+    }
+  ],
+  "missing": [
+    {
+      "path": "docs/plans/assets/forest-balance-guests2-validation-tools.json",
+      "expected": 15,
+      "actual": 14
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-guests2-validation-no-tools.json",
+      "expected": 30,
+      "actual": 20
+    }
+  ],
+  "maxPolicyGap": 0.07200000000000004,
+  "max95Upper": 0.10699999999999998,
+  "minFreeRate": 0.7377598926894702,
+  "minSenderFreedom": 0.5584281282316443,
+  "maxSeatGap": 0.11066666666666664,
+  "failures": [
+    {
+      "path": "docs/plans/assets/forest-balance-guests2-validation-tools.json",
+      "n": 4,
+      "sender": "C_NEARLY_DONE",
+      "cohort": "CORE",
+      "gap": 0.07200000000000004,
+      "upper": 0.10699999999999998,
+      "free": 0.7397189453400386,
+      "reasons": [
+        "95% upper gap >= 10%p or missing"
+      ]
+    }
+  ],
+  "passed": false
+}

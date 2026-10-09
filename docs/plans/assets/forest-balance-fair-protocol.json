@@ -1,0 +1,181 @@
+{
+  "frozenAt": "2026-10-08T02:27:43.715Z",
+  "engineSha256": "a7c3eb7a52776a6474afc1505e5b74d13fb12b0ce2f95bcd1e686e8dae4b7681",
+  "candidates": [
+    {
+      "id": "balanced-2",
+      "rules": {
+        "version": "balanced-2",
+        "stayReceiverHearts": 1,
+        "visitorDiversityHearts": 1,
+        "visitorDiversityCap": 2,
+        "staySenderLeaves": 1,
+        "walkReceiverLeaves": 2,
+        "walkSenderLeaves": 1,
+        "pathCompletionReceiverLeaves": 1,
+        "pathCompletionSenderLeaves": 1,
+        "pathCap": 4,
+        "visitRouting": "ALTERNATE",
+        "visitTieBreak": "SEASON_DIRECTION",
+        "draftDeadlineMs": 60000,
+        "visitSelectDeadlineMs": 30000,
+        "visitResponseDeadlineMs": 20000,
+        "revealDurationMs": 1800,
+        "forfeitClaimDelayMs": 180000,
+        "balanceBonusHearts": 5
+      }
+    }
+  ],
+  "purpose": "Same rewards as balanced-1; eliminate numeric-seat automatic/default targeting bias. Fresh engine, independent fixed-size evidence; no legacy data pooling.",
+  "primary": [
+    {
+      "family": "tools",
+      "runs": 1500,
+      "seedBase": 1540027,
+      "tools": true,
+      "skill": "GREEDY",
+      "order": "SHUFFLED",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "A_SHORTEST",
+        "B_RANDOM",
+        "C_NEARLY_DONE",
+        "D_LOW_SCORE",
+        "HETEROGENEOUS"
+      ],
+      "counts": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "family": "no-tools",
+      "runs": 1500,
+      "seedBase": 1684003,
+      "tools": false,
+      "skill": "GREEDY",
+      "order": "REVERSE",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "A_SHORTEST",
+        "B_RANDOM",
+        "C_NEARLY_DONE",
+        "D_LOW_SCORE",
+        "HETEROGENEOUS"
+      ],
+      "counts": [
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "family": "noisy",
+      "runs": 1500,
+      "seedBase": 1792009,
+      "tools": true,
+      "skill": "NOISY",
+      "order": "REVERSE",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "A_SHORTEST",
+        "B_RANDOM",
+        "C_NEARLY_DONE",
+        "D_LOW_SCORE",
+        "HETEROGENEOUS"
+      ],
+      "counts": [
+        4,
+        5,
+        6
+      ]
+    }
+  ],
+  "precision": [
+    {
+      "family": "tools-n4",
+      "runs": 10000,
+      "seedBase": 2031013,
+      "tools": true,
+      "skill": "GREEDY",
+      "order": "SHUFFLED",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "A_SHORTEST",
+        "B_RANDOM",
+        "C_NEARLY_DONE",
+        "D_LOW_SCORE",
+        "HETEROGENEOUS"
+      ],
+      "counts": [
+        4
+      ]
+    },
+    {
+      "family": "tools-c56",
+      "runs": 10000,
+      "seedBase": 2031013,
+      "tools": true,
+      "skill": "GREEDY",
+      "order": "SHUFFLED",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "C_NEARLY_DONE"
+      ],
+      "counts": [
+        5,
+        6
+      ]
+    },
+    {
+      "family": "noisy-c4",
+      "runs": 10000,
+      "seedBase": 2187017,
+      "tools": true,
+      "skill": "NOISY",
+      "order": "REVERSE",
+      "cohorts": [
+        "CORE",
+        "SMART",
+        "MYOPIC"
+      ],
+      "senders": [
+        "C_NEARLY_DONE"
+      ],
+      "counts": [
+        4
+      ]
+    }
+  ],
+  "bootstrapReplicates": 1000,
+  "criteria": {
+    "policyGapBelow": 0.1,
+    "policyGap95UpperBelow": 0.1,
+    "seatGapBelow": 0.1,
+    "seatGap95UpperBelow": 0.1,
+    "receiverFreeAtLeast": 0.7,
+    "senderFreeAtLeast": 0.5
+  },
+  "precisionPolicy": "All precision cells and seeds pre-sized before new data collection. They may resolve confidence-interval uncertainty only, never rescue an observed gap or choice-rate failure. Retain every primary row and all previous rejected candidates."
+}

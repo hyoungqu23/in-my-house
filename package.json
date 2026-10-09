@@ -10,9 +10,11 @@
     "lint": "eslint .",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "check": "pnpm lint && pnpm typecheck && pnpm test"
+    "simulate:connected-forest": "jiti scripts/connected-forest-sim.ts",
+    "check": "pnpm lint && pnpm typecheck && pnpm test:coverage"
   },
   "engines": {
     "node": ">=24"
@@ -39,6 +41,7 @@
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
+    "jiti": "^2.7.0",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4",
     "typescript": "^5",

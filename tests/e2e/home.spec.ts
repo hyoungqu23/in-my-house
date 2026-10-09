@@ -320,16 +320,17 @@ test("two players swap roles across a midnight footprints match and start a rema
     await expect(page.locator(".footprints-controls")).toBeVisible({ timeout: 8_000 });
   }
 
-  async function rolePages() {
+  async function rolePages(round: number) {
     await Promise.all(pages.map(ensurePrivate));
+    await Promise.all(pages.map((page) => expect(page.getByText(`ROUND ${round}/2 · PRIVATE`, { exact: true })).toBeVisible({ timeout: 8_000 })));
     const firstRole = (await pages[0].locator(".footprints-role").textContent())?.trim();
     return firstRole?.includes("괴도")
       ? { intruder: pages[0], guard: pages[1] }
       : { intruder: pages[1], guard: pages[0] };
   }
 
-  async function getCaughtAtEntry() {
-    const { intruder, guard } = await rolePages();
+  async function getCaughtAtEntry(round: number) {
+    const { intruder, guard } = await rolePages(round);
     const entryButtons = intruder.locator(".entry-selector button");
     await expect(entryButtons).toHaveCount(3);
     const entryName = (await entryButtons.last().textContent())!.trim();
@@ -352,11 +353,11 @@ test("two players swap roles across a midnight footprints match and start a rema
     await intruder.getByRole("button", { name: "다음 라운드로" }).click();
   }
 
-  const initialRoles = await rolePages();
-  await getCaughtAtEntry();
-  const swappedRoles = await rolePages();
+  const initialRoles = await rolePages(1);
+  await getCaughtAtEntry(1);
+  const swappedRoles = await rolePages(2);
   expect(swappedRoles.intruder).toBe(initialRoles.guard);
-  await getCaughtAtEntry();
+  await getCaughtAtEntry(2);
 
   await host.getByRole("button", { name: "공개 화면" }).click();
   await expect(host.getByRole("heading", { name: "두 번의 잠입이 끝났습니다" })).toBeVisible({

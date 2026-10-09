@@ -66,6 +66,9 @@ importers:
       eslint-config-next:
         specifier: 16.2.11
         version: 16.2.11(@typescript-eslint/parser@8.65.0(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.5(jiti@2.7.0))(typescript@5.9.3)
+      jiti:
+        specifier: ^2.7.0
+        version: 2.7.0
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1

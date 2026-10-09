@@ -1,9 +1,12 @@
 import { z } from "zod";
+import { FOREST_ANIMAL_CARDS } from "@/modules/connected-forest/domain/content";
 import { requireActor } from "@/modules/auth/server";
 import { applyRoomAction } from "@/modules/room/room-service";
 import { apiError, readJson } from "@/shared/http/request";
 
 export const runtime = "nodejs";
+
+const forestAnimalId = z.enum(FOREST_ANIMAL_CARDS.map((card) => card.id));
 
 const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("START_GAME") }).strict(),
@@ -33,6 +36,26 @@ const actionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("ACK_ROUND_RESULT") }).strict(),
   z.object({ type: z.literal("CAST_REMATCH_VOTE"), vote: z.enum(["REMATCH", "END"]) }).strict(),
   z.object({ type: z.literal("CLAIM_FORFEIT") }).strict(),
+  z.object({
+    type: z.literal("LOCK_TERRAIN_PICK"),
+    cardId: z.string().min(1).max(128),
+    hexId: z.string().min(1).max(128),
+    useGoldenAcorn: z.boolean(),
+    acornTerrain: z.enum(["TREE", "WATER", "FLOWER", "ROCK", "MUSHROOM"]).optional(),
+    refreshAnimalCardId: forestAnimalId.optional(),
+    welcome: z.object({
+      animalCardId: forestAnimalId,
+      originHexId: z.string().min(1).max(128),
+      rotation: z.union([z.literal(0), z.literal(1), z.literal(2), z.literal(3), z.literal(4), z.literal(5)]),
+      residentHexId: z.string().min(1).max(128),
+    }).strict().optional(),
+  }).strict(),
+  z.object({
+    type: z.literal("CHOOSE_SEASON_VISIT"),
+    animalCardId: forestAnimalId,
+    targetSeat: z.number().int().positive(),
+  }).strict(),
+  z.object({ type: z.literal("RESOLVE_VISIT"), visitId: z.string().min(1).max(128), choice: z.enum(["STAY", "WALK"]), targetHexId: z.string().min(1).max(128).optional() }).strict(),
 ]);
 
 const requestSchema = z.object({

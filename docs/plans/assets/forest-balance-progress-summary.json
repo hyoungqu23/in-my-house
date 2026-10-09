@@ -1,0 +1,186 @@
+{
+  "updatedAt": "2026-10-08T00:59:29.886Z",
+  "summaries": [
+    {
+      "path": "docs/plans/assets/forest-balance-validation-a-1.json",
+      "id": "alternate-s1-w2-r1-t1-d1",
+      "rows": 30,
+      "runs": 1000,
+      "seed": 314159,
+      "engineSha256": "683d75ec6a36e780135c494d98611728a2913514a07841b5579af673d0ea6492",
+      "worstGap": 0.06192699035222968,
+      "gap95Upper": 0.09502585292058974,
+      "minFreeRate": 0.8039148114963126,
+      "minSenderFreedom": 0.5816389827003929,
+      "adaptiveWalkRange": [
+        0.7766374886809538,
+        0.8245798319327731
+      ],
+      "pathScoreRange": [
+        0.22704729647998065,
+        0.2664989166142448
+      ],
+      "pathsRange": [
+        1.032,
+        2.213
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-validation-b.json",
+      "id": "alternate-s1-w2-r1-t1-d1",
+      "rows": 30,
+      "runs": 1500,
+      "seed": 271828,
+      "engineSha256": "0326e7c9c086c92c6291ee5fe4e7d93cabff93bb490b06353686f97aad4e7d46",
+      "worstGap": 0.07100000000000004,
+      "gap95Upper": 0.10299999999999998,
+      "minFreeRate": 0.8074981411184596,
+      "minSenderFreedom": 0.5817800691178969,
+      "adaptiveWalkRange": [
+        0.7823172009218521,
+        0.8269557823129252
+      ],
+      "pathScoreRange": [
+        0.2236529022257876,
+        0.2643675472368932
+      ],
+      "pathsRange": [
+        0.98,
+        2.1613333333333333
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-tools-shuffled.json",
+      "id": "alternate-s1-w2-r1-t1-d1",
+      "rows": 45,
+      "runs": 1000,
+      "seed": 161803,
+      "engineSha256": "0326e7c9c086c92c6291ee5fe4e7d93cabff93bb490b06353686f97aad4e7d46",
+      "worstGap": 0.04919016196760648,
+      "gap95Upper": 0.08832335329341318,
+      "minFreeRate": 0.6561063574004667,
+      "minSenderFreedom": 0.5589732711073399,
+      "adaptiveWalkRange": [
+        0.8155802861685215,
+        0.8936215753424658
+      ],
+      "immediateWalkRange": [
+        0.6374881065651761,
+        0.7361937128292269
+      ],
+      "pathScoreRange": [
+        0.26392317286976547,
+        0.28751848969626403
+      ],
+      "pathsRange": [
+        1.899,
+        3.368
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-noisy-reverse.json",
+      "id": "alternate-s1-w2-r1-t1-d1",
+      "rows": 30,
+      "runs": 1000,
+      "seed": 141421,
+      "engineSha256": "0326e7c9c086c92c6291ee5fe4e7d93cabff93bb490b06353686f97aad4e7d46",
+      "worstGap": 0.05701425356339085,
+      "gap95Upper": 0.09602400600150038,
+      "minFreeRate": 0.7024936868686869,
+      "minSenderFreedom": 0.5695638531534358,
+      "adaptiveWalkRange": [
+        0.8151890482398957,
+        0.8839188304603971
+      ],
+      "pathScoreRange": [
+        0.2644878254372689,
+        0.2890850109104566
+      ],
+      "pathsRange": [
+        1.587,
+        2.922
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-cap4-refine.json",
+      "id": "alternate-s1-w2-r2-t1-d1-cap4",
+      "rows": 45,
+      "runs": 300,
+      "seed": 173205,
+      "engineSha256": "6b3bcbf30b75f0ed3be9b1a4e8dab4705d2ab6dd61da474c9ceaebb7c1460245",
+      "worstGap": 0.08749999999999997,
+      "minFreeRate": 0.7231944002545339,
+      "minSenderFreedom": 0.5525943396226415,
+      "adaptiveWalkRange": [
+        0.5949855351976856,
+        0.7295029051000645
+      ],
+      "immediateWalkRange": [
+        0.5206929740134745,
+        0.6725032425421531
+      ],
+      "pathScoreRange": [
+        0.2507866769577866,
+        0.2912256267409471
+      ],
+      "pathsRange": [
+        0.4666666666666667,
+        1.59
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-cap4-refine.json",
+      "id": "alternate-s2-w2-r2-t1-d0-cap4",
+      "rows": 45,
+      "runs": 300,
+      "seed": 173205,
+      "engineSha256": "6b3bcbf30b75f0ed3be9b1a4e8dab4705d2ab6dd61da474c9ceaebb7c1460245",
+      "worstGap": 0.1,
+      "minFreeRate": 0.7230353165765192,
+      "minSenderFreedom": 0.5525943396226415,
+      "adaptiveWalkRange": [
+        0.5872709739633558,
+        0.723047127178825
+      ],
+      "immediateWalkRange": [
+        0.5077071290944123,
+        0.6595607235142119
+      ],
+      "pathScoreRange": [
+        0.24943680341474983,
+        0.29016686531585223
+      ],
+      "pathsRange": [
+        0.46,
+        1.59
+      ]
+    },
+    {
+      "path": "docs/plans/assets/forest-balance-cap4-refine.json",
+      "id": "alternate-s1-w2-r1-t1-d1-cap4",
+      "rows": 45,
+      "runs": 300,
+      "seed": 173205,
+      "engineSha256": "6b3bcbf30b75f0ed3be9b1a4e8dab4705d2ab6dd61da474c9ceaebb7c1460245",
+      "worstGap": 0.08399999999999999,
+      "minFreeRate": 0.7231944002545339,
+      "minSenderFreedom": 0.5525943396226415,
+      "adaptiveWalkRange": [
+        0.5920925747348119,
+        0.7260981912144703
+      ],
+      "immediateWalkRange": [
+        0.5206929740134745,
+        0.6725032425421531
+      ],
+      "pathScoreRange": [
+        0.24752534287418007,
+        0.2840468489463005
+      ],
+      "pathsRange": [
+        0.4666666666666667,
+        1.58
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+import { readFileSync, writeFileSync } from "node:fs";
+import { auditDecision } from "../src/modules/connected-forest/analysis/decision-audit";
+import type { ExperimentDocument } from "../src/modules/connected-forest/analysis/decision-audit";
+const args = process.argv.slice(2);
+const outputFlag = args.indexOf("--output");
+const output = outputFlag < 0 ? "docs/plans/assets/forest-balance-decision-audit.json" : args.splice(outputFlag, 2)[1];
+const fairFlag = args.indexOf("--fair-seats");
+const requireSeatBalance = fairFlag >= 0;
+if (requireSeatBalance) args.splice(fairFlag, 1);
+const split = args.indexOf("--precision");
+if (split < 0) throw new Error("Pass primary files followed by --precision and independent precision files");
+const read = (path: string) => JSON.parse(readFileSync(path, "utf8")) as ExperimentDocument;
+const primaryPaths = args.slice(0, split);
+const precisionPaths = args.slice(split + 1);
+const audit = auditDecision(primaryPaths.map(read), precisionPaths.map(read), { requireSeatBalance });
+writeFileSync(output, JSON.stringify({ checkedAt: new Date().toISOString(), primaryPaths, precisionPaths, ...audit }, null, 2));
+const summary = { ...audit, accepted: undefined, confirmations: audit.confirmations.map((record) => ({ condition: record.condition, originalUpper: record.primary.gap95?.[1], confirmationRuns: record.confirmation.runs, confirmationUpper: record.confirmation.gap95?.[1] })) };
+console.log(JSON.stringify(summary, null, 2));

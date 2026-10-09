@@ -16,6 +16,7 @@ const statuses: Record<string, number> = {
   ACTION_ID_REUSED: 409,
   STALE_VERSION: 409,
   ACTION_TOO_EARLY: 409,
+  GAME_PAUSED: 409,
   ROOM_EXPIRED: 410,
   INVALID_PHASE: 422,
   NOT_YOUR_TURN: 403,

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+.manual-copy { display: grid; gap: 8px; margin-top: 12px; font-size: 13px; }
+.manual-copy input { width: 100%; min-width: 0; min-height: 44px; padding: 8px; }
+
 :root {
   --bg: #090b12;
   --panel: #151927;

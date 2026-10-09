@@ -1,6 +1,7 @@
 "use client";
 
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserId } from "@/shared/browser/uuid";
 
 let supabase: SupabaseClient | undefined;
 
@@ -16,7 +17,7 @@ function getLocalDeviceId() {
   const key = "in-my-house:device-id";
   const existing = window.localStorage.getItem(key);
   if (existing) return existing;
-  const id = crypto.randomUUID();
+  const id = createBrowserId();
   window.localStorage.setItem(key, id);
   return id;
 }
