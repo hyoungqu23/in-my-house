@@ -8,6 +8,10 @@ import { PublicBoard } from "@/modules/dark-house/ui/public-board";
 import { ConnectedForestPlayerControls } from "@/modules/connected-forest/ui/player-controls";
 import type { ForestDraft } from "@/modules/connected-forest/ui/draft-options";
 import { ConnectedForestPublicBoard } from "@/modules/connected-forest/ui/public-board";
+import { MoonlitInnPlayerControls } from "@/modules/moonlit-inn/ui/player-controls";
+import { MoonlitInnPublicBoard } from "@/modules/moonlit-inn/ui/public-board";
+import type { InnAction } from "@/modules/moonlit-inn/domain/types";
+import innStyles from "@/modules/moonlit-inn/ui/game.module.css";
 import forestStyles from "@/modules/connected-forest/ui/game.module.css";
 import { findGame } from "@/modules/game-catalog/games";
 import { DawnSwitchboardPlayerControls } from "@/modules/dawn-switchboard/ui/player-controls";
@@ -26,6 +30,8 @@ import type {
   LobbyRoomView,
   MidnightFootprintsPlayerRoomView,
   MidnightFootprintsPublicRoomView,
+  MoonlitInnPlayerRoomView,
+  MoonlitInnPublicRoomView,
   PlayerRoomView,
   RoomAction,
   RoomView,
@@ -45,17 +51,21 @@ const isDarkHousePlayer = (view: PlayerRoomView): view is DarkHousePlayerRoomVie
 const isSuspiciousPlayer = (view: PlayerRoomView): view is SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPlayer = (view: PlayerRoomView): view is DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
 const isFootprintsPlayer = (view: PlayerRoomView): view is MidnightFootprintsPlayerRoomView => view.room.gameId === "midnight-footprints";
+const isInnPlayer = (view: PlayerRoomView): view is MoonlitInnPlayerRoomView => view.room.gameId === "moonlit-inn";
+const isInnView = (view: Exclude<RoomView, LobbyRoomView>): view is MoonlitInnPlayerRoomView | MoonlitInnPublicRoomView => view.room.gameId === "moonlit-inn";
 const isForestPlayer = (view: PlayerRoomView): view is ConnectedForestPlayerRoomView => view.room.gameId === "connected-forest";
 type GamePublicView =
   | DarkHousePublicRoomView
   | SuspiciousInvitePublicRoomView
   | DawnSwitchboardPublicRoomView
   | MidnightFootprintsPublicRoomView
-  | ConnectedForestPublicRoomView;
+  | ConnectedForestPublicRoomView
+  | MoonlitInnPublicRoomView;
 const isDarkHousePublic = (view: GamePublicView): view is DarkHousePublicRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPublic = (view: GamePublicView): view is SuspiciousInvitePublicRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPublic = (view: GamePublicView): view is DawnSwitchboardPublicRoomView => view.room.gameId === "dawn-switchboard";
 const isFootprintsPublic = (view: GamePublicView): view is MidnightFootprintsPublicRoomView => view.room.gameId === "midnight-footprints";
+const isInnPublic = (view: GamePublicView): view is MoonlitInnPublicRoomView => view.room.gameId === "moonlit-inn";
 const isForestPublic = (view: GamePublicView): view is ConnectedForestPublicRoomView => view.room.gameId === "connected-forest";
 const isForestView = (view: Exclude<RoomView, LobbyRoomView>): view is ConnectedForestPublicRoomView | ConnectedForestPlayerRoomView => view.room.gameId === "connected-forest";
 const isDarkHouseView = (view: Exclude<RoomView, LobbyRoomView>): view is DarkHousePublicRoomView | DarkHousePlayerRoomView => view.room.gameId === "dark-house";
@@ -130,7 +140,7 @@ export function RoomClient({ code }: { code: string }) {
 
   const pollingPhase = view?.phase;
   useEffect(() => {
-    const intervalMs = pollingPhase && ["REVEALING", "ROUND_INTRO", "CLUE_REVEAL", "ROUND_RESULT", "PANEL_RESULT", "SEASON_REVEAL"].includes(pollingPhase)
+    const intervalMs = pollingPhase && ["REVEALING", "ROUND_INTRO", "CLUE_REVEAL", "ROUND_RESULT", "PANEL_RESULT", "SEASON_REVEAL", "INN_REVEAL"].includes(pollingPhase)
       ? 500
       : 1_500;
     const timer = window.setInterval(() => void loadView(mode), intervalMs);
@@ -213,6 +223,19 @@ export function RoomClient({ code }: { code: string }) {
           });
           break;
         } catch (cause) {
+          if (action.type.startsWith("INN_")) {
+            if (attempt === 3 || !(cause instanceof RoomApiError) || cause.code !== "STALE_VERSION"
+              || epoch !== requestEpoch.current || modeRef.current !== "private"
+              || latest.phase === "LOBBY" || !isInnView(latest) || latest.projection !== "player") throw cause;
+            const fresh = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=private`);
+            const innAction = action as InnAction;
+            if (epoch !== requestEpoch.current || modeRef.current !== "private"
+              || fresh.phase === "LOBBY" || !isInnView(fresh) || fresh.projection !== "player"
+              || fresh.phaseKey !== innAction.phaseKey || fresh.self.revision !== innAction.revision
+              || !fresh.self.legalActions.includes(innAction.type)) throw cause;
+            latest = fresh;
+            continue;
+          }
           const forestAction = ["LOCK_TERRAIN_PICK", "CHOOSE_SEASON_VISIT", "RESOLVE_VISIT"].includes(action.type);
           if (attempt === 3 || !forestAction || !(cause instanceof RoomApiError) || cause.code !== "STALE_VERSION"
             || latest.phase === "LOBBY" || !isForestView(latest)) throw cause;
@@ -283,7 +306,7 @@ export function RoomClient({ code }: { code: string }) {
   const playerView = isPlayerView(view) ? view : undefined;
 
   return (
-    <main className={`room-page ${view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
+    <main className={`room-page ${view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
       <nav className="mode-switcher" aria-label="화면 모드">
         <button className={mode === "private" ? "active" : ""} onClick={() => switchMode("private")} disabled={!view.viewer.roles.includes("PLAYER")}>
           내 화면
@@ -295,6 +318,7 @@ export function RoomClient({ code }: { code: string }) {
         <Lobby view={view} links={links} isHost={isHost} busy={busy} copied={copied} manualCopy={manualCopy} onCopy={copyInvite} onStart={() => sendAction({ type: "START_GAME" })} />
       ) : mode === "private" && playerView ? (
         <div className="game-layout private-layout">
+          {isInnPlayer(playerView) && <MoonlitInnPlayerControls key={playerView.phaseKey} view={playerView} busy={busy} onAction={sendAction} />}
           {isForestPlayer(playerView) && <ConnectedForestPlayerControls view={playerView} busy={busy} onAction={sendAction}
             draft={drafts.forest?.key === forestDraftKey(playerView) ? drafts.forest.value : undefined}
             onDraftChange={(value) => { setDrafts((current) => ({ ...current, forest: { key: forestDraftKey(playerView), value } })); setActionError(""); }} />}
@@ -314,7 +338,7 @@ export function RoomClient({ code }: { code: string }) {
         </div>
       ) : view.projection === "public" ? (
         <div className="game-layout">
-          {isDarkHousePublic(view)
+          {isInnPublic(view) ? <MoonlitInnPublicBoard view={view} /> : isDarkHousePublic(view)
             ? <PublicBoard view={view} />
             : isSuspiciousPublic(view)
               ? <SuspiciousInvitePublicBoard view={view} />
@@ -344,16 +368,17 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
   const isSuspicious = view.room.gameId === "suspicious-invite";
   const isSwitchboard = view.room.gameId === "dawn-switchboard";
   const isFootprints = view.room.gameId === "midnight-footprints";
+  const isInn = view.room.gameId === "moonlit-inn";
   const isForest = view.room.gameId === "connected-forest";
   const minimumPlayers = findGame(view.room.gameId)!.minPlayers;
-  const title = isForest ? "우리의 작은 숲을 시작해요" : isSuspicious
+  const title = isInn ? "네 주인과 작은 여관을 열어요" : isForest ? "우리의 작은 숲을 시작해요" : isSuspicious
     ? "초대받지 않은 사람을 찾으세요"
     : isSwitchboard
       ? "새벽이 오기 전에 전력을 되찾으세요"
       : isFootprints
         ? "괴도와 경비, 단둘이 밤을 시작하세요"
       : "빈 방을 믿지 마세요";
-  const lead = isForest ? "4–6명이 각자의 숲을 만들고 이웃과 동물을 주고받아요. 모두 모이면 첫 계절이 시작됩니다." : isSuspicious
+  const lead = isInn ? "4명이 손님과 가구를 고르고, 보름달 아래 이웃과 잠자리를 바꿔요. 한 번의 밤, 고양이 기본 2별로 시작합니다." : isForest ? "4–6명이 각자의 숲을 만들고 이웃과 동물을 주고받아요. 모두 모이면 첫 계절이 시작됩니다." : isSuspicious
     ? "모두 들어오면 호스트가 초대장을 공개합니다. 역할과 비밀 단어는 다른 사람에게 보여주지 마세요."
     : isSwitchboard
       ? "각자의 휴대폰에 서로 다른 회로 단서가 도착합니다. 화면은 숨기고 단서는 말로 공유하세요."
@@ -363,7 +388,7 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
   return (
     <div className="lobby-layout">
       <section className="lobby-stage">
-        <div className="eyebrow"><span /> {isForest ? "OUR LITTLE FOREST" : isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
+        <div className="eyebrow"><span /> {isInn ? "MOONLIT INN" : isForest ? "OUR LITTLE FOREST" : isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
         <h1>{title}</h1>
         <p className="lobby-lead">{lead}</p>
         <div className="lobby-code-block">
@@ -384,7 +409,7 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
         </div>
         {isHost ? (
           <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < minimumPlayers} onClick={onStart}>
-            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isForest ? "모두 준비됨 · 숲길 시작" : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
+            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isInn ? "모두 준비됨 · 여관 열기" : isForest ? "모두 준비됨 · 숲길 시작" : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
           </button>
         ) : <p className="waiting-copy">호스트가 게임을 시작할 때까지 기다려 주세요.</p>}
       </section>
@@ -405,7 +430,7 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
 }
 
 function MiniPublicSummary({ view, onOpen }: { view: Exclude<RoomView, LobbyRoomView>; onOpen: () => void }) {
-  const summary = isForestView(view) ? `계절 ${view.seasonIndex + 1}/5 · 이웃의 숲 보기` : isDarkHouseView(view)
+  const summary = isInnView(view) ? "이웃의 여관과 교환 제안 보기" : isForestView(view) ? `계절 ${view.seasonIndex + 1}/5 · 이웃의 숲 보기` : isDarkHouseView(view)
     ? view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"
     : isSuspiciousView(view)
       ? `ROUND ${view.round} · ${view.category}`

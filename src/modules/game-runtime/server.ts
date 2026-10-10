@@ -1,6 +1,10 @@
 import "server-only";
 
 import { randomInt, randomUUID } from "node:crypto";
+import { createInnSetup } from "@/modules/moonlit-inn/domain/content";
+import { advanceInn, createInnState, transitionInn } from "@/modules/moonlit-inn/domain/reducer";
+import type { InnAction } from "@/modules/moonlit-inn/domain/types";
+import { projectInnPlayer, projectInnPublic } from "@/modules/moonlit-inn/projection/game-view";
 import { CONNECTED_FOREST_CURRENT_RULES_VERSION, createMatchSetup as createForestSetup } from "@/modules/connected-forest/domain/content";
 import {
   advanceTimedState as advanceForest,
@@ -113,6 +117,20 @@ const footprintsActionTypes = new Set<FootprintsAction["type"]>([
   "CLAIM_FORFEIT",
 ]);
 
+const innActionTypes = new Set<InnAction["type"]>([
+  "INN_PICK",
+  "INN_MOVE",
+  "INN_READY",
+  "INN_OFFER",
+  "INN_ACCEPT",
+  "INN_DECLINE",
+  "INN_SKIP_REVEAL",
+  "INN_END_DISCONNECTED",
+]);
+
+const isInnAction = (action: GameAction): action is InnAction =>
+  innActionTypes.has(action.type as InnAction["type"]);
+
 const isDarkHouseAction = (action: GameAction): action is DarkHouseAction =>
   darkHouseActionTypes.has(action.type as DarkHouseAction["type"]);
 
@@ -154,6 +172,8 @@ export function createGame(
   previousGame?: StoredGame,
 ): StoredGame {
   switch (gameId) {
+    case "moonlit-inn":
+      return { type: gameId, state: createInnState(roster, createInnSetup(randomUUID(), randomInt)) };
     case "dark-house":
       return { type: gameId, state: createDarkHouse(roster) };
     case "connected-forest": {
@@ -197,6 +217,8 @@ export function advanceGame(
   context: { now: number; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "moonlit-inn":
+      return { ...game, state: advanceInn(game.state, context) };
     case "connected-forest":
       return { ...game, state: advanceForest(game.state, context) };
     case "dark-house":
@@ -225,6 +247,10 @@ export function transitionGame(
   context: { now: number; sequenceId: string; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "moonlit-inn": {
+      if (!isInnAction(action)) throw invalidGameAction();
+      return { ...game, state: transitionInn(game.state, actorSeat, action, context) };
+    }
     case "connected-forest": {
       if (!isForestAction(action)) throw invalidGameAction();
       return { ...game, state: transitionForest(game.state, actorSeat, action, context) };
@@ -289,6 +315,8 @@ export function transitionGame(
 
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
   switch (game.type) {
+    case "moonlit-inn":
+      return projectInnPublic(game.state, context);
     case "connected-forest":
       return projectForestPublic(game.state, { ...context, matchId: game.matchId });
     case "dark-house":
@@ -310,6 +338,8 @@ export function projectGamePlayer(
   privateState?: FootprintsPrivatePlayerState,
 ): PlayerRoomView {
   switch (game.type) {
+    case "moonlit-inn":
+      return projectInnPlayer(game.state, context);
     case "connected-forest":
       return projectForestPlayer(game.state, { ...context, matchId: game.matchId });
     case "dark-house":
