@@ -1,0 +1,664 @@
+{
+  "date": "2026-10-10",
+  "seedsPerPolicy": 512,
+  "seedBase": 20261010,
+  "assumptions": [
+    "Four players, one night, cat base 2. Four copies per guest/furniture type, independently shuffled, twelve paired bundles.",
+    "Greedy draft optimizes the current holdings, not future hidden hands. Bounded choices use exp(value-best) and day placements within one expected point of optimum.",
+    "Auto policy chooses greedy bundles but leaves the production initial placement unchanged during daytime. All policies optimize at most two own night actions.",
+    "Competitive filter asks whether any single mutually score-improving offer preserves both parties split winner credit vs their own best no-trade plans, holding the other two scores fixed.",
+    "It uses maximum own-score exchange plans, not deliberate point withholding or all bargaining equilibria. It does not model human discovery, reaction time or acceptance.",
+    "Physical seat symmetry is tested by rotating starting hands AND player random streams. Post-trade seat wins are excluded because matching selection can introduce analysis ordering artifacts.",
+    "Weather comparison evaluates both forecasts from the same day placement with two optimal own actions; trading is omitted for this comparison."
+  ],
+  "profiles": [
+    {
+      "ruleVersion": "playtest-1",
+      "parameters": {
+        "rabbitBase": 3,
+        "catBase": 2,
+        "woodCatBonus": 0,
+        "moonCap": 2
+      },
+      "woodToQuilt": {
+        "from": "wood",
+        "to": "quilt",
+        "oldBetter": 0,
+        "equal": 128,
+        "newBetter": 72,
+        "total": 200,
+        "weightedDelta": 0.353529411764706
+      },
+      "furnitureMarginal": [
+        {
+          "name": "quilt",
+          "totalHands": 200,
+          "positiveHands": 72,
+          "weightedMarginal": 0.7704201680672269
+        },
+        {
+          "name": "stone",
+          "totalHands": 200,
+          "positiveHands": 73,
+          "weightedMarginal": 1.0005042016806724
+        },
+        {
+          "name": "basin",
+          "totalHands": 200,
+          "positiveHands": 73,
+          "weightedMarginal": 1.0005042016806733
+        },
+        {
+          "name": "wood",
+          "totalHands": 200,
+          "positiveHands": 46,
+          "weightedMarginal": 0.2702521008403362
+        }
+      ],
+      "structuralWeighting": "Independent undrafted 3-card hands drawn without replacement from four copies of each type. Replacement comparisons condition on the replaced type being present; not post-draft frequency.",
+      "groups": [
+        {
+          "policy": "greedy",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 447,
+            "total": 512,
+            "rate": 0.873046875
+          },
+          "winnerSafeOpportunity": {
+            "count": 447,
+            "total": 512,
+            "rate": 0.873046875
+          },
+          "bothWinImproved": {
+            "count": 134,
+            "total": 512,
+            "rate": 0.26171875
+          },
+          "repair": {
+            "count": 954,
+            "total": 2048,
+            "rate": 0.4658203125,
+            "meanGain": 0.4658203125,
+            "maxGain": 1
+          },
+          "weather": {
+            "count": 148,
+            "total": 2048,
+            "rate": 0.072265625,
+            "meanSwing": 0.123046875,
+            "maxSwing": 2,
+            "winnerChanged": {
+              "count": 73,
+              "total": 512,
+              "rate": 0.142578125
+            }
+          },
+          "noTradeScores": {
+            "mean": 12.11767578125,
+            "p10": 11,
+            "p50": 12,
+            "p90": 14
+          },
+          "seatCredits": [
+            0.24381510416666652,
+            0.2584635416666665,
+            0.2604166666666665,
+            0.2373046874999999
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.9993386243386243,
+              "meanBaseComfort": 4.479497354497354
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.105638366817887
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 2.901417525773196
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.1086532205595314
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1362,
+            "forced": 150,
+            "chosenShare": 0.9007936507936508,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        },
+        {
+          "policy": "bounded",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 444,
+            "total": 512,
+            "rate": 0.8671875
+          },
+          "winnerSafeOpportunity": {
+            "count": 443,
+            "total": 512,
+            "rate": 0.865234375
+          },
+          "bothWinImproved": {
+            "count": 108,
+            "total": 512,
+            "rate": 0.2109375
+          },
+          "repair": {
+            "count": 1308,
+            "total": 2048,
+            "rate": 0.638671875,
+            "meanGain": 0.83447265625,
+            "maxGain": 2
+          },
+          "weather": {
+            "count": 351,
+            "total": 2048,
+            "rate": 0.17138671875,
+            "meanSwing": 0.197265625,
+            "maxSwing": 2,
+            "winnerChanged": {
+              "count": 150,
+              "total": 512,
+              "rate": 0.29296875
+            }
+          },
+          "noTradeScores": {
+            "mean": 11.98193359375,
+            "p10": 10,
+            "p50": 12,
+            "p90": 14
+          },
+          "seatCredits": [
+            0.27652994791666663,
+            0.2622070312499999,
+            0.2403971354166665,
+            0.22086588541666657
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.996031746031746,
+              "meanBaseComfort": 4.366402116402116
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.100453661697991
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 2.881443298969072
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.074821080026025
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1262,
+            "forced": 250,
+            "chosenShare": 0.8346560846560847,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        },
+        {
+          "policy": "auto",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 371,
+            "total": 512,
+            "rate": 0.724609375
+          },
+          "winnerSafeOpportunity": {
+            "count": 371,
+            "total": 512,
+            "rate": 0.724609375
+          },
+          "bothWinImproved": {
+            "count": 91,
+            "total": 512,
+            "rate": 0.177734375
+          },
+          "repair": {
+            "count": 1545,
+            "total": 2048,
+            "rate": 0.75439453125,
+            "meanGain": 2.0009765625,
+            "maxGain": 7
+          },
+          "weather": {
+            "count": 1005,
+            "total": 2048,
+            "rate": 0.49072265625,
+            "meanSwing": 0.60791015625,
+            "maxSwing": 2,
+            "winnerChanged": {
+              "count": 263,
+              "total": 512,
+              "rate": 0.513671875
+            }
+          },
+          "noTradeScores": {
+            "mean": 11.8505859375,
+            "p10": 10,
+            "p50": 12,
+            "p90": 13
+          },
+          "seatCredits": [
+            0.2680664062499999,
+            0.24169921874999992,
+            0.24690755208333323,
+            0.24332682291666655
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.9993386243386243,
+              "meanBaseComfort": 4.427910052910053
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.104342190537913
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 2.9072164948453607
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.1047495120364346
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1362,
+            "forced": 150,
+            "chosenShare": 0.9007936507936508,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        }
+      ],
+      "seatAudit": {
+        "seeds": 256,
+        "rotationsPerSeed": 3,
+        "playerComparisons": 3072,
+        "mismatches": 0,
+        "scope": "Draft + optimal own night repair; no trading selection or human speed."
+      },
+      "mixedSkill": {
+        "bounded": {
+          "independentDeckSeeds": 256,
+          "roleRotations": 4,
+          "tableCounterfactuals": 1024,
+          "greedyWinnerCredit": 0.3021647135416666,
+          "meanGreedyScoreGap": 0.3733723958333332,
+          "scope": "One greedy vs three bounded, before trading. These policies are not measured human skill levels."
+        },
+        "auto": {
+          "independentDeckSeeds": 256,
+          "roleRotations": 4,
+          "tableCounterfactuals": 1024,
+          "greedyWinnerCredit": 0.3274739583333331,
+          "meanGreedyScoreGap": 0.2851562499999994,
+          "scope": "One greedy vs three auto, before trading. These policies are not measured human skill levels."
+        }
+      }
+    },
+    {
+      "ruleVersion": "balanced-1",
+      "parameters": {
+        "rabbitBase": 2,
+        "catBase": 2,
+        "woodCatBonus": 1,
+        "moonCap": 1
+      },
+      "woodToQuilt": {
+        "from": "wood",
+        "to": "quilt",
+        "oldBetter": 33,
+        "equal": 111,
+        "newBetter": 56,
+        "total": 200,
+        "weightedDelta": 0.027983193277310997
+      },
+      "furnitureMarginal": [
+        {
+          "name": "quilt",
+          "totalHands": 200,
+          "positiveHands": 72,
+          "weightedMarginal": 0.76890756302521
+        },
+        {
+          "name": "stone",
+          "totalHands": 200,
+          "positiveHands": 73,
+          "weightedMarginal": 1.0005042016806724
+        },
+        {
+          "name": "basin",
+          "totalHands": 200,
+          "positiveHands": 73,
+          "weightedMarginal": 1.0005042016806733
+        },
+        {
+          "name": "wood",
+          "totalHands": 200,
+          "positiveHands": 81,
+          "weightedMarginal": 0.5955462184873954
+        }
+      ],
+      "structuralWeighting": "Independent undrafted 3-card hands drawn without replacement from four copies of each type. Replacement comparisons condition on the replaced type being present; not post-draft frequency.",
+      "groups": [
+        {
+          "policy": "greedy",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 475,
+            "total": 512,
+            "rate": 0.927734375
+          },
+          "winnerSafeOpportunity": {
+            "count": 474,
+            "total": 512,
+            "rate": 0.92578125
+          },
+          "bothWinImproved": {
+            "count": 170,
+            "total": 512,
+            "rate": 0.33203125
+          },
+          "repair": {
+            "count": 0,
+            "total": 2048,
+            "rate": 0,
+            "meanGain": 0,
+            "maxGain": 0
+          },
+          "weather": {
+            "count": 76,
+            "total": 2048,
+            "rate": 0.037109375,
+            "meanSwing": 0.037109375,
+            "maxSwing": 1,
+            "winnerChanged": {
+              "count": 38,
+              "total": 512,
+              "rate": 0.07421875
+            }
+          },
+          "noTradeScores": {
+            "mean": 10.57861328125,
+            "p10": 9,
+            "p50": 10,
+            "p90": 12
+          },
+          "seatCredits": [
+            0.23909505208333323,
+            0.26904296875000006,
+            0.25016276041666663,
+            0.24169921874999997
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.9947089947089947,
+              "meanBaseComfort": 3.386904761904762
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.0615683732987686
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.26159793814433
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.087833441769681
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1093,
+            "forced": 419,
+            "chosenShare": 0.7228835978835979,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        },
+        {
+          "policy": "bounded",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 467,
+            "total": 512,
+            "rate": 0.912109375
+          },
+          "winnerSafeOpportunity": {
+            "count": 466,
+            "total": 512,
+            "rate": 0.91015625
+          },
+          "bothWinImproved": {
+            "count": 170,
+            "total": 512,
+            "rate": 0.33203125
+          },
+          "repair": {
+            "count": 848,
+            "total": 2048,
+            "rate": 0.4140625,
+            "meanGain": 0.4140625,
+            "maxGain": 1
+          },
+          "weather": {
+            "count": 82,
+            "total": 2048,
+            "rate": 0.0400390625,
+            "meanSwing": 0.0400390625,
+            "maxSwing": 1,
+            "winnerChanged": {
+              "count": 39,
+              "total": 512,
+              "rate": 0.076171875
+            }
+          },
+          "noTradeScores": {
+            "mean": 10.5625,
+            "p10": 9,
+            "p50": 11,
+            "p90": 12
+          },
+          "seatCredits": [
+            0.24609374999999986,
+            0.3043619791666667,
+            0.23795572916666655,
+            0.2115885416666666
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.9920634920634921,
+              "meanBaseComfort": 3.363756613756614
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.099157485418017
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.2132731958762886
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.0943396226415096
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1082,
+            "forced": 430,
+            "chosenShare": 0.7156084656084656,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        },
+        {
+          "policy": "auto",
+          "tableNights": 512,
+          "playerNights": 2048,
+          "scoreOpportunity": {
+            "count": 442,
+            "total": 512,
+            "rate": 0.86328125
+          },
+          "winnerSafeOpportunity": {
+            "count": 440,
+            "total": 512,
+            "rate": 0.859375
+          },
+          "bothWinImproved": {
+            "count": 190,
+            "total": 512,
+            "rate": 0.37109375
+          },
+          "repair": {
+            "count": 1535,
+            "total": 2048,
+            "rate": 0.74951171875,
+            "meanGain": 1.72216796875,
+            "maxGain": 6
+          },
+          "weather": {
+            "count": 286,
+            "total": 2048,
+            "rate": 0.1396484375,
+            "meanSwing": 0.1396484375,
+            "maxSwing": 1,
+            "winnerChanged": {
+              "count": 138,
+              "total": 512,
+              "rate": 0.26953125
+            }
+          },
+          "noTradeScores": {
+            "mean": 10.48486328125,
+            "p10": 9,
+            "p50": 10,
+            "p90": 12
+          },
+          "seatCredits": [
+            0.23876953124999983,
+            0.2703450520833333,
+            0.24918619791666655,
+            0.24169921874999992
+          ],
+          "guests": [
+            {
+              "name": "rabbit",
+              "count": 1512,
+              "sleepingRate": 0.9947089947089947,
+              "meanBaseComfort": 3.363756613756614
+            },
+            {
+              "name": "phoenix",
+              "count": 1543,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.0615683732987686
+            },
+            {
+              "name": "cat",
+              "count": 1552,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.235180412371134
+            },
+            {
+              "name": "cloud",
+              "count": 1537,
+              "sleepingRate": 1,
+              "meanBaseComfort": 3.081327260897853
+            }
+          ],
+          "rabbitAcquisition": {
+            "chosen": 1093,
+            "forced": 419,
+            "chosenShare": 0.7228835978835979,
+            "meaning": "Share of acquired rabbit bundles chosen during the two draft decisions, rather than received as the last forced bundle. Bundle furniture also affects this proxy."
+          }
+        }
+      ],
+      "seatAudit": {
+        "seeds": 256,
+        "rotationsPerSeed": 3,
+        "playerComparisons": 3072,
+        "mismatches": 0,
+        "scope": "Draft + optimal own night repair; no trading selection or human speed."
+      },
+      "mixedSkill": {
+        "bounded": {
+          "independentDeckSeeds": 256,
+          "roleRotations": 4,
+          "tableCounterfactuals": 1024,
+          "greedyWinnerCredit": 0.2563476562500001,
+          "meanGreedyScoreGap": 0.11718749999999993,
+          "scope": "One greedy vs three bounded, before trading. These policies are not measured human skill levels."
+        },
+        "auto": {
+          "independentDeckSeeds": 256,
+          "roleRotations": 4,
+          "tableCounterfactuals": 1024,
+          "greedyWinnerCredit": 0.28336588541666674,
+          "meanGreedyScoreGap": 0.10839843749999997,
+          "scope": "One greedy vs three auto, before trading. These policies are not measured human skill levels."
+        }
+      }
+    }
+  ],
+  "sourceHashes": {
+    "scripts/moonlit-inn/engine.mjs": "d6b36a893d6ffb05e12f300fb6a4f1001fcbecd07e3496d7d6d2260cb497fe98",
+    "scripts/moonlit-inn/balance-audit.mjs": "f6d597457e08e5dd9e2ec04bb2fde29dedb43a49cf819a68b753ff186dbbce81",
+    "src/modules/moonlit-inn/domain/content.ts": "30cd1f83b081fe854b419d7118c56efa21a282b2c990b4c2a16c96649bd03a7b",
+    "src/modules/moonlit-inn/domain/rules.ts": "f5f191f6cc9b8df4fe375c594dd17bb743d9aa74fcf12b920490fcef302a75bf"
+  }
+}
