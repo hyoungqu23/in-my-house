@@ -4,6 +4,7 @@ export const GAME_IDS = [
   "dawn-switchboard",
   "midnight-footprints",
   "connected-forest",
+  "moonlit-inn",
 ] as const;
 
 export type GameId = (typeof GAME_IDS)[number];
@@ -19,6 +20,14 @@ export type GameDefinition = {
 };
 
 export const games = [
+  {
+    id: "moonlit-inn",
+    title: "보름달 여관",
+    minPlayers: 4,
+    maxPlayers: 4,
+    durationMinutes: [8, 15],
+    availability: "playable",
+  },
   {
     id: "dark-house",
     title: "불 꺼진 집",

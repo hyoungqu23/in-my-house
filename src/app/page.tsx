@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import innStyles from "@/modules/moonlit-inn/ui/game.module.css";
 import { Footprints, Gem, Shield } from "lucide-react";
 import { games } from "@/modules/game-catalog/games";
 import { CreateRoomButton } from "@/modules/room/ui/create-room-button";
@@ -61,6 +63,21 @@ export default function Home() {
           <div><span className="eyebrow"><span /> TONIGHT’S GAMES</span><h2 id="games-heading">어떤 밤을 시작할까요?</h2></div>
           <span className="game-count">{String(games.length).padStart(2, "0")} GAMES</span>
         </div>
+        <article className={innStyles.homeCard} id="moonlit-inn">
+          <Image
+            src="/games/moonlit-inn/key-visual.png"
+            alt="낮에는 작은 동물, 밤에는 거대한 토끼와 천장 고양이가 머무는 여관"
+            width={1536}
+            height={1024}
+            sizes="(max-width: 700px) 90vw, 550px"
+          />
+          <div>
+            <span>플레이테스트 · 4명 · 한 번의 밤 · 8–15분 목표</span>
+            <h3>보름달 여관</h3>
+            <p>분명 작은 손님이었는데, 밤이 되니 방이 모자랍니다. 손님과 가구를 골라 여관을 꾸미고, 이웃과 잠자리를 바꿔 모두를 재워주세요.</p>
+            <CreateRoomButton gameId="moonlit-inn" label="보름달 여관 열기" />
+          </div>
+        </article>
         <article className="game-card">
           <div className="game-poster">
             <div className="poster-top"><span>3–6 PLAYERS</span><span>10–20 MIN</span></div>

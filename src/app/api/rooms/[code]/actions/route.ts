@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { innActionSchemas } from "@/modules/moonlit-inn/domain/action-schema";
 import { FOREST_ANIMAL_CARDS } from "@/modules/connected-forest/domain/content";
 import { requireActor } from "@/modules/auth/server";
 import { applyRoomAction } from "@/modules/room/room-service";
@@ -9,6 +10,7 @@ export const runtime = "nodejs";
 const forestAnimalId = z.enum(FOREST_ANIMAL_CARDS.map((card) => card.id));
 
 const actionSchema = z.discriminatedUnion("type", [
+  ...innActionSchemas,
   z.object({ type: z.literal("START_GAME") }).strict(),
   z.object({ type: z.literal("START_REMATCH") }).strict(),
   z.object({ type: z.literal("PLACE_INITIAL_TOKEN"), tokenId: z.string().min(1).max(128) }).strict(),

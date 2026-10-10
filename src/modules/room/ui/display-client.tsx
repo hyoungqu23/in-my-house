@@ -6,6 +6,7 @@ import type {
   ConnectedForestPublicRoomView,
   DawnSwitchboardPublicRoomView,
   MidnightFootprintsPublicRoomView,
+  MoonlitInnPublicRoomView,
   PublicRoomView,
   SuspiciousInvitePublicRoomView,
 } from "@/modules/room/contracts";
@@ -14,6 +15,8 @@ import { DawnSwitchboardPublicBoard } from "@/modules/dawn-switchboard/ui/public
 import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/public-board";
 import { MidnightFootprintsPublicBoard } from "@/modules/midnight-footprints/ui/public-board";
 import { ConnectedForestPublicBoard } from "@/modules/connected-forest/ui/public-board";
+import { MoonlitInnPublicBoard } from "@/modules/moonlit-inn/ui/public-board";
+import innStyles from "@/modules/moonlit-inn/ui/game.module.css";
 import forestStyles from "@/modules/connected-forest/ui/game.module.css";
 
 export function DisplayClient({ code }: { code: string }) {
@@ -44,7 +47,7 @@ export function DisplayClient({ code }: { code: string }) {
 
   useEffect(() => { queueMicrotask(() => void load()); }, [load]);
   useEffect(() => {
-    const timer = window.setInterval(load, ["REVEALING", "SEASON_REVEAL"].includes(view?.phase ?? "") ? 500 : 2_000);
+    const timer = window.setInterval(load, ["REVEALING", "SEASON_REVEAL", "INN_REVEAL"].includes(view?.phase ?? "") ? 500 : 2_000);
     return () => window.clearInterval(timer);
   }, [load, view?.phase]);
   useEffect(() => {
@@ -64,7 +67,9 @@ export function DisplayClient({ code }: { code: string }) {
     | SuspiciousInvitePublicRoomView
     | DawnSwitchboardPublicRoomView
     | MidnightFootprintsPublicRoomView
-    | ConnectedForestPublicRoomView;
+    | ConnectedForestPublicRoomView
+    | MoonlitInnPublicRoomView;
+  const isInn = (candidate: GamePublicView): candidate is MoonlitInnPublicRoomView => candidate.room.gameId === "moonlit-inn";
   const isForest = (candidate: GamePublicView): candidate is ConnectedForestPublicRoomView => candidate.room.gameId === "connected-forest";
   const isDarkHouse = (candidate: GamePublicView): candidate is DarkHousePublicRoomView =>
     candidate.room.gameId === "dark-house";
@@ -73,8 +78,8 @@ export function DisplayClient({ code }: { code: string }) {
   const isSwitchboard = (candidate: GamePublicView): candidate is DawnSwitchboardPublicRoomView =>
     candidate.room.gameId === "dawn-switchboard";
   return (
-    <main className={`display-page ${view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
-      {isForest(view) ? <ConnectedForestPublicBoard view={view} display /> : isDarkHouse(view)
+    <main className={`display-page ${view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
+      {isInn(view) ? <MoonlitInnPublicBoard view={view} display /> : isForest(view) ? <ConnectedForestPublicBoard view={view} display /> : isDarkHouse(view)
         ? <PublicBoard view={view} />
         : isSuspicious(view)
           ? <SuspiciousInvitePublicBoard view={view} />

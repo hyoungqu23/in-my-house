@@ -5,6 +5,18 @@ import type {
   Token,
   TokenKind,
 } from "@/modules/dark-house/domain/types";
+import type {
+  InnAction,
+  InnBoard,
+  InnBundle,
+  InnOffer,
+  InnPhase,
+  InnResult,
+  InnRulesVersion,
+  InnScore,
+  InnState,
+  InnWeather,
+} from "@/modules/moonlit-inn/domain/types";
 import type { GameId } from "@/modules/game-catalog/games";
 import type {
   ConnectedForestAction,
@@ -52,6 +64,7 @@ export type RoomAction =
   | SuspiciousInviteAction
   | SwitchboardAction
   | FootprintsAction
+  | InnAction
   | ConnectedForestAction
   | AdministrativeAction;
 
@@ -322,17 +335,56 @@ export type ConnectedForestPlayerRoomView = Omit<ConnectedForestPublicRoomView, 
   };
 };
 
+export type MoonlitInnPublicRoomView = RoomViewBase<"moonlit-inn", InnPhase> & {
+  projection: "public";
+  rulesVersion: InnRulesVersion;
+  phaseKey: string;
+  draftRound: number;
+  weather?: InnWeather;
+  phaseEndsAt?: string;
+  players: Array<InnBoard & {
+    seat: number;
+    nickname: string;
+    connected: boolean;
+    isHost: boolean;
+    revision: number;
+    ready: boolean;
+    actionsLeft: number;
+    traded: boolean;
+    picked: boolean;
+    forecast: { roof: InnScore; garden: InnScore };
+    score?: InnScore;
+  }>;
+  offers: InnOffer[];
+  trades: InnState["trades"];
+  pause?: { disconnectedSeats: number[]; pausedAt: string; forfeitClaimAt: string };
+  result?: InnResult;
+};
+
+export type MoonlitInnPlayerRoomView = Omit<MoonlitInnPublicRoomView, "projection"> & {
+  projection: "player";
+  self: {
+    seat: number;
+    revision: number;
+    hand: InnBundle[];
+    pickedId?: string;
+    legalActions: InnAction["type"][];
+  };
+};
+
 export type PublicRoomView =
   | LobbyRoomView
   | DarkHousePublicRoomView
   | SuspiciousInvitePublicRoomView
   | DawnSwitchboardPublicRoomView
   | MidnightFootprintsPublicRoomView
-  | ConnectedForestPublicRoomView;
+  | ConnectedForestPublicRoomView
+  | MoonlitInnPublicRoomView;
 export type PlayerRoomView =
   | DarkHousePlayerRoomView
   | SuspiciousInvitePlayerRoomView
   | DawnSwitchboardPlayerRoomView
   | MidnightFootprintsPlayerRoomView
-  | ConnectedForestPlayerRoomView;
+  | ConnectedForestPlayerRoomView
+  | MoonlitInnPlayerRoomView;
 export type RoomView = PublicRoomView | PlayerRoomView;

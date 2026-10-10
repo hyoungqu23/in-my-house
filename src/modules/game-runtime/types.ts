@@ -4,9 +4,12 @@ import type { SuspiciousInviteState } from "@/modules/suspicious-invite/domain/t
 import type { FootprintsState } from "@/modules/midnight-footprints/domain/types";
 import type { ConnectedForestState } from "@/modules/connected-forest/domain/types";
 
+import type { InnState } from "@/modules/moonlit-inn/domain/types";
+
 export type StoredGame =
   | { type: "dark-house"; state: DarkHouseState }
   | { type: "suspicious-invite"; state: SuspiciousInviteState }
   | { type: "dawn-switchboard"; state: SwitchboardState }
   | { type: "midnight-footprints"; state: FootprintsState }
-  | { type: "connected-forest"; state: ConnectedForestState; matchId?: string };
+  | { type: "connected-forest"; state: ConnectedForestState; matchId?: string }
+  | { type: "moonlit-inn"; state: InnState };
