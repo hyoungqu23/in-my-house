@@ -1,0 +1,53 @@
+{
+  "kind": "nominal-deadline-sum-not-human-duration",
+  "normalSeconds": {
+    "roll": 5,
+    "buy": 10,
+    "portal": 10,
+    "duel": 8,
+    "discard": 5,
+    "sale": 10,
+    "upgrade": 5
+  },
+  "roomySeconds": {
+    "roll": 5,
+    "buy": 15,
+    "portal": 15,
+    "duel": 15,
+    "discard": 8,
+    "sale": 15,
+    "upgrade": 10
+  },
+  "experiments": [
+    {
+      "players": 3,
+      "runs": 1000,
+      "seed": 284000000,
+      "windowMeans": {
+        "roll": 36.0,
+        "upgrade": 19.712,
+        "discard": 29.129,
+        "buy": 12.972,
+        "portal": 2.716,
+        "duel": 8.525
+      },
+      "defaultBudget": 10.821416666666666,
+      "roomyBudget": 16.222450000000002
+    },
+    {
+      "players": 4,
+      "runs": 1000,
+      "seed": 285000000,
+      "windowMeans": {
+        "roll": 48.0,
+        "buy": 13.101,
+        "upgrade": 21.091,
+        "discard": 35.26,
+        "duel": 15.024,
+        "portal": 3.725
+      },
+      "defaultBudget": 13.50345,
+      "roomyBudget": 20.179
+    }
+  ]
+}

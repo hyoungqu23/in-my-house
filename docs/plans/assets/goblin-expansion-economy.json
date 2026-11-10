@@ -1,0 +1,217 @@
+{
+  "kind": "one-macro-challenger-among-balanced-investors",
+  "sources": {
+    "goblin_market_expansion.py": "14936a8fcb6b8f653718ae760aa8250fa428d97c72fa4a787039bf0d1a251fec",
+    "goblin_market_v2.py": "6a0274d75afa7532c6c5ba555c5f3c4911fa6c5d520c7df78436926db1adc4bb",
+    "goblin_card_audit.py": "fc63c8a8a30c2440d01aede497f4646381d9d19f72963fd22e086c2e8c42113e",
+    "goblin_card_tuning.py": "5621583dad26f0fa4b6b20a214c9cf9bfc28049526e6ef1f3ce4ce8f98d50503"
+  },
+  "runnerSha256": "cc64cc056348ae45ca7a423129c892293241d23d047fa191b6412bbe7c86a194",
+  "trainingSha256": "2ee7531699062fef9cf8851edfe7e9ef37056e14f0cf7f002b908097d51956e1",
+  "experiments": [
+    {
+      "variant": "mvp20-8",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324000000,
+      "challenger": "cash",
+      "win": {
+        "mean": 0.0592,
+        "se": 0.003202257988447878,
+        "n": 5000,
+        "ci95": [
+          0.052923574342642166,
+          0.06547642565735784
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "mvp20-8",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324100000,
+      "challenger": "builder",
+      "win": {
+        "mean": 0.3562,
+        "se": 0.006637252641306108,
+        "n": 5000,
+        "ci95": [
+          0.34319098482304006,
+          0.36920901517696
+        ]
+      },
+      "forcedSalesPerGame": 0.016
+    },
+    {
+      "variant": "mvp20-8",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324200000,
+      "challenger": "cautious",
+      "win": {
+        "mean": 0.2935,
+        "se": 0.006308949508603928,
+        "n": 5000,
+        "ci95": [
+          0.28113445896313627,
+          0.3058655410368637
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "mvp20-8",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325000000,
+      "challenger": "cash",
+      "win": {
+        "mean": 0.0221,
+        "se": 0.0020215015773080033,
+        "n": 5000,
+        "ci95": [
+          0.018137856908476316,
+          0.026062143091523687
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "mvp20-8",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325100000,
+      "challenger": "builder",
+      "win": {
+        "mean": 0.26985,
+        "se": 0.006156265812575375,
+        "n": 5000,
+        "ci95": [
+          0.25778371900735225,
+          0.2819162809926477
+        ]
+      },
+      "forcedSalesPerGame": 0.0082
+    },
+    {
+      "variant": "mvp20-8",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325200000,
+      "challenger": "cautious",
+      "win": {
+        "mean": 0.2108,
+        "se": 0.005651465280081121,
+        "n": 5000,
+        "ci95": [
+          0.19972312805104098,
+          0.221876871948959
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324000000,
+      "challenger": "cash",
+      "win": {
+        "mean": 0.0221,
+        "se": 0.0020165476999710634,
+        "n": 5000,
+        "ci95": [
+          0.01814756650805672,
+          0.026052433491943285
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324100000,
+      "challenger": "builder",
+      "win": {
+        "mean": 0.3641,
+        "se": 0.006698647553236038,
+        "n": 5000,
+        "ci95": [
+          0.35097065079565737,
+          0.3772293492043426
+        ]
+      },
+      "forcedSalesPerGame": 0.0498
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 3,
+      "runs": 5000,
+      "seed": 324200000,
+      "challenger": "cautious",
+      "win": {
+        "mean": 0.2959333333333333,
+        "se": 0.006345730979196334,
+        "n": 5000,
+        "ci95": [
+          0.2834957006141085,
+          0.30837096605255815
+        ]
+      },
+      "forcedSalesPerGame": 0.0
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325000000,
+      "challenger": "cash",
+      "win": {
+        "mean": 0.0064666666666666674,
+        "se": 0.0011028708690139714,
+        "n": 5000,
+        "ci95": [
+          0.004305039763399283,
+          0.008628293569934052
+        ]
+      },
+      "forcedSalesPerGame": 0.0002
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325100000,
+      "challenger": "builder",
+      "win": {
+        "mean": 0.27131666666666665,
+        "se": 0.006205274542031476,
+        "n": 5000,
+        "ci95": [
+          0.25915432856428494,
+          0.28347900476904836
+        ]
+      },
+      "forcedSalesPerGame": 0.041
+    },
+    {
+      "variant": "expanded28-12",
+      "players": 4,
+      "runs": 5000,
+      "seed": 325200000,
+      "challenger": "cautious",
+      "win": {
+        "mean": 0.21525,
+        "se": 0.005724439536606909,
+        "n": 5000,
+        "ci95": [
+          0.20403009850825046,
+          0.22646990149174953
+        ]
+      },
+      "forcedSalesPerGame": 0.0002
+    }
+  ]
+}

@@ -1,0 +1,362 @@
+{
+  "date": "2026-10-27",
+  "version": "playtest-2",
+  "candidateId": "shuffle-four-gates-grace1-flat",
+  "accepted": true,
+  "engineSha256": "6a0274d75afa7532c6c5ba555c5f3c4911fa6c5d520c7df78436926db1adc4bb",
+  "rules": {
+    "rounds": 8,
+    "income": 3,
+    "buy": 6,
+    "upgrade": 4,
+    "base_rent": 2,
+    "upgraded_rent": 4,
+    "cap": 6,
+    "start_mode": "four_gates",
+    "hand_limit": 2,
+    "ward_rebate": 0,
+    "disabled": "",
+    "draw_order": "turn",
+    "seat_bonus": [],
+    "order_mode": "shuffle",
+    "quiet_premium": 0,
+    "starter_quiet_bonus": 0,
+    "protect_last": true,
+    "opening_grace": true,
+    "batch_draw": true,
+    "market_fallback": true
+  },
+  "holdoutGames": 700000,
+  "holdoutConditions": 14,
+  "counterplayGames": 240000,
+  "worstSeatGap": 0.015530000000000016,
+  "worstSeatUpper": 0.02493945946620435,
+  "worstStarterGap": 0.02444402483200475,
+  "worstStarterUpper": 0.047966795099033066,
+  "retention": {
+    "3": 1.0027674264089899,
+    "4": 1.0078303681763796
+  },
+  "players": [
+    {
+      "count": 3,
+      "oldSeatGap": 0.07650000000000001,
+      "newSeatGap": {
+        "gap": 0.0037900000000000156,
+        "simultaneous95": [
+          0,
+          0.013379204380675358
+        ]
+      },
+      "oldStarterGap": 0.05321312571416631,
+      "newStarterGap": {
+        "gap": 0.014309470601655383,
+        "simultaneous95": [
+          0,
+          0.03725331352471506
+        ]
+      },
+      "oldSeats": [
+        {
+          "mean": 0.37643333333333334,
+          "ci95": [
+            0.3673097338673447,
+            0.38555693279932196
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.32363333333333333,
+          "ci95": [
+            0.3148473139578759,
+            0.33241935270879075
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.29993333333333333,
+          "ci95": [
+            0.291327830988663,
+            0.30853883567800366
+          ],
+          "n": 10000
+        }
+      ],
+      "newSeats": [
+        {
+          "mean": 0.33281,
+          "ci95": [
+            0.32888921765753376,
+            0.33673078234246623
+          ],
+          "n": 50000
+        },
+        {
+          "mean": 0.33549,
+          "ci95": [
+            0.3315597350606666,
+            0.3394202649393334
+          ],
+          "n": 50000
+        },
+        {
+          "mean": 0.3317,
+          "ci95": [
+            0.3277793880908535,
+            0.3356206119091465
+          ],
+          "n": 50000
+        }
+      ],
+      "oldSwaps": {
+        "mean": 3.4617,
+        "ci95": [
+          3.4357752817442644,
+          3.4876247182557356
+        ],
+        "n": 10000
+      },
+      "newSwaps": {
+        "mean": 3.47128,
+        "ci95": [
+          3.459698107815189,
+          3.482861892184811
+        ],
+        "n": 50000
+      }
+    },
+    {
+      "count": 4,
+      "oldSeatGap": 0.09628333333333333,
+      "newSeatGap": {
+        "gap": 0.015530000000000016,
+        "simultaneous95": [
+          0.006120540533795682,
+          0.02493945946620435
+        ]
+      },
+      "oldStarterGap": 0.05740270879611556,
+      "newStarterGap": {
+        "gap": 0.013533741823837209,
+        "simultaneous95": [
+          0,
+          0.03215239059951691
+        ]
+      },
+      "oldSeats": [
+        {
+          "mean": 0.29483333333333334,
+          "ci95": [
+            0.28609831063337293,
+            0.30356835603329374
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.27371666666666666,
+          "ci95": [
+            0.2651790448921949,
+            0.2822542884411384
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.2329,
+          "ci95": [
+            0.2248225864142398,
+            0.2409774135857602
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.19855,
+          "ci95": [
+            0.1909358648592025,
+            0.2061641351407975
+          ],
+          "n": 10000
+        }
+      ],
+      "newSeats": [
+        {
+          "mean": 0.25828,
+          "ci95": [
+            0.25454732693752746,
+            0.26201267306247256
+          ],
+          "n": 50000
+        },
+        {
+          "mean": 0.25007,
+          "ci95": [
+            0.2463826618987719,
+            0.25375733810122814
+          ],
+          "n": 50000
+        },
+        {
+          "mean": 0.2489,
+          "ci95": [
+            0.24521316068757684,
+            0.2525868393124232
+          ],
+          "n": 50000
+        },
+        {
+          "mean": 0.24275,
+          "ci95": [
+            0.23909887992004872,
+            0.24640112007995127
+          ],
+          "n": 50000
+        }
+      ],
+      "oldSwaps": {
+        "mean": 5.0981,
+        "ci95": [
+          5.068439135368781,
+          5.1277608646312185
+        ],
+        "n": 10000
+      },
+      "newSwaps": {
+        "mean": 5.13802,
+        "ci95": [
+          5.124814032912355,
+          5.151225967087645
+        ],
+        "n": 50000
+      }
+    }
+  ],
+  "stress": [
+    {
+      "players": 3,
+      "protection": false,
+      "cases": 1920,
+      "finishWithZeroShops": 495,
+      "protectionTriggeredCases": 0,
+      "finishWithUpgradedShop": 1221,
+      "forcedSales": 540,
+      "unpaidCoins": 112,
+      "rules": {
+        "rounds": 4,
+        "income": 3,
+        "buy": 6,
+        "upgrade": 4,
+        "base_rent": 2,
+        "upgraded_rent": 4,
+        "cap": 6,
+        "start_mode": "four_gates",
+        "hand_limit": 2,
+        "ward_rebate": 0,
+        "disabled": "",
+        "draw_order": "turn",
+        "seat_bonus": [],
+        "order_mode": "shuffle",
+        "quiet_premium": 0,
+        "starter_quiet_bonus": 0,
+        "protect_last": false,
+        "opening_grace": false,
+        "batch_draw": true,
+        "market_fallback": true
+      }
+    },
+    {
+      "players": 3,
+      "protection": true,
+      "cases": 1920,
+      "finishWithZeroShops": 0,
+      "protectionTriggeredCases": 537,
+      "finishWithUpgradedShop": 1579,
+      "forcedSales": 0,
+      "unpaidCoins": 1126,
+      "rules": {
+        "rounds": 4,
+        "income": 3,
+        "buy": 6,
+        "upgrade": 4,
+        "base_rent": 2,
+        "upgraded_rent": 4,
+        "cap": 6,
+        "start_mode": "four_gates",
+        "hand_limit": 2,
+        "ward_rebate": 0,
+        "disabled": "",
+        "draw_order": "turn",
+        "seat_bonus": [],
+        "order_mode": "shuffle",
+        "quiet_premium": 0,
+        "starter_quiet_bonus": 0,
+        "protect_last": true,
+        "opening_grace": false,
+        "batch_draw": true,
+        "market_fallback": true
+      }
+    },
+    {
+      "players": 4,
+      "protection": false,
+      "cases": 1920,
+      "finishWithZeroShops": 524,
+      "protectionTriggeredCases": 0,
+      "finishWithUpgradedShop": 1217,
+      "forcedSales": 564,
+      "unpaidCoins": 129,
+      "rules": {
+        "rounds": 4,
+        "income": 3,
+        "buy": 6,
+        "upgrade": 4,
+        "base_rent": 2,
+        "upgraded_rent": 4,
+        "cap": 6,
+        "start_mode": "four_gates",
+        "hand_limit": 2,
+        "ward_rebate": 0,
+        "disabled": "",
+        "draw_order": "turn",
+        "seat_bonus": [],
+        "order_mode": "shuffle",
+        "quiet_premium": 0,
+        "starter_quiet_bonus": 0,
+        "protect_last": false,
+        "opening_grace": false,
+        "batch_draw": true,
+        "market_fallback": true
+      }
+    },
+    {
+      "players": 4,
+      "protection": true,
+      "cases": 1920,
+      "finishWithZeroShops": 0,
+      "protectionTriggeredCases": 557,
+      "finishWithUpgradedShop": 1611,
+      "forcedSales": 0,
+      "unpaidCoins": 1136,
+      "rules": {
+        "rounds": 4,
+        "income": 3,
+        "buy": 6,
+        "upgrade": 4,
+        "base_rent": 2,
+        "upgraded_rent": 4,
+        "cap": 6,
+        "start_mode": "four_gates",
+        "hand_limit": 2,
+        "ward_rebate": 0,
+        "disabled": "",
+        "draw_order": "turn",
+        "seat_bonus": [],
+        "order_mode": "shuffle",
+        "quiet_premium": 0,
+        "starter_quiet_bonus": 0,
+        "protect_last": true,
+        "opening_grace": false,
+        "batch_draw": true,
+        "market_fallback": true
+      }
+    }
+  ]
+}

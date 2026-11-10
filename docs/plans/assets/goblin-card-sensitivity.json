@@ -1,0 +1,1715 @@
+{
+  "date": "2026-10-27",
+  "kind": "supplementary-contexts",
+  "modelSha256": "bf03f5afdddc1f42325e29b50f54350beeeeb02956115038b7a694c2406c2f97",
+  "experiments": [
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 48100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_HWCM"
+      ],
+      "resident": "D_CWHM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.3289,
+          "se": 0.006485628009232015,
+          "n": 5000,
+          "ci95": [
+            0.3161881691019053,
+            0.34161183089809477
+          ]
+        },
+        "D_CWHM": {
+          "mean": 0.33555,
+          "se": 0.0032428140046160073,
+          "n": 5000,
+          "ci95": [
+            0.3291940845509526,
+            0.3419059154490474
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.1452,
+          "se": 0.09342509856461678,
+          "n": 5000,
+          "ci95": [
+            51.96208680681335,
+            52.32831319318665
+          ]
+        },
+        "D_CWHM": {
+          "mean": 52.0537,
+          "se": 0.04861878257632374,
+          "n": 5000,
+          "ci95": [
+            51.9584071861504,
+            52.148992813849596
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 158905,
+        "opening_free_visits": 2534,
+        "upgrades": 52596,
+        "rest_bonuses": 5751,
+        "monopoly_rounds": 6170,
+        "discard_ward": 14924,
+        "discard_markup": 34376,
+        "start_bonuses": 40397,
+        "buys": 38374,
+        "discard_contract": 19855,
+        "duels": 29538,
+        "swap_legal": 28224,
+        "rent_demand": 82495,
+        "unpaid": 0,
+        "discard_haggle": 22934,
+        "blocks": 7714,
+        "portal_visits": 6349,
+        "portal_to_own": 751,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "swaps": 5047,
+        "empty_market_visits": 207,
+        "forced_sales": 257
+      },
+      "cards": {
+        "contract": {
+          "held": 15970,
+          "used": 12761,
+          "effective": 5047,
+          "delta": 24322
+        },
+        "haggle": {
+          "held": 13261,
+          "used": 12077,
+          "effective": 12058,
+          "delta": 23730
+        },
+        "markup": {
+          "held": 5408,
+          "used": 3796,
+          "effective": 2264,
+          "delta": 4355
+        },
+        "ward": {
+          "held": 17752,
+          "used": 16784,
+          "effective": 7714,
+          "delta": 33222
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 49100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_HWCM"
+      ],
+      "resident": "D_CWHM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.24898333333333336,
+          "se": 0.0059799666247814486,
+          "n": 5000,
+          "ci95": [
+            0.2372625987487617,
+            0.260704067917905
+          ]
+        },
+        "D_CWHM": {
+          "mean": 0.2503388888888889,
+          "se": 0.0019933222082604827,
+          "n": 5000,
+          "ci95": [
+            0.24643197736069833,
+            0.25424580041707945
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.0718,
+          "se": 0.1077659113557254,
+          "n": 5000,
+          "ci95": [
+            51.860578813742784,
+            52.28302118625722
+          ]
+        },
+        "D_CWHM": {
+          "mean": 52.14753333333333,
+          "se": 0.0381353711573214,
+          "n": 5000,
+          "ci95": [
+            52.07278800586498,
+            52.22227866080168
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213416,
+        "opening_free_visits": 4592,
+        "upgrades": 57932,
+        "start_bonuses": 53880,
+        "discard_contract": 20833,
+        "buys": 38141,
+        "monopoly_rounds": 4461,
+        "discard_markup": 45061,
+        "discard_haggle": 29122,
+        "duels": 51434,
+        "swap_legal": 49964,
+        "blocks": 13590,
+        "rent_demand": 141793,
+        "unpaid": 0,
+        "portal_visits": 8504,
+        "portal_to_own": 1865,
+        "swaps": 11686,
+        "discard_ward": 17028,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "rest_bonuses": 7717,
+        "empty_market_visits": 1405,
+        "forced_sales": 156
+      },
+      "cards": {
+        "contract": {
+          "held": 25752,
+          "used": 25276,
+          "effective": 11686,
+          "delta": 56517
+        },
+        "haggle": {
+          "held": 23974,
+          "used": 16586,
+          "effective": 16557,
+          "delta": 32449
+        },
+        "markup": {
+          "held": 11212,
+          "used": 8065,
+          "effective": 4275,
+          "delta": 8177
+        },
+        "ward": {
+          "held": 26314,
+          "used": 25181,
+          "effective": 13590,
+          "delta": 58081
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 50100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_HMCW"
+      ],
+      "resident": "D_HWCM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.33533333333333337,
+          "se": 0.003242627986770214,
+          "n": 5000,
+          "ci95": [
+            0.32897778247926374,
+            0.341688884187403
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.32933333333333337,
+          "se": 0.006485255973540428,
+          "n": 5000,
+          "ci95": [
+            0.31662223162519415,
+            0.3420444350414726
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.0874,
+          "se": 0.04936151901949516,
+          "n": 5000,
+          "ci95": [
+            51.99065142272179,
+            52.184148577278215
+          ]
+        },
+        "D_HMCW": {
+          "mean": 52.0986,
+          "se": 0.09505231505081453,
+          "n": 5000,
+          "ci95": [
+            51.9122974625004,
+            52.2849025374996
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159293,
+        "opening_free_visits": 2394,
+        "upgrades": 52453,
+        "discard_ward": 21243,
+        "monopoly_rounds": 6286,
+        "discard_contract": 27777,
+        "discard_haggle": 15277,
+        "discard_markup": 27856,
+        "buys": 38196,
+        "start_bonuses": 40507,
+        "duels": 29509,
+        "swap_legal": 28152,
+        "blocks": 3320,
+        "rent_demand": 79049,
+        "unpaid": 0,
+        "swaps": 5175,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "portal_visits": 6161,
+        "portal_to_own": 717,
+        "rest_bonuses": 5663,
+        "empty_market_visits": 186,
+        "forced_sales": 231
+      },
+      "cards": {
+        "contract": {
+          "held": 10642,
+          "used": 8495,
+          "effective": 5175,
+          "delta": 26940
+        },
+        "haggle": {
+          "held": 18807,
+          "used": 16569,
+          "effective": 16514,
+          "delta": 31965
+        },
+        "markup": {
+          "held": 9523,
+          "used": 8185,
+          "effective": 5405,
+          "delta": 10533
+        },
+        "ward": {
+          "held": 13589,
+          "used": 12558,
+          "effective": 3320,
+          "delta": 14323
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 51100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_HMCW"
+      ],
+      "resident": "D_HWCM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.25327777777777777,
+          "se": 0.001974244946522261,
+          "n": 5000,
+          "ci95": [
+            0.24940825768259414,
+            0.2571472978729614
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.24016666666666664,
+          "se": 0.005922734839566785,
+          "n": 5000,
+          "ci95": [
+            0.22855810638111573,
+            0.25177522695221755
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.20213333333333,
+          "se": 0.03903251945584053,
+          "n": 5000,
+          "ci95": [
+            52.12562959519988,
+            52.278637071466775
+          ]
+        },
+        "D_HMCW": {
+          "mean": 51.8576,
+          "se": 0.11125331414381145,
+          "n": 5000,
+          "ci95": [
+            51.63954350427813,
+            52.075656495721866
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 212841,
+        "discard_contract": 32441,
+        "upgrades": 57966,
+        "buys": 38156,
+        "opening_free_visits": 4745,
+        "monopoly_rounds": 4535,
+        "discard_haggle": 17525,
+        "discard_markup": 37401,
+        "start_bonuses": 53745,
+        "duels": 51627,
+        "swap_legal": 50117,
+        "rent_demand": 142407,
+        "unpaid": 0,
+        "discard_ward": 23424,
+        "blocks": 8321,
+        "rest_bonuses": 7770,
+        "swaps": 10128,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "portal_visits": 8315,
+        "portal_to_own": 1776,
+        "empty_market_visits": 1265,
+        "forced_sales": 166
+      },
+      "cards": {
+        "contract": {
+          "held": 18750,
+          "used": 18449,
+          "effective": 10128,
+          "delta": 51010
+        },
+        "haggle": {
+          "held": 30989,
+          "used": 23678,
+          "effective": 23627,
+          "delta": 45916
+        },
+        "markup": {
+          "held": 15360,
+          "used": 12541,
+          "effective": 8037,
+          "delta": 15505
+        },
+        "ward": {
+          "held": 22771,
+          "used": 21395,
+          "effective": 8321,
+          "delta": 35693
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 52100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_CMHW"
+      ],
+      "resident": "D_HMCW",
+      "wins": {
+        "D_HMCW": {
+          "mean": 0.29258333333333336,
+          "se": 0.0033866425905716593,
+          "n": 5000,
+          "ci95": [
+            0.2859455138558129,
+            0.2992211528108538
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.4148333333333333,
+          "se": 0.006773285181143319,
+          "n": 5000,
+          "ci95": [
+            0.40155769437829236,
+            0.4281089722883742
+          ]
+        }
+      },
+      "scores": {
+        "D_HMCW": {
+          "mean": 51.394,
+          "se": 0.050659313785469326,
+          "n": 5000,
+          "ci95": [
+            51.29470774498048,
+            51.49329225501952
+          ]
+        },
+        "D_CMHW": {
+          "mean": 53.4962,
+          "se": 0.0977580095832947,
+          "n": 5000,
+          "ci95": [
+            53.304594301216746,
+            53.68780569878326
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 158941,
+        "start_bonuses": 40442,
+        "opening_free_visits": 2537,
+        "upgrades": 52373,
+        "discard_haggle": 19629,
+        "monopoly_rounds": 5814,
+        "discard_ward": 33776,
+        "discard_contract": 22828,
+        "buys": 38078,
+        "discard_markup": 14968,
+        "rest_bonuses": 5843,
+        "duels": 29867,
+        "swap_legal": 28628,
+        "rent_demand": 72874,
+        "unpaid": 0,
+        "swaps": 10522,
+        "portal_visits": 6346,
+        "portal_to_own": 814,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "blocks": 2228,
+        "forced_sales": 285,
+        "empty_market_visits": 177
+      },
+      "cards": {
+        "contract": {
+          "held": 12750,
+          "used": 12750,
+          "effective": 10522,
+          "delta": 57587
+        },
+        "haggle": {
+          "held": 17139,
+          "used": 12629,
+          "effective": 12549,
+          "delta": 23234
+        },
+        "markup": {
+          "held": 17907,
+          "used": 16434,
+          "effective": 9067,
+          "delta": 17642
+        },
+        "ward": {
+          "held": 5347,
+          "used": 4786,
+          "effective": 2228,
+          "delta": 9467
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 53100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_CMHW"
+      ],
+      "resident": "D_HMCW",
+      "wins": {
+        "D_HMCW": {
+          "mean": 0.23002777777777778,
+          "se": 0.002137638923079665,
+          "n": 5000,
+          "ci95": [
+            0.22583800548854163,
+            0.23421755006701392
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.3099166666666667,
+          "se": 0.0064129167692389966,
+          "n": 5000,
+          "ci95": [
+            0.2973473497989582,
+            0.32248598353437513
+          ]
+        }
+      },
+      "scores": {
+        "D_HMCW": {
+          "mean": 51.7082,
+          "se": 0.040212001493632916,
+          "n": 5000,
+          "ci95": [
+            51.62938447707248,
+            51.78701552292752
+          ]
+        },
+        "D_CMHW": {
+          "mean": 53.3524,
+          "se": 0.11337748338514023,
+          "n": 5000,
+          "ci95": [
+            53.13018013256513,
+            53.574619867434876
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213379,
+        "start_bonuses": 53778,
+        "upgrades": 57844,
+        "opening_free_visits": 4643,
+        "monopoly_rounds": 3861,
+        "discard_ward": 44331,
+        "discard_markup": 17281,
+        "discard_haggle": 21433,
+        "duels": 51690,
+        "swap_legal": 50172,
+        "rent_demand": 130726,
+        "unpaid": 0,
+        "buys": 38040,
+        "discard_contract": 28352,
+        "rest_bonuses": 7803,
+        "portal_visits": 8359,
+        "portal_to_own": 1831,
+        "swaps": 16798,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "blocks": 4347,
+        "empty_market_visits": 1322,
+        "forced_sales": 185
+      },
+      "cards": {
+        "contract": {
+          "held": 21145,
+          "used": 21145,
+          "effective": 16798,
+          "delta": 89110
+        },
+        "haggle": {
+          "held": 28968,
+          "used": 20997,
+          "effective": 20942,
+          "delta": 39459
+        },
+        "markup": {
+          "held": 26937,
+          "used": 23947,
+          "effective": 13795,
+          "delta": 26648
+        },
+        "ward": {
+          "held": 10704,
+          "used": 9918,
+          "effective": 4347,
+          "delta": 18569
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 54100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_CWHM"
+      ],
+      "resident": "D_CMHW",
+      "wins": {
+        "D_CWHM": {
+          "mean": 0.4503666666666667,
+          "se": 0.006831135857647932,
+          "n": 5000,
+          "ci95": [
+            0.43697764038567677,
+            0.4637556929476566
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.27481666666666665,
+          "se": 0.003415567928823966,
+          "n": 5000,
+          "ci95": [
+            0.2681221535261717,
+            0.2815111798071616
+          ]
+        }
+      },
+      "scores": {
+        "D_CWHM": {
+          "mean": 53.7794,
+          "se": 0.09503785333599103,
+          "n": 5000,
+          "ci95": [
+            53.59312580746146,
+            53.96567419253854
+          ]
+        },
+        "D_CMHW": {
+          "mean": 51.2488,
+          "se": 0.049234383482515354,
+          "n": 5000,
+          "ci95": [
+            51.152300608374276,
+            51.34529939162573
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159105,
+        "buys": 38316,
+        "upgrades": 52592,
+        "rest_bonuses": 5661,
+        "monopoly_rounds": 5605,
+        "discard_haggle": 27433,
+        "discard_markup": 21333,
+        "discard_contract": 15142,
+        "start_bonuses": 40556,
+        "duels": 30054,
+        "swap_legal": 28762,
+        "blocks": 5228,
+        "rent_demand": 67872,
+        "unpaid": 0,
+        "portal_visits": 6229,
+        "portal_to_own": 748,
+        "discard_ward": 27393,
+        "swaps": 11858,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 2415,
+        "forced_sales": 255,
+        "empty_market_visits": 186
+      },
+      "cards": {
+        "contract": {
+          "held": 18240,
+          "used": 17086,
+          "effective": 11858,
+          "delta": 63581
+        },
+        "haggle": {
+          "held": 11675,
+          "used": 8186,
+          "effective": 8150,
+          "delta": 15588
+        },
+        "markup": {
+          "held": 13920,
+          "used": 12190,
+          "effective": 4675,
+          "delta": 8984
+        },
+        "ward": {
+          "held": 9539,
+          "used": 9069,
+          "effective": 5228,
+          "delta": 22368
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 55100000,
+      "mode": "learned",
+      "economy": "builder",
+      "futureWeight": 0.5,
+      "cardCost": 0.35,
+      "roster": [
+        "D_CWHM"
+      ],
+      "resident": "D_CMHW",
+      "wins": {
+        "D_CWHM": {
+          "mean": 0.3238,
+          "se": 0.006463157108820425,
+          "n": 5000,
+          "ci95": [
+            0.31113221206671193,
+            0.336467787933288
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.2254,
+          "se": 0.0021543857029401414,
+          "n": 5000,
+          "ci95": [
+            0.22117740402223732,
+            0.22962259597776266
+          ]
+        }
+      },
+      "scores": {
+        "D_CWHM": {
+          "mean": 53.6222,
+          "se": 0.11000978984968816,
+          "n": 5000,
+          "ci95": [
+            53.406580811894614,
+            53.837819188105385
+          ]
+        },
+        "D_CMHW": {
+          "mean": 51.58053333333333,
+          "se": 0.039070582293418865,
+          "n": 5000,
+          "ci95": [
+            51.503954992038224,
+            51.65711167462843
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213387,
+        "buys": 38095,
+        "upgrades": 57895,
+        "start_bonuses": 53742,
+        "discard_markup": 23652,
+        "monopoly_rounds": 4069,
+        "discard_haggle": 33300,
+        "discard_ward": 37274,
+        "portal_visits": 8328,
+        "portal_to_own": 1767,
+        "duels": 52168,
+        "swap_legal": 50682,
+        "rent_demand": 123434,
+        "unpaid": 0,
+        "discard_contract": 16569,
+        "swaps": 19913,
+        "rest_bonuses": 7573,
+        "blocks": 8157,
+        "empty_market_visits": 1277,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 4693,
+        "forced_sales": 195
+      },
+      "cards": {
+        "contract": {
+          "held": 28208,
+          "used": 28070,
+          "effective": 19913,
+          "delta": 104740
+        },
+        "haggle": {
+          "held": 21697,
+          "used": 14230,
+          "effective": 14178,
+          "delta": 26995
+        },
+        "markup": {
+          "held": 23640,
+          "used": 20294,
+          "effective": 8868,
+          "delta": 16966
+        },
+        "ward": {
+          "held": 14723,
+          "used": 14189,
+          "effective": 8157,
+          "delta": 34864
+        }
+      },
+      "context": "builder"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 56100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_HWCM"
+      ],
+      "resident": "D_CWHM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.3489,
+          "se": 0.006580710636688874,
+          "n": 5000,
+          "ci95": [
+            0.33600180715208977,
+            0.3617981928479102
+          ]
+        },
+        "D_CWHM": {
+          "mean": 0.32555,
+          "se": 0.003290355318344437,
+          "n": 5000,
+          "ci95": [
+            0.3191009035760449,
+            0.3319990964239551
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.455,
+          "se": 0.0884848061091984,
+          "n": 5000,
+          "ci95": [
+            52.28156978002597,
+            52.62843021997403
+          ]
+        },
+        "D_CWHM": {
+          "mean": 51.9705,
+          "se": 0.046082541923531374,
+          "n": 5000,
+          "ci95": [
+            51.88017821782988,
+            52.06082178217012
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159139,
+        "buys": 36663,
+        "upgrades": 48208,
+        "discard_haggle": 23682,
+        "monopoly_rounds": 5131,
+        "discard_ward": 15456,
+        "discard_markup": 34787,
+        "duels": 28342,
+        "swap_legal": 25912,
+        "rent_demand": 77037,
+        "unpaid": 0,
+        "discard_contract": 20360,
+        "start_bonuses": 40300,
+        "rest_bonuses": 5690,
+        "blocks": 7277,
+        "swaps": 4476,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 2444,
+        "portal_visits": 6231,
+        "portal_to_own": 1177,
+        "empty_market_visits": 73
+      },
+      "cards": {
+        "contract": {
+          "held": 15099,
+          "used": 11753,
+          "effective": 4476,
+          "delta": 21403
+        },
+        "haggle": {
+          "held": 12397,
+          "used": 11742,
+          "effective": 11736,
+          "delta": 23141
+        },
+        "markup": {
+          "held": 5070,
+          "used": 3581,
+          "effective": 2158,
+          "delta": 4190
+        },
+        "ward": {
+          "held": 17587,
+          "used": 15991,
+          "effective": 7277,
+          "delta": 30871
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 57100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_HWCM"
+      ],
+      "resident": "D_CWHM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.25421666666666665,
+          "se": 0.006012122546355103,
+          "n": 5000,
+          "ci95": [
+            0.24243290647581064,
+            0.2660004268575226
+          ]
+        },
+        "D_CWHM": {
+          "mean": 0.24859444444444442,
+          "se": 0.002004040848785034,
+          "n": 5000,
+          "ci95": [
+            0.24466652438082576,
+            0.2525223645080631
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.2518,
+          "se": 0.10361306136437172,
+          "n": 5000,
+          "ci95": [
+            52.048718399725836,
+            52.45488160027417
+          ]
+        },
+        "D_CWHM": {
+          "mean": 52.0992,
+          "se": 0.03695177732746316,
+          "n": 5000,
+          "ci95": [
+            52.026774516438174,
+            52.17162548356183
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213044,
+        "buys": 37605,
+        "upgrades": 56233,
+        "opening_free_visits": 4710,
+        "monopoly_rounds": 3809,
+        "discard_markup": 45262,
+        "discard_ward": 17381,
+        "discard_haggle": 29736,
+        "duels": 50549,
+        "swap_legal": 47022,
+        "blocks": 13693,
+        "rent_demand": 137332,
+        "unpaid": 0,
+        "portal_visits": 8367,
+        "portal_to_own": 2013,
+        "discard_contract": 21160,
+        "start_bonuses": 53646,
+        "swaps": 10918,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "rest_bonuses": 7730,
+        "empty_market_visits": 1168,
+        "forced_sales": 1
+      },
+      "cards": {
+        "contract": {
+          "held": 24771,
+          "used": 24611,
+          "effective": 10918,
+          "delta": 52625
+        },
+        "haggle": {
+          "held": 23293,
+          "used": 16022,
+          "effective": 16000,
+          "delta": 31421
+        },
+        "markup": {
+          "held": 11000,
+          "used": 7922,
+          "effective": 4264,
+          "delta": 8192
+        },
+        "ward": {
+          "held": 26742,
+          "used": 24509,
+          "effective": 13693,
+          "delta": 58143
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 58100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_HMCW"
+      ],
+      "resident": "D_HWCM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.3277,
+          "se": 0.0032779095378285892,
+          "n": 5000,
+          "ci95": [
+            0.32127529730585597,
+            0.334124702694144
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.3446,
+          "se": 0.0065558190756571785,
+          "n": 5000,
+          "ci95": [
+            0.33175059461171197,
+            0.35744940538828807
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.0632,
+          "se": 0.04686384956530157,
+          "n": 5000,
+          "ci95": [
+            51.97134685485201,
+            52.155053145147996
+          ]
+        },
+        "D_HMCW": {
+          "mean": 52.2976,
+          "se": 0.0905918772608512,
+          "n": 5000,
+          "ci95": [
+            52.120039920568736,
+            52.47516007943127
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159002,
+        "start_bonuses": 40265,
+        "upgrades": 48283,
+        "rest_bonuses": 5795,
+        "buys": 36664,
+        "monopoly_rounds": 5184,
+        "discard_markup": 28001,
+        "discard_ward": 21741,
+        "discard_contract": 28346,
+        "discard_haggle": 15244,
+        "duels": 28540,
+        "swap_legal": 26109,
+        "rent_demand": 74191,
+        "unpaid": 0,
+        "swaps": 4655,
+        "blocks": 3069,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 2452,
+        "portal_visits": 6189,
+        "portal_to_own": 1145,
+        "empty_market_visits": 77
+      },
+      "cards": {
+        "contract": {
+          "held": 9893,
+          "used": 7724,
+          "effective": 4655,
+          "delta": 24005
+        },
+        "haggle": {
+          "held": 18345,
+          "used": 16462,
+          "effective": 16418,
+          "delta": 31829
+        },
+        "markup": {
+          "held": 9277,
+          "used": 7931,
+          "effective": 5433,
+          "delta": 10630
+        },
+        "ward": {
+          "held": 13456,
+          "used": 12005,
+          "effective": 3069,
+          "delta": 13053
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 59100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_HMCW"
+      ],
+      "resident": "D_HWCM",
+      "wins": {
+        "D_HWCM": {
+          "mean": 0.25258888888888886,
+          "se": 0.001977386868212725,
+          "n": 5000,
+          "ci95": [
+            0.24871321062719193,
+            0.2564645671505858
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.24223333333333336,
+          "se": 0.005932160604638176,
+          "n": 5000,
+          "ci95": [
+            0.23060629854824252,
+            0.25386036811842416
+          ]
+        }
+      },
+      "scores": {
+        "D_HWCM": {
+          "mean": 52.2362,
+          "se": 0.037173384380810505,
+          "n": 5000,
+          "ci95": [
+            52.16334016661361,
+            52.309059833386385
+          ]
+        },
+        "D_HMCW": {
+          "mean": 51.845,
+          "se": 0.10610620483902469,
+          "n": 5000,
+          "ci95": [
+            51.63703183851551,
+            52.052968161484486
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213232,
+        "discard_ward": 23937,
+        "upgrades": 56126,
+        "buys": 37545,
+        "discard_haggle": 17793,
+        "monopoly_rounds": 3964,
+        "discard_markup": 38102,
+        "discard_contract": 33016,
+        "duels": 50510,
+        "swap_legal": 47003,
+        "blocks": 8158,
+        "rent_demand": 134827,
+        "unpaid": 0,
+        "start_bonuses": 53663,
+        "portal_visits": 8376,
+        "portal_to_own": 1964,
+        "swaps": 9671,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "rest_bonuses": 7721,
+        "opening_free_visits": 4726,
+        "empty_market_visits": 1070
+      },
+      "cards": {
+        "contract": {
+          "held": 17964,
+          "used": 17829,
+          "effective": 9671,
+          "delta": 48674
+        },
+        "haggle": {
+          "held": 30445,
+          "used": 23412,
+          "effective": 23374,
+          "delta": 45484
+        },
+        "markup": {
+          "held": 14946,
+          "used": 12266,
+          "effective": 7857,
+          "delta": 15246
+        },
+        "ward": {
+          "held": 22796,
+          "used": 20525,
+          "effective": 8158,
+          "delta": 34673
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 60100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_CMHW"
+      ],
+      "resident": "D_HMCW",
+      "wins": {
+        "D_CMHW": {
+          "mean": 0.4143333333333333,
+          "se": 0.006764881328637242,
+          "n": 5000,
+          "ci95": [
+            0.4010741659292043,
+            0.42759250073746224
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.29283333333333333,
+          "se": 0.003382440664318621,
+          "n": 5000,
+          "ci95": [
+            0.2862037496312688,
+            0.29946291703539785
+          ]
+        }
+      },
+      "scores": {
+        "D_CMHW": {
+          "mean": 53.5096,
+          "se": 0.0913234338048695,
+          "n": 5000,
+          "ci95": [
+            53.33060606974245,
+            53.68859393025755
+          ]
+        },
+        "D_HMCW": {
+          "mean": 51.4234,
+          "se": 0.047190167094152934,
+          "n": 5000,
+          "ci95": [
+            51.33090727249546,
+            51.51589272750454
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159155,
+        "buys": 36518,
+        "upgrades": 48265,
+        "start_bonuses": 40104,
+        "discard_ward": 34514,
+        "monopoly_rounds": 4761,
+        "discard_markup": 15236,
+        "discard_haggle": 20007,
+        "duels": 28580,
+        "swap_legal": 26254,
+        "swaps": 9885,
+        "rent_demand": 68101,
+        "unpaid": 0,
+        "portal_visits": 6285,
+        "portal_to_own": 1268,
+        "discard_contract": 23546,
+        "blocks": 2041,
+        "rest_bonuses": 5787,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 2435,
+        "empty_market_visits": 90
+      },
+      "cards": {
+        "contract": {
+          "held": 11926,
+          "used": 11926,
+          "effective": 9885,
+          "delta": 53623
+        },
+        "haggle": {
+          "held": 16378,
+          "used": 12119,
+          "effective": 12068,
+          "delta": 22551
+        },
+        "markup": {
+          "held": 17341,
+          "used": 15910,
+          "effective": 8986,
+          "delta": 17550
+        },
+        "ward": {
+          "held": 4946,
+          "used": 4332,
+          "effective": 2041,
+          "delta": 8634
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 61100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_CMHW"
+      ],
+      "resident": "D_HMCW",
+      "wins": {
+        "D_CMHW": {
+          "mean": 0.30243333333333333,
+          "se": 0.0063388017333575195,
+          "n": 5000,
+          "ci95": [
+            0.2900092819359526,
+            0.31485738473071406
+          ]
+        },
+        "D_HMCW": {
+          "mean": 0.2325222222222222,
+          "se": 0.002112933911119173,
+          "n": 5000,
+          "ci95": [
+            0.22838087175642863,
+            0.2366635726880158
+          ]
+        }
+      },
+      "scores": {
+        "D_CMHW": {
+          "mean": 53.3398,
+          "se": 0.10857709237678911,
+          "n": 5000,
+          "ci95": [
+            53.12698889894149,
+            53.5526111010585
+          ]
+        },
+        "D_HMCW": {
+          "mean": 51.779133333333334,
+          "se": 0.03808978245139145,
+          "n": 5000,
+          "ci95": [
+            51.70447735972861,
+            51.85378930693806
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213059,
+        "buys": 37531,
+        "upgrades": 56258,
+        "discard_ward": 44818,
+        "discard_contract": 28777,
+        "monopoly_rounds": 3439,
+        "discard_markup": 17249,
+        "start_bonuses": 53838,
+        "discard_haggle": 21525,
+        "duels": 50604,
+        "swap_legal": 47293,
+        "rent_demand": 125439,
+        "unpaid": 0,
+        "portal_visits": 8144,
+        "portal_to_own": 1889,
+        "swaps": 16162,
+        "blocks": 4212,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "opening_free_visits": 4745,
+        "rest_bonuses": 7858,
+        "empty_market_visits": 1111,
+        "forced_sales": 2
+      },
+      "cards": {
+        "contract": {
+          "held": 20375,
+          "used": 20374,
+          "effective": 16162,
+          "delta": 85844
+        },
+        "haggle": {
+          "held": 28312,
+          "used": 20790,
+          "effective": 20743,
+          "delta": 39230
+        },
+        "markup": {
+          "held": 26854,
+          "used": 24076,
+          "effective": 14011,
+          "delta": 27143
+        },
+        "ward": {
+          "held": 10407,
+          "used": 9259,
+          "effective": 4212,
+          "delta": 17860
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 3,
+      "runs": 5000,
+      "seed": 62100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_CWHM"
+      ],
+      "resident": "D_CMHW",
+      "wins": {
+        "D_CWHM": {
+          "mean": 0.4394333333333333,
+          "se": 0.0068074341396187135,
+          "n": 5000,
+          "ci95": [
+            0.42609076241968064,
+            0.45277590424698594
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.28028333333333333,
+          "se": 0.0034037170698093568,
+          "n": 5000,
+          "ci95": [
+            0.273612047876507,
+            0.28695461879015965
+          ]
+        }
+      },
+      "scores": {
+        "D_CWHM": {
+          "mean": 53.6186,
+          "se": 0.09114630183209592,
+          "n": 5000,
+          "ci95": [
+            53.43995324840909,
+            53.79724675159091
+          ]
+        },
+        "D_CMHW": {
+          "mean": 51.3917,
+          "se": 0.04704303169828952,
+          "n": 5000,
+          "ci95": [
+            51.299495657871354,
+            51.483904342128646
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 159217,
+        "buys": 36373,
+        "upgrades": 48254,
+        "opening_free_visits": 2451,
+        "monopoly_rounds": 4376,
+        "discard_ward": 28175,
+        "discard_haggle": 28328,
+        "duels": 28517,
+        "swap_legal": 26214,
+        "rent_demand": 62935,
+        "unpaid": 0,
+        "swaps": 11015,
+        "start_bonuses": 40271,
+        "discard_markup": 21721,
+        "portal_visits": 6351,
+        "portal_to_own": 1299,
+        "discard_contract": 15853,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "blocks": 4828,
+        "rest_bonuses": 5734,
+        "empty_market_visits": 70
+      },
+      "cards": {
+        "contract": {
+          "held": 17002,
+          "used": 15843,
+          "effective": 11015,
+          "delta": 58954
+        },
+        "haggle": {
+          "held": 10563,
+          "used": 7672,
+          "effective": 7650,
+          "delta": 14722
+        },
+        "markup": {
+          "held": 13236,
+          "used": 11652,
+          "effective": 4461,
+          "delta": 8602
+        },
+        "ward": {
+          "held": 9148,
+          "used": 8337,
+          "effective": 4828,
+          "delta": 20412
+        }
+      },
+      "context": "immediate"
+    },
+    {
+      "players": 4,
+      "runs": 5000,
+      "seed": 63100000,
+      "mode": "learned",
+      "economy": "balanced",
+      "futureWeight": 0,
+      "cardCost": 0,
+      "roster": [
+        "D_CWHM"
+      ],
+      "resident": "D_CMHW",
+      "wins": {
+        "D_CWHM": {
+          "mean": 0.32631666666666664,
+          "se": 0.006469837928118353,
+          "n": 5000,
+          "ci95": [
+            0.3136357843275547,
+            0.3389975490057786
+          ]
+        },
+        "D_CMHW": {
+          "mean": 0.22456111111111107,
+          "se": 0.0021566126427061175,
+          "n": 5000,
+          "ci95": [
+            0.22033415033140707,
+            0.22878807189081507
+          ]
+        }
+      },
+      "scores": {
+        "D_CWHM": {
+          "mean": 53.7114,
+          "se": 0.10624819877978539,
+          "n": 5000,
+          "ci95": [
+            53.50315353039162,
+            53.919646469608374
+          ]
+        },
+        "D_CMHW": {
+          "mean": 51.62133333333333,
+          "se": 0.03755440409130906,
+          "n": 5000,
+          "ci95": [
+            51.54772670131437,
+            51.6949399653523
+          ]
+        }
+      },
+      "metrics": {
+        "draws": 213201,
+        "opening_free_visits": 4510,
+        "upgrades": 56158,
+        "discard_markup": 24046,
+        "start_bonuses": 53756,
+        "buys": 37403,
+        "monopoly_rounds": 3304,
+        "discard_haggle": 33799,
+        "discard_ward": 37549,
+        "duels": 50961,
+        "swap_legal": 47746,
+        "rent_demand": 118906,
+        "unpaid": 0,
+        "blocks": 8018,
+        "swaps": 18944,
+        "discard_contract": 17171,
+        "rest_bonuses": 7685,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "portal_visits": 8467,
+        "portal_to_own": 1991,
+        "empty_market_visits": 1077,
+        "forced_sales": 1
+      },
+      "cards": {
+        "contract": {
+          "held": 26993,
+          "used": 26962,
+          "effective": 18944,
+          "delta": 99382
+        },
+        "haggle": {
+          "held": 21053,
+          "used": 13900,
+          "effective": 13880,
+          "delta": 26509
+        },
+        "markup": {
+          "held": 22976,
+          "used": 19888,
+          "effective": 8875,
+          "delta": 17062
+        },
+        "ward": {
+          "held": 14723,
+          "used": 13682,
+          "effective": 8018,
+          "delta": 34014
+        }
+      },
+      "context": "immediate"
+    }
+  ],
+  "elapsedSeconds": 82.50017741601914
+}

@@ -2,6 +2,8 @@
 
 QR 하나로 같은 공간의 2–6명이 참여하는 웹 보드게임입니다. **불 꺼진 집**, **수상한 초대장**, **새벽의 배전반**은 3–6명, **한밤의 발자국**은 2명, **이어지는 숲길**은 4–6명, **보름달 여관**은 4명이 각 휴대폰의 개인 화면과 TV 또는 휴대폰의 공개 보드로 즐길 수 있습니다.
 
+**도깨비 야시장**은 3–4인·28칸·16가게·12밤의 가게 쟁탈 게임입니다. 새 경기와 재경기는 `mvp-2` 확장판을 사용합니다. 업종 네 채 완성, 매입·증축, 둔갑 절반 정산과 마지막 가게 보호를 포함하며, 대결·매입 15초/증축 10초/손패 정리 8초로 생각할 시간을 넉넉히 줍니다. 이미 진행 중인 `mvp-1` 경기는 기존 20칸·8밤으로 마칩니다. 주인 네 명과 업종 네 가지를 조합한 16종 가게 외형, 소유권 교체 연출과 증축 표시를 제공합니다. 홈의 **도깨비 야시장 열기** 또는 **장터 먼저 구경하기**를 선택하세요. [현재 규칙](docs/plans/goblin-night-market-mvp-v2.md) · [확장판 구현·검증](docs/plans/goblin-night-market-expansion-implementation.md).
+
 ## 바로 실행하기
 
 Node.js 24 LTS가 필요합니다.
@@ -59,6 +61,7 @@ CRON_SECRET=...
 - `src/modules/suspicious-invite/` — 수상한 초대장의 상태 머신, 단어 덱, 투영, 공개/개인 화면
 - `src/modules/connected-forest/` — 4–6인 숲길 드래프트, 비밀 손 투영, SVG 숲·동물과 전체 경기 UI
 - `src/modules/moonlit-inn/` — 4인 여관 드래프트, 낮/밤 수면 규칙, 1:1 거래, 일러스트와 점수 UI
+- `src/modules/goblin-market/` — 3–4인 야시장 이동·장사·비밀 카드 대결, 절반 정산, 개인/공개 보드와 최종 자산
 - `src/modules/room/` — 방 계약, 입장, idempotency, version, heartbeat, 토큰 회전
 - `src/modules/room/repository/` — 저장소 인터페이스와 메모리/Supabase 어댑터
 - `src/modules/auth/` — 브라우저 익명 인증과 서버 사용자 확인

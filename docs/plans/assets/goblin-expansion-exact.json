@@ -1,0 +1,414 @@
+{
+  "sources": {
+    "goblin_market_expansion.py": "14936a8fcb6b8f653718ae760aa8250fa428d97c72fa4a787039bf0d1a251fec",
+    "goblin_market_v2.py": "6a0274d75afa7532c6c5ba555c5f3c4911fa6c5d520c7df78436926db1adc4bb",
+    "goblin_card_audit.py": "fc63c8a8a30c2440d01aede497f4646381d9d19f72963fd22e086c2e8c42113e",
+    "goblin_card_tuning.py": "5621583dad26f0fa4b6b20a214c9cf9bfc28049526e6ef1f3ce4ce8f98d50503"
+  },
+  "kind": "exact-neutral-portal-movement-and-local-fees",
+  "boards": [
+    {
+      "board": "mvp20",
+      "turns": 8,
+      "arrivalsPerPlayer": [
+        0.3876870905681453,
+        0.428778637074934,
+        0.44052224897095593,
+        0.40616727126270596,
+        0.43897650559206425,
+        0.4032533938344288,
+        0.4404884904180423,
+        0.4492045356647883,
+        0.41157351862374203,
+        0.44990946482008426,
+        0.4172627204027822,
+        0.4552979669424331,
+        0.45331850619755665,
+        0.40428870256499433,
+        0.43080914542432613,
+        0.38616470212440457,
+        0.4122793289470804,
+        0.40798275014326596,
+        0.375713805056695,
+        0.41758393576935127
+      ]
+    },
+    {
+      "board": "mvp20",
+      "turns": 12,
+      "arrivalsPerPlayer": [
+        0.5817927230507816,
+        0.6437314475649071,
+        0.6579007260152352,
+        0.6099532675885638,
+        0.65885760847928,
+        0.6051035090379787,
+        0.6613523922212897,
+        0.6711971622296546,
+        0.618522123583922,
+        0.676513275833979,
+        0.62782761390429,
+        0.6854370075917192,
+        0.6784678167159317,
+        0.6078717639462672,
+        0.6472780299669363,
+        0.579699704000534,
+        0.6185123052615816,
+        0.6077996434471858,
+        0.5634024677528959,
+        0.6266070257113543
+      ]
+    },
+    {
+      "board": "spread28",
+      "turns": 12,
+      "arrivalsPerPlayer": [
+        0.45463908843721246,
+        0.49498377497641755,
+        0.4864297319812238,
+        0.4209698740684768,
+        0.4712179857711657,
+        0.46304005325296016,
+        0.3956243594476062,
+        0.4136322887357903,
+        0.47288056535570355,
+        0.48022038804003664,
+        0.42934783471144644,
+        0.494399760911148,
+        0.502741391092471,
+        0.44376228937047485,
+        0.4522780276272633,
+        0.5060206500013931,
+        0.4986826613821282,
+        0.4341628761510164,
+        0.4851157923335554,
+        0.4774134022606858,
+        0.4102170320882998,
+        0.40639686134057984,
+        0.4674960094033309,
+        0.4760482183334562,
+        0.4257234967017131,
+        0.49064746072097576,
+        0.4981861531307282,
+        0.4488822313004359
+      ]
+    }
+  ],
+  "fees": [
+    {
+      "original": 2,
+      "visitor": null,
+      "owner": null,
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": null,
+      "owner": "markup",
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": null,
+      "owner": "ward",
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": "contract",
+      "owner": null,
+      "due": 1,
+      "swapped": true
+    },
+    {
+      "original": 2,
+      "visitor": "contract",
+      "owner": "markup",
+      "due": 1,
+      "swapped": true
+    },
+    {
+      "original": 2,
+      "visitor": "contract",
+      "owner": "ward",
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": "haggle",
+      "owner": null,
+      "due": 0,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": "haggle",
+      "owner": "markup",
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 2,
+      "visitor": "haggle",
+      "owner": "ward",
+      "due": 0,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": null,
+      "owner": null,
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": null,
+      "owner": "markup",
+      "due": 5,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": null,
+      "owner": "ward",
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": "contract",
+      "owner": null,
+      "due": 2,
+      "swapped": true
+    },
+    {
+      "original": 3,
+      "visitor": "contract",
+      "owner": "markup",
+      "due": 2,
+      "swapped": true
+    },
+    {
+      "original": 3,
+      "visitor": "contract",
+      "owner": "ward",
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": "haggle",
+      "owner": null,
+      "due": 1,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": "haggle",
+      "owner": "markup",
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 3,
+      "visitor": "haggle",
+      "owner": "ward",
+      "due": 1,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": null,
+      "owner": null,
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": null,
+      "owner": "markup",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": null,
+      "owner": "ward",
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": "contract",
+      "owner": null,
+      "due": 2,
+      "swapped": true
+    },
+    {
+      "original": 4,
+      "visitor": "contract",
+      "owner": "markup",
+      "due": 2,
+      "swapped": true
+    },
+    {
+      "original": 4,
+      "visitor": "contract",
+      "owner": "ward",
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": "haggle",
+      "owner": null,
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": "haggle",
+      "owner": "markup",
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 4,
+      "visitor": "haggle",
+      "owner": "ward",
+      "due": 2,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": null,
+      "owner": null,
+      "due": 5,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": null,
+      "owner": "markup",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": null,
+      "owner": "ward",
+      "due": 5,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": "contract",
+      "owner": null,
+      "due": 3,
+      "swapped": true
+    },
+    {
+      "original": 5,
+      "visitor": "contract",
+      "owner": "markup",
+      "due": 3,
+      "swapped": true
+    },
+    {
+      "original": 5,
+      "visitor": "contract",
+      "owner": "ward",
+      "due": 5,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": "haggle",
+      "owner": null,
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": "haggle",
+      "owner": "markup",
+      "due": 5,
+      "swapped": false
+    },
+    {
+      "original": 5,
+      "visitor": "haggle",
+      "owner": "ward",
+      "due": 3,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": null,
+      "owner": null,
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": null,
+      "owner": "markup",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": null,
+      "owner": "ward",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": "contract",
+      "owner": null,
+      "due": 3,
+      "swapped": true
+    },
+    {
+      "original": 6,
+      "visitor": "contract",
+      "owner": "markup",
+      "due": 3,
+      "swapped": true
+    },
+    {
+      "original": 6,
+      "visitor": "contract",
+      "owner": "ward",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": "haggle",
+      "owner": null,
+      "due": 4,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": "haggle",
+      "owner": "markup",
+      "due": 6,
+      "swapped": false
+    },
+    {
+      "original": 6,
+      "visitor": "haggle",
+      "owner": "ward",
+      "due": 4,
+      "swapped": false
+    }
+  ]
+}

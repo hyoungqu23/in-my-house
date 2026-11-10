@@ -1,0 +1,829 @@
+{
+  "date": "2026-10-26",
+  "games": 480000,
+  "conditions": 48,
+  "engineSha256": "88d054ac05dfd365c6671bb2aaec315b9135639ae82c76ff0a6dad1f29536acc",
+  "players": [
+    {
+      "count": 3,
+      "tiles": [
+        {
+          "id": 0,
+          "name": "장터 입구",
+          "shop": false,
+          "visitsPerPlayer": 0.3359666666666667,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.335875169984889
+        },
+        {
+          "id": 1,
+          "name": "달토끼 떡집",
+          "shop": true,
+          "visitsPerPlayer": 0.3912333333333333,
+          "paidPerGame": 0.622,
+          "starterWin": {
+            "mean": 0.3303113914071738,
+            "ci95": [
+              0.3127325608586094,
+              0.3478902219557382
+            ],
+            "n": 2537
+          },
+          "referenceVisits": 0.37200608923035794
+        },
+        {
+          "id": 2,
+          "name": "구미호 주막",
+          "shop": true,
+          "visitsPerPlayer": 0.4053333333333333,
+          "paidPerGame": 0.6581,
+          "starterWin": {
+            "mean": 0.3222133968758274,
+            "ci95": [
+              0.30472305227705554,
+              0.33970374147459925
+            ],
+            "n": 2518
+          },
+          "referenceVisits": 0.39796220532619914
+        },
+        {
+          "id": 3,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.3820333333333333,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.38975441598618904
+        },
+        {
+          "id": 4,
+          "name": "도깨비 대장간",
+          "shop": true,
+          "visitsPerPlayer": 0.44836666666666664,
+          "paidPerGame": 0.7882,
+          "starterWin": {
+            "mean": 0.34301856335754644,
+            "ci95": [
+              0.3250576242019585,
+              0.3609795025131344
+            ],
+            "n": 2478
+          },
+          "referenceVisits": 0.4466262188768628
+        },
+        {
+          "id": 5,
+          "name": "만물장터",
+          "shop": false,
+          "visitsPerPlayer": 0.43029999999999996,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4319100130308023
+        },
+        {
+          "id": 6,
+          "name": "둔갑 의상실",
+          "shop": true,
+          "visitsPerPlayer": 0.4949666666666667,
+          "paidPerGame": 1.1061,
+          "starterWin": {
+            "mean": 0.3563102893890675,
+            "ci95": [
+              0.338209712925557,
+              0.374410865852578
+            ],
+            "n": 2488
+          },
+          "referenceVisits": 0.4975395074256067
+        },
+        {
+          "id": 7,
+          "name": "불도깨비 꼬치집",
+          "shop": true,
+          "visitsPerPlayer": 0.5249,
+          "paidPerGame": 1.3509,
+          "starterWin": {
+            "mean": 0.36231007126529513,
+            "ci95": [
+              0.34415220690889964,
+              0.3804679356216906
+            ],
+            "n": 2479
+          },
+          "referenceVisits": 0.5280796791780868
+        },
+        {
+          "id": 8,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.4705333333333333,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4725770321748133
+        },
+        {
+          "id": 9,
+          "name": "달그림자 점집",
+          "shop": true,
+          "visitsPerPlayer": 0.5,
+          "paidPerGame": 1.0397,
+          "starterWin": {
+            "mean": 0.34137106416899166,
+            "ci95": [
+              0.32360460699846766,
+              0.35913752133951565
+            ],
+            "n": 2509
+          },
+          "referenceVisits": 0.49630322359553347
+        },
+        {
+          "id": 10,
+          "name": "도깨비 지름길",
+          "shop": false,
+          "visitsPerPlayer": 0.4457333333333333,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4476205965104076
+        },
+        {
+          "id": 11,
+          "name": "꿈 수선소",
+          "shop": true,
+          "visitsPerPlayer": 0.4794333333333333,
+          "paidPerGame": 0.9269,
+          "starterWin": {
+            "mean": 0.3341860160041978,
+            "ci95": [
+              0.31659545160504265,
+              0.3517765804033529
+            ],
+            "n": 2541
+          },
+          "referenceVisits": 0.4758981745820507
+        },
+        {
+          "id": 12,
+          "name": "만물 보따리",
+          "shop": true,
+          "visitsPerPlayer": 0.4582,
+          "paidPerGame": 0.8305,
+          "starterWin": {
+            "mean": 0.33292550299075585,
+            "ci95": [
+              0.31500921861736847,
+              0.35084178736414323
+            ],
+            "n": 2452
+          },
+          "referenceVisits": 0.45294766940915343
+        },
+        {
+          "id": 13,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.38739999999999997,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.39173570354469345
+        },
+        {
+          "id": 14,
+          "name": "귀신 사진관",
+          "shop": true,
+          "visitsPerPlayer": 0.4368666666666667,
+          "paidPerGame": 0.8009,
+          "starterWin": {
+            "mean": 0.3090969455511288,
+            "ci95": [
+              0.2918453851403555,
+              0.3263485059619021
+            ],
+            "n": 2510
+          },
+          "referenceVisits": 0.42685625757584866
+        },
+        {
+          "id": 15,
+          "name": "낮잠 정자",
+          "shop": false,
+          "visitsPerPlayer": 0.3776,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.3789683453886461
+        },
+        {
+          "id": 16,
+          "name": "도깨비 씨름장",
+          "shop": true,
+          "visitsPerPlayer": 0.3908666666666667,
+          "paidPerGame": 0.6796,
+          "starterWin": {
+            "mean": 0.3231878253904686,
+            "ci95": [
+              0.30559411550060234,
+              0.34078153528033484
+            ],
+            "n": 2497
+          },
+          "referenceVisits": 0.40182423735292994
+        },
+        {
+          "id": 17,
+          "name": "부적 공방",
+          "shop": true,
+          "visitsPerPlayer": 0.36460000000000004,
+          "paidPerGame": 0.5902,
+          "starterWin": {
+            "mean": 0.3198233821009622,
+            "ci95": [
+              0.30232899610787595,
+              0.3373177680940484
+            ],
+            "n": 2529
+          },
+          "referenceVisits": 0.38126083218606444
+        },
+        {
+          "id": 18,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.3468333333333333,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.343981403618493
+        },
+        {
+          "id": 19,
+          "name": "그림자 극장",
+          "shop": true,
+          "visitsPerPlayer": 0.37456666666666666,
+          "paidPerGame": 0.5971,
+          "starterWin": {
+            "mean": 0.3258868128892499,
+            "ci95": [
+              0.30814472387558267,
+              0.34362890190291717
+            ],
+            "n": 2462
+          },
+          "referenceVisits": 0.37789382153277873
+        }
+      ],
+      "seats": [
+        {
+          "mean": 0.37643333333333334,
+          "ci95": [
+            0.3673097338673447,
+            0.38555693279932196
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.32363333333333333,
+          "ci95": [
+            0.3148473139578759,
+            0.33241935270879075
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.29993333333333333,
+          "ci95": [
+            0.291327830988663,
+            0.30853883567800366
+          ],
+          "n": 10000
+        }
+      ],
+      "seatGap": {
+        "gap": 0.07650000000000001,
+        "simultaneous95": [
+          0.05484535122263101,
+          0.09815464877736901
+        ]
+      },
+      "starterGap": {
+        "gap": 0.05321312571416631,
+        "simultaneous95": [
+          0.0014492395638276978,
+          0.10497701186450492
+        ]
+      },
+      "cards": [
+        {
+          "id": "contract",
+          "name": "둔갑 계약",
+          "heldEligible": 39065,
+          "used": 38916,
+          "effective": 34617,
+          "rentDelta": 169223,
+          "usesPerGame": 3.8916,
+          "effectiveRate": 0.8895312981806969,
+          "meanRentDelta": 4.3484171035049854
+        },
+        {
+          "id": "haggle",
+          "name": "흥정",
+          "heldEligible": 21750,
+          "used": 12987,
+          "effective": 12954,
+          "rentDelta": 25115,
+          "usesPerGame": 1.2987,
+          "effectiveRate": 0.9974589974589975,
+          "meanRentDelta": 1.9338569338569338
+        },
+        {
+          "id": "markup",
+          "name": "바가지",
+          "heldEligible": 23232,
+          "used": 22115,
+          "effective": 8014,
+          "rentDelta": 15511,
+          "usesPerGame": 2.2115,
+          "effectiveRate": 0.36237847614741125,
+          "meanRentDelta": 0.7013791544200769
+        },
+        {
+          "id": "ward",
+          "name": "부적",
+          "heldEligible": 8874,
+          "used": 6239,
+          "effective": 4299,
+          "rentDelta": 17667,
+          "usesPerGame": 0.6239,
+          "effectiveRate": 0.6890527328097451,
+          "meanRentDelta": 2.831703798685687
+        }
+      ],
+      "metrics": {
+        "draws": 317604,
+        "portal_visits": 13372,
+        "portal_to_own": 2621,
+        "buys": 72538,
+        "upgrades": 96022,
+        "duels": 63777,
+        "swap_legal": 55993,
+        "blocks": 4299,
+        "rent_demand": 99902,
+        "unpaid": 0,
+        "monopoly_rounds": 8597,
+        "discard_markup": 51350,
+        "discard_haggle": 56171,
+        "discard_ward": 74069,
+        "start_bonuses": 68686,
+        "discard_contract": 9667,
+        "swaps": 34617,
+        "rest_bonuses": 11328,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "empty_market_visits": 130
+      },
+      "duels": {
+        "mean": 6.3777,
+        "ci95": [
+          6.338873022666057,
+          6.416526977333943
+        ],
+        "n": 10000
+      },
+      "swaps": {
+        "mean": 3.4617,
+        "ci95": [
+          3.4357752817442644,
+          3.4876247182557356
+        ],
+        "n": 10000
+      }
+    },
+    {
+      "count": 4,
+      "tiles": [
+        {
+          "id": 0,
+          "name": "장터 입구",
+          "shop": false,
+          "visitsPerPlayer": 0.330675,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.335875169984889
+        },
+        {
+          "id": 1,
+          "name": "달토끼 떡집",
+          "shop": true,
+          "visitsPerPlayer": 0.39425,
+          "paidPerGame": 1.4454,
+          "starterWin": {
+            "mean": 0.2256437021572721,
+            "ci95": [
+              0.21180918559509995,
+              0.23947821871944427
+            ],
+            "n": 3353
+          },
+          "referenceVisits": 0.37200608923035794
+        },
+        {
+          "id": 2,
+          "name": "구미호 주막",
+          "shop": true,
+          "visitsPerPlayer": 0.405875,
+          "paidPerGame": 1.4868,
+          "starterWin": {
+            "mean": 0.23288220551378447,
+            "ci95": [
+              0.21888150457696937,
+              0.24688290645059957
+            ],
+            "n": 3325
+          },
+          "referenceVisits": 0.39796220532619914
+        },
+        {
+          "id": 3,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.386225,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.38975441598618904
+        },
+        {
+          "id": 4,
+          "name": "도깨비 대장간",
+          "shop": true,
+          "visitsPerPlayer": 0.44885,
+          "paidPerGame": 1.7716,
+          "starterWin": {
+            "mean": 0.24667064201947925,
+            "ci95": [
+              0.23240865534625216,
+              0.26093262869270634
+            ],
+            "n": 3354
+          },
+          "referenceVisits": 0.4466262188768628
+        },
+        {
+          "id": 5,
+          "name": "만물장터",
+          "shop": false,
+          "visitsPerPlayer": 0.4332,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4319100130308023
+        },
+        {
+          "id": 6,
+          "name": "둔갑 의상실",
+          "shop": true,
+          "visitsPerPlayer": 0.491475,
+          "paidPerGame": 2.2493,
+          "starterWin": {
+            "mean": 0.27487973541791944,
+            "ci95": [
+              0.260042281652416,
+              0.2897171891834229
+            ],
+            "n": 3326
+          },
+          "referenceVisits": 0.4975395074256067
+        },
+        {
+          "id": 7,
+          "name": "불도깨비 꼬치집",
+          "shop": true,
+          "visitsPerPlayer": 0.527475,
+          "paidPerGame": 2.7703,
+          "starterWin": {
+            "mean": 0.2830464109533877,
+            "ci95": [
+              0.26804991568710296,
+              0.2980429062196724
+            ],
+            "n": 3311
+          },
+          "referenceVisits": 0.5280796791780868
+        },
+        {
+          "id": 8,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.475975,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4725770321748133
+        },
+        {
+          "id": 9,
+          "name": "달그림자 점집",
+          "shop": true,
+          "visitsPerPlayer": 0.491475,
+          "paidPerGame": 2.2173,
+          "starterWin": {
+            "mean": 0.2688140267927502,
+            "ci95": [
+              0.25419285666850483,
+              0.28343519691699554
+            ],
+            "n": 3384
+          },
+          "referenceVisits": 0.49630322359553347
+        },
+        {
+          "id": 10,
+          "name": "도깨비 지름길",
+          "shop": false,
+          "visitsPerPlayer": 0.447025,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.4476205965104076
+        },
+        {
+          "id": 11,
+          "name": "꿈 수선소",
+          "shop": true,
+          "visitsPerPlayer": 0.4761,
+          "paidPerGame": 2.1301,
+          "starterWin": {
+            "mean": 0.2408047704950892,
+            "ci95": [
+              0.2266191258271003,
+              0.2549904151630781
+            ],
+            "n": 3326
+          },
+          "referenceVisits": 0.4758981745820507
+        },
+        {
+          "id": 12,
+          "name": "만물 보따리",
+          "shop": true,
+          "visitsPerPlayer": 0.458,
+          "paidPerGame": 1.952,
+          "starterWin": {
+            "mean": 0.25792199878123095,
+            "ci95": [
+              0.2433877954154636,
+              0.2724562021469983
+            ],
+            "n": 3282
+          },
+          "referenceVisits": 0.45294766940915343
+        },
+        {
+          "id": 13,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.393875,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.39173570354469345
+        },
+        {
+          "id": 14,
+          "name": "귀신 사진관",
+          "shop": true,
+          "visitsPerPlayer": 0.426475,
+          "paidPerGame": 1.8154,
+          "starterWin": {
+            "mean": 0.2567656265778047,
+            "ci95": [
+              0.24223499137869098,
+              0.27129626177691846
+            ],
+            "n": 3301
+          },
+          "referenceVisits": 0.42685625757584866
+        },
+        {
+          "id": 15,
+          "name": "낮잠 정자",
+          "shop": false,
+          "visitsPerPlayer": 0.376825,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.3789683453886461
+        },
+        {
+          "id": 16,
+          "name": "도깨비 씨름장",
+          "shop": true,
+          "visitsPerPlayer": 0.400925,
+          "paidPerGame": 1.6438,
+          "starterWin": {
+            "mean": 0.2488938053097345,
+            "ci95": [
+              0.2346468929677415,
+              0.26314071765172753
+            ],
+            "n": 3390
+          },
+          "referenceVisits": 0.40182423735292994
+        },
+        {
+          "id": 17,
+          "name": "부적 공방",
+          "shop": true,
+          "visitsPerPlayer": 0.36615,
+          "paidPerGame": 1.4308,
+          "starterWin": {
+            "mean": 0.23362086670774287,
+            "ci95": [
+              0.21940015164569557,
+              0.24784158176979018
+            ],
+            "n": 3246
+          },
+          "referenceVisits": 0.38126083218606444
+        },
+        {
+          "id": 18,
+          "name": "소문 골목",
+          "shop": false,
+          "visitsPerPlayer": 0.3449,
+          "paidPerGame": 0.0,
+          "starterWin": null,
+          "referenceVisits": 0.343981403618493
+        },
+        {
+          "id": 19,
+          "name": "그림자 극장",
+          "shop": true,
+          "visitsPerPlayer": 0.371275,
+          "paidPerGame": 1.426,
+          "starterWin": {
+            "mean": 0.23033019792279052,
+            "ci95": [
+              0.21658047438129407,
+              0.24407992146428698
+            ],
+            "n": 3402
+          },
+          "referenceVisits": 0.37789382153277873
+        }
+      ],
+      "seats": [
+        {
+          "mean": 0.29483333333333334,
+          "ci95": [
+            0.28609831063337293,
+            0.30356835603329374
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.27371666666666666,
+          "ci95": [
+            0.2651790448921949,
+            0.2822542884411384
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.2329,
+          "ci95": [
+            0.2248225864142398,
+            0.2409774135857602
+          ],
+          "n": 10000
+        },
+        {
+          "mean": 0.19855,
+          "ci95": [
+            0.1909358648592025,
+            0.2061641351407975
+          ],
+          "n": 10000
+        }
+      ],
+      "seatGap": {
+        "gap": 0.09628333333333333,
+        "simultaneous95": [
+          0.07544895525124506,
+          0.1171177114154216
+        ]
+      },
+      "starterGap": {
+        "gap": 0.05740270879611556,
+        "simultaneous95": [
+          0.015255590516152745,
+          0.09954982707607837
+        ]
+      },
+      "cards": [
+        {
+          "id": "contract",
+          "name": "둔갑 계약",
+          "heldEligible": 60250,
+          "used": 60016,
+          "effective": 50981,
+          "rentDelta": 254395,
+          "usesPerGame": 6.0016,
+          "effectiveRate": 0.8494568115169289,
+          "meanRentDelta": 4.238786323647028
+        },
+        {
+          "id": "haggle",
+          "name": "흥정",
+          "heldEligible": 41011,
+          "used": 27213,
+          "effective": 27184,
+          "rentDelta": 52434,
+          "usesPerGame": 2.7213,
+          "effectiveRate": 0.9989343328556205,
+          "meanRentDelta": 1.9267996913239995
+        },
+        {
+          "id": "markup",
+          "name": "바가지",
+          "heldEligible": 43973,
+          "used": 41428,
+          "effective": 17707,
+          "rentDelta": 33977,
+          "usesPerGame": 4.1428,
+          "effectiveRate": 0.4274162402240031,
+          "meanRentDelta": 0.8201457951144153
+        },
+        {
+          "id": "ward",
+          "name": "부적",
+          "heldEligible": 20488,
+          "used": 14838,
+          "effective": 9035,
+          "rentDelta": 37352,
+          "usesPerGame": 1.4838,
+          "effectiveRate": 0.6089095565440086,
+          "meanRentDelta": 2.517320393584041
+        }
+      ],
+      "metrics": {
+        "draws": 424039,
+        "buys": 74916,
+        "upgrades": 112214,
+        "portal_visits": 17881,
+        "portal_to_own": 4114,
+        "monopoly_rounds": 6643,
+        "discard_ward": 97697,
+        "discard_haggle": 67522,
+        "rest_bonuses": 15073,
+        "duels": 113212,
+        "swap_legal": 100940,
+        "blocks": 9035,
+        "rent_demand": 223388,
+        "unpaid": 0,
+        "start_bonuses": 91699,
+        "swaps": 50981,
+        "discard_markup": 51801,
+        "unrecovered_episodes": 0,
+        "recovered_episodes": 0,
+        "recovered_within_two": 0,
+        "recovery_censored_late": 0,
+        "discard_contract": 7956,
+        "empty_market_visits": 2085,
+        "forced_sales": 1
+      },
+      "duels": {
+        "mean": 11.3212,
+        "ci95": [
+          11.272831109182766,
+          11.369568890817233
+        ],
+        "n": 10000
+      },
+      "swaps": {
+        "mean": 5.0981,
+        "ci95": [
+          5.068439135368781,
+          5.1277608646312185
+        ],
+        "n": 10000
+      }
+    }
+  ],
+  "recoveryStress": [
+    {
+      "players": 3,
+      "runs": 200,
+      "remainingNights": 4,
+      "regainedAnyShop": 0,
+      "opponentOrSelfForcedSales": 0,
+      "brokePlayerWins": 0,
+      "normalGameFrequency": null
+    },
+    {
+      "players": 4,
+      "runs": 200,
+      "remainingNights": 4,
+      "regainedAnyShop": 0,
+      "opponentOrSelfForcedSales": 0,
+      "brokePlayerWins": 0,
+      "normalGameFrequency": null
+    }
+  ]
+}
