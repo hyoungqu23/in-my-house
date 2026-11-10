@@ -1,4 +1,6 @@
 import Link from "next/link";
+import marketStyles from "@/modules/goblin-market/ui/game.module.css";
+import { MarketArt } from "@/modules/goblin-market/ui/market-art";
 import Image from "next/image";
 import innStyles from "@/modules/moonlit-inn/ui/game.module.css";
 import { Footprints, Gem, Shield } from "lucide-react";
@@ -63,6 +65,10 @@ export default function Home() {
           <div><span className="eyebrow"><span /> TONIGHT’S GAMES</span><h2 id="games-heading">어떤 밤을 시작할까요?</h2></div>
           <span className="game-count">{String(games.length).padStart(2, "0")} GAMES</span>
         </div>
+        <article className={marketStyles.homeCard} id="goblin-market">
+          <MarketArt/>
+          <div><span>확장판 플레이테스트 · 3–4명 · 28칸 · 12밤 · 20–30분 목표</span><h3>도깨비 야시장</h3><p>가게를 키우고, 흥정하고, 친구의 간판을 맞바꿔요. 부적을 숨긴 친구 앞에서, 이번엔 어떤 장난을 걸어볼까요?</p><CreateRoomButton gameId="goblin-market" label="도깨비 야시장 열기" /><Link className={marketStyles.homePreviewLink} href="/preview/goblin-market">장터 먼저 구경하기 →</Link></div>
+        </article>
         <article className={innStyles.homeCard} id="moonlit-inn">
           <Image
             src="/games/moonlit-inn/key-visual.png"

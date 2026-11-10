@@ -17,6 +17,7 @@ import type {
   InnState,
   InnWeather,
 } from "@/modules/moonlit-inn/domain/types";
+import type { MarketAction, MarketCard, MarketCardKind, MarketCategory, MarketChoice, MarketPhase, MarketRulesVersion, MarketShop, MarketState } from "@/modules/goblin-market/domain/types";
 import type { GameId } from "@/modules/game-catalog/games";
 import type {
   ConnectedForestAction,
@@ -65,6 +66,7 @@ export type RoomAction =
   | SwitchboardAction
   | FootprintsAction
   | InnAction
+  | MarketAction
   | ConnectedForestAction
   | AdministrativeAction;
 
@@ -379,12 +381,28 @@ export type PublicRoomView =
   | DawnSwitchboardPublicRoomView
   | MidnightFootprintsPublicRoomView
   | ConnectedForestPublicRoomView
-  | MoonlitInnPublicRoomView;
+  | MoonlitInnPublicRoomView
+  | GoblinMarketPublicRoomView;
 export type PlayerRoomView =
   | DarkHousePlayerRoomView
   | SuspiciousInvitePlayerRoomView
   | DawnSwitchboardPlayerRoomView
   | MidnightFootprintsPlayerRoomView
   | ConnectedForestPlayerRoomView
-  | MoonlitInnPlayerRoomView;
+  | MoonlitInnPlayerRoomView
+  | GoblinMarketPlayerRoomView;
 export type RoomView = PublicRoomView | PlayerRoomView;
+
+export type GoblinMarketPublicRoomView = RoomViewBase<"goblin-market", MarketPhase> & {
+  projection: "public"; rulesVersion: MarketRulesVersion; boardSize: number; nights: number; monopolySize: number; phaseKey: string; phaseEndsAt?: string;
+  night: number; turnSeat: number; order: number[]; actingSeats: number[]; trend: MarketCategory; nextTrend?: MarketCategory;
+  players: Array<{ seat: number; nickname: string; cash: number; position: number; assets: number; handCount: number; connected: boolean; isHost: boolean }>;
+  shops: Array<MarketShop & { rent: number }>; discard: MarketCardKind[]; deckCount: number;
+  duel?: { visitorSeat: number; ownerSeat: number; tile: number; originalRent: number; committedSeats: number[] };
+  payment?: MarketState["payment"]; lastRoll?: MarketState["lastRoll"]; lastDuel?: MarketState["lastDuel"];
+  log: MarketState["log"]; result?: MarketState["result"];
+};
+export type GoblinMarketPlayerRoomView = Omit<GoblinMarketPublicRoomView, "projection"> & {
+  projection: "player";
+  self: { seat: number; hand: MarketCard[]; legalActions: MarketAction["type"][]; legalCardIds: string[]; exchangeTiles: number[]; buyTiles: number[]; choice?: MarketChoice };
+};

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { marketActionSchemas } from "@/modules/goblin-market/domain/action-schema";
 import { innActionSchemas } from "@/modules/moonlit-inn/domain/action-schema";
 import { FOREST_ANIMAL_CARDS } from "@/modules/connected-forest/domain/content";
 import { requireActor } from "@/modules/auth/server";
@@ -10,6 +11,7 @@ export const runtime = "nodejs";
 const forestAnimalId = z.enum(FOREST_ANIMAL_CARDS.map((card) => card.id));
 
 const actionSchema = z.discriminatedUnion("type", [
+  ...marketActionSchemas,
   ...innActionSchemas,
   z.object({ type: z.literal("START_GAME") }).strict(),
   z.object({ type: z.literal("START_REMATCH") }).strict(),

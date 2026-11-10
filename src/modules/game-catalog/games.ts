@@ -3,6 +3,7 @@ export const GAME_IDS = [
   "suspicious-invite",
   "dawn-switchboard",
   "midnight-footprints",
+  "goblin-market",
   "connected-forest",
   "moonlit-inn",
 ] as const;
@@ -20,6 +21,7 @@ export type GameDefinition = {
 };
 
 export const games = [
+  { id: "goblin-market", title: "도깨비 야시장", minPlayers: 3, maxPlayers: 4, durationMinutes: [20, 30], availability: "playable" },
   {
     id: "moonlit-inn",
     title: "보름달 여관",

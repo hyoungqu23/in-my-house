@@ -19,6 +19,10 @@ import { MoonlitInnPublicBoard } from "@/modules/moonlit-inn/ui/public-board";
 import innStyles from "@/modules/moonlit-inn/ui/game.module.css";
 import forestStyles from "@/modules/connected-forest/ui/game.module.css";
 
+import { GoblinMarketPublicBoard } from "@/modules/goblin-market/ui/public-board";
+import marketStyles from "@/modules/goblin-market/ui/game.module.css";
+import type { GoblinMarketPublicRoomView } from "@/modules/room/contracts";
+
 export function DisplayClient({ code }: { code: string }) {
   const [token, setToken] = useState("");
   const [view, setView] = useState<PublicRoomView>();
@@ -68,7 +72,9 @@ export function DisplayClient({ code }: { code: string }) {
     | DawnSwitchboardPublicRoomView
     | MidnightFootprintsPublicRoomView
     | ConnectedForestPublicRoomView
-    | MoonlitInnPublicRoomView;
+    | MoonlitInnPublicRoomView
+    | GoblinMarketPublicRoomView;
+  const isMarket = (candidate: GamePublicView): candidate is GoblinMarketPublicRoomView => candidate.room.gameId === "goblin-market";
   const isInn = (candidate: GamePublicView): candidate is MoonlitInnPublicRoomView => candidate.room.gameId === "moonlit-inn";
   const isForest = (candidate: GamePublicView): candidate is ConnectedForestPublicRoomView => candidate.room.gameId === "connected-forest";
   const isDarkHouse = (candidate: GamePublicView): candidate is DarkHousePublicRoomView =>
@@ -78,8 +84,8 @@ export function DisplayClient({ code }: { code: string }) {
   const isSwitchboard = (candidate: GamePublicView): candidate is DawnSwitchboardPublicRoomView =>
     candidate.room.gameId === "dawn-switchboard";
   return (
-    <main className={`display-page ${view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
-      {isInn(view) ? <MoonlitInnPublicBoard view={view} display /> : isForest(view) ? <ConnectedForestPublicBoard view={view} display /> : isDarkHouse(view)
+    <main className={`display-page ${view.room.gameId === "goblin-market" ? marketStyles.roomPage : view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
+      {isMarket(view) ? <GoblinMarketPublicBoard view={view} /> : isInn(view) ? <MoonlitInnPublicBoard view={view} display /> : isForest(view) ? <ConnectedForestPublicBoard view={view} display /> : isDarkHouse(view)
         ? <PublicBoard view={view} />
         : isSuspicious(view)
           ? <SuspiciousInvitePublicBoard view={view} />

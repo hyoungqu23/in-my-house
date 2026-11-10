@@ -6,10 +6,13 @@ import type { ConnectedForestState } from "@/modules/connected-forest/domain/typ
 
 import type { InnState } from "@/modules/moonlit-inn/domain/types";
 
+import type { MarketState } from "@/modules/goblin-market/domain/types";
+
 export type StoredGame =
   | { type: "dark-house"; state: DarkHouseState }
   | { type: "suspicious-invite"; state: SuspiciousInviteState }
   | { type: "dawn-switchboard"; state: SwitchboardState }
   | { type: "midnight-footprints"; state: FootprintsState }
   | { type: "connected-forest"; state: ConnectedForestState; matchId?: string }
-  | { type: "moonlit-inn"; state: InnState };
+  | { type: "moonlit-inn"; state: InnState }
+  | { type: "goblin-market"; state: MarketState };
