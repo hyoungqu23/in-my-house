@@ -1,6 +1,9 @@
 import "server-only";
 
 import { randomInt, randomUUID } from "node:crypto";
+import { advanceMarket, createMarketState, transitionMarket } from "@/modules/goblin-market/domain/reducer";
+import type { MarketAction } from "@/modules/goblin-market/domain/types";
+import { projectMarketPlayer, projectMarketPublic } from "@/modules/goblin-market/projection/game-view";
 import { createInnSetup } from "@/modules/moonlit-inn/domain/content";
 import { advanceInn, createInnState, transitionInn } from "@/modules/moonlit-inn/domain/reducer";
 import type { InnAction } from "@/modules/moonlit-inn/domain/types";
@@ -149,6 +152,9 @@ const forestActionTypes = new Set<ConnectedForestAction["type"]>([
 const isForestAction = (action: GameAction): action is ConnectedForestAction =>
   forestActionTypes.has(action.type as ConnectedForestAction["type"]);
 
+const marketActionTypes = new Set<MarketAction["type"]>(["MARKET_ROLL", "MARKET_BUY", "MARKET_PORTAL", "MARKET_DUEL", "MARKET_DISCARD", "MARKET_SELL", "MARKET_UPGRADE"]);
+const isMarketAction = (action: GameAction): action is MarketAction => marketActionTypes.has(action.type as MarketAction["type"]);
+
 const assertNever = (value: never): never => {
   throw new GameRuleError("GAME_NOT_FOUND", `지원하지 않는 게임입니다: ${String(value)}`);
 };
@@ -172,6 +178,7 @@ export function createGame(
   previousGame?: StoredGame,
 ): StoredGame {
   switch (gameId) {
+    case "goblin-market": return { type: gameId, state: createMarketState(roster, randomUUID(), { now, randomIndex: randomInt }) };
     case "moonlit-inn":
       return { type: gameId, state: createInnState(roster, createInnSetup(randomUUID(), randomInt)) };
     case "dark-house":
@@ -217,6 +224,7 @@ export function advanceGame(
   context: { now: number; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "goblin-market": return { ...game, state: advanceMarket(game.state, { ...context, randomIndex: randomInt }) };
     case "moonlit-inn":
       return { ...game, state: advanceInn(game.state, context) };
     case "connected-forest":
@@ -247,6 +255,10 @@ export function transitionGame(
   context: { now: number; sequenceId: string; connectedSeats: number[] },
 ): StoredGame {
   switch (game.type) {
+    case "goblin-market": {
+      if (!isMarketAction(action)) throw invalidGameAction();
+      return { ...game, state: transitionMarket(game.state, actorSeat, action, { ...context, randomIndex: randomInt }) };
+    }
     case "moonlit-inn": {
       if (!isInnAction(action)) throw invalidGameAction();
       return { ...game, state: transitionInn(game.state, actorSeat, action, context) };
@@ -315,6 +327,7 @@ export function transitionGame(
 
 export function projectGamePublic(game: StoredGame, context: ProjectionContext): PublicRoomView {
   switch (game.type) {
+    case "goblin-market": return projectMarketPublic(game.state, context);
     case "moonlit-inn":
       return projectInnPublic(game.state, context);
     case "connected-forest":
@@ -338,6 +351,7 @@ export function projectGamePlayer(
   privateState?: FootprintsPrivatePlayerState,
 ): PlayerRoomView {
   switch (game.type) {
+    case "goblin-market": return projectMarketPlayer(game.state, context);
     case "moonlit-inn":
       return projectInnPlayer(game.state, context);
     case "connected-forest":

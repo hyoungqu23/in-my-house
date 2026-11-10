@@ -1,0 +1,24 @@
+{
+  "workingDirectory": "/Users/hyoungmin/Developments/HyoungMin/in-my-house",
+  "commands": [
+    "python3 scripts/goblin_card_audit.py --stage train --runs 20000 --seed 10100000 --output docs/plans/assets/goblin-card-training.json",
+    "python3 scripts/goblin_card_audit.py --stage league --runs 100000 --seed 15100000 --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-league.json",
+    "python3 scripts/goblin_card_audit.py --stage league --runs 40000 --seed 17100000 --mode heuristic --output docs/plans/assets/goblin-card-heuristic.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 86000 --seed 20100000 --resident D_CWHM --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-resident-cw.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 86000 --seed 22100000 --resident S_roles --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-resident-roles.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 30100000 --resident D_CWHM --roster D_HWCM --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-hw-vs-cw.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 32100000 --resident D_HWCM --roster D_HMCW --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-hm-vs-hw.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 34100000 --resident D_HMCW --roster D_CMHW --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-cm-vs-hm.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 36100000 --resident D_CMHW --roster D_CWHM --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-cw-vs-cm.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 38100000 --resident D_CWHM --roster S_roles --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-roles-vs-cw.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 40100000 --resident D_CWHM --roster D_HWMC --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-hwm-vs-cw.json",
+    "python3 scripts/goblin_card_audit.py --stage duel --runs 50000 --seed 42100000 --resident S_roles --roster D_CWMH --model docs/plans/assets/goblin-card-training.json --output docs/plans/assets/goblin-card-confirm-cwm-vs-roles.json",
+    "python3 scripts/goblin_card_sensitivity.py",
+    "python3 scripts/goblin_card_prediction.py",
+    "/Users/hyoungmin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 scripts/goblin_card_bayes.py",
+    "python3 scripts/goblin_card_report.py"
+  ],
+  "gameSha256": "6a0274d75afa7532c6c5ba555c5f3c4911fa6c5d520c7df78436926db1adc4bb",
+  "sourceSha256": "fc63c8a8a30c2440d01aede497f4646381d9d19f72963fd22e086c2e8c42113e",
+  "note": "Run in order. Bayesian step needs NumPy; bundled Python is listed."
+}

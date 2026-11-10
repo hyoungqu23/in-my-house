@@ -43,10 +43,19 @@ import { SuspiciousInvitePublicBoard } from "@/modules/suspicious-invite/ui/publ
 import { QrCode } from "@/shared/ui/qr-code";
 import { createBrowserId } from "@/shared/browser/uuid";
 
+import { GoblinMarketPlayerControls } from "@/modules/goblin-market/ui/player-controls";
+import { GoblinMarketPublicBoard } from "@/modules/goblin-market/ui/public-board";
+import marketStyles from "@/modules/goblin-market/ui/game.module.css";
+import { MarketArt } from "@/modules/goblin-market/ui/market-art";
+import type { MarketAction } from "@/modules/goblin-market/domain/types";
+import type { GoblinMarketPlayerRoomView, GoblinMarketPublicRoomView } from "@/modules/room/contracts";
+
 type ViewMode = "private" | "public";
 type RoomLinks = { code: string; joinUrl: string; displayUrl: string };
 
 const isPlayerView = (view: RoomView): view is PlayerRoomView => view.projection === "player";
+const isMarketPlayer = (view: PlayerRoomView): view is GoblinMarketPlayerRoomView => view.room.gameId === "goblin-market";
+const isMarketView = (view: Exclude<RoomView, LobbyRoomView>): view is GoblinMarketPlayerRoomView | GoblinMarketPublicRoomView => view.room.gameId === "goblin-market";
 const isDarkHousePlayer = (view: PlayerRoomView): view is DarkHousePlayerRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPlayer = (view: PlayerRoomView): view is SuspiciousInvitePlayerRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPlayer = (view: PlayerRoomView): view is DawnSwitchboardPlayerRoomView => view.room.gameId === "dawn-switchboard";
@@ -60,7 +69,9 @@ type GamePublicView =
   | DawnSwitchboardPublicRoomView
   | MidnightFootprintsPublicRoomView
   | ConnectedForestPublicRoomView
-  | MoonlitInnPublicRoomView;
+  | MoonlitInnPublicRoomView
+  | GoblinMarketPublicRoomView;
+const isMarketPublic = (view: GamePublicView): view is GoblinMarketPublicRoomView => view.room.gameId === "goblin-market";
 const isDarkHousePublic = (view: GamePublicView): view is DarkHousePublicRoomView => view.room.gameId === "dark-house";
 const isSuspiciousPublic = (view: GamePublicView): view is SuspiciousInvitePublicRoomView => view.room.gameId === "suspicious-invite";
 const isSwitchboardPublic = (view: GamePublicView): view is DawnSwitchboardPublicRoomView => view.room.gameId === "dawn-switchboard";
@@ -223,6 +234,18 @@ export function RoomClient({ code }: { code: string }) {
           });
           break;
         } catch (cause) {
+          if (action.type.startsWith("MARKET_")) {
+            if (attempt === 3 || !(cause instanceof RoomApiError) || cause.code !== "STALE_VERSION"
+              || epoch !== requestEpoch.current || modeRef.current !== "private"
+              || latest.phase === "LOBBY" || !isMarketView(latest) || latest.projection !== "player") throw cause;
+            const fresh = await roomApiFetch<RoomView>(`/api/rooms/${code}/view?mode=private`);
+            const marketAction = action as MarketAction;
+            if (epoch !== requestEpoch.current || modeRef.current !== "private"
+              || fresh.phase === "LOBBY" || !isMarketView(fresh) || fresh.projection !== "player"
+              || fresh.phaseKey !== marketAction.phaseKey || !fresh.self.legalActions.includes(marketAction.type)) throw cause;
+            latest = fresh;
+            continue;
+          }
           if (action.type.startsWith("INN_")) {
             if (attempt === 3 || !(cause instanceof RoomApiError) || cause.code !== "STALE_VERSION"
               || epoch !== requestEpoch.current || modeRef.current !== "private"
@@ -306,7 +329,7 @@ export function RoomClient({ code }: { code: string }) {
   const playerView = isPlayerView(view) ? view : undefined;
 
   return (
-    <main className={`room-page ${view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
+    <main className={`room-page ${view.room.gameId === "goblin-market" ? marketStyles.roomPage : view.room.gameId === "moonlit-inn" ? innStyles.roomPage : view.room.gameId === "connected-forest" ? forestStyles.roomPage : ""}`}>
       <nav className="mode-switcher" aria-label="화면 모드">
         <button className={mode === "private" ? "active" : ""} onClick={() => switchMode("private")} disabled={!view.viewer.roles.includes("PLAYER")}>
           내 화면
@@ -318,6 +341,7 @@ export function RoomClient({ code }: { code: string }) {
         <Lobby view={view} links={links} isHost={isHost} busy={busy} copied={copied} manualCopy={manualCopy} onCopy={copyInvite} onStart={() => sendAction({ type: "START_GAME" })} />
       ) : mode === "private" && playerView ? (
         <div className="game-layout private-layout">
+          {isMarketPlayer(playerView) && <GoblinMarketPlayerControls view={playerView} busy={busy} onAction={sendAction} />}
           {isInnPlayer(playerView) && <MoonlitInnPlayerControls key={playerView.phaseKey} view={playerView} busy={busy} onAction={sendAction} />}
           {isForestPlayer(playerView) && <ConnectedForestPlayerControls view={playerView} busy={busy} onAction={sendAction}
             draft={drafts.forest?.key === forestDraftKey(playerView) ? drafts.forest.value : undefined}
@@ -338,7 +362,7 @@ export function RoomClient({ code }: { code: string }) {
         </div>
       ) : view.projection === "public" ? (
         <div className="game-layout">
-          {isInnPublic(view) ? <MoonlitInnPublicBoard view={view} /> : isDarkHousePublic(view)
+          {isMarketPublic(view) ? <GoblinMarketPublicBoard view={view} /> : isInnPublic(view) ? <MoonlitInnPublicBoard view={view} /> : isDarkHousePublic(view)
             ? <PublicBoard view={view} />
             : isSuspiciousPublic(view)
               ? <SuspiciousInvitePublicBoard view={view} />
@@ -370,15 +394,16 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
   const isFootprints = view.room.gameId === "midnight-footprints";
   const isInn = view.room.gameId === "moonlit-inn";
   const isForest = view.room.gameId === "connected-forest";
+  const isMarket = view.room.gameId === "goblin-market";
   const minimumPlayers = findGame(view.room.gameId)!.minPlayers;
-  const title = isInn ? "네 주인과 작은 여관을 열어요" : isForest ? "우리의 작은 숲을 시작해요" : isSuspicious
+  const title = isMarket ? "오늘 밤, 누구의 간판이 바뀔까요?" : isInn ? "네 주인과 작은 여관을 열어요" : isForest ? "우리의 작은 숲을 시작해요" : isSuspicious
     ? "초대받지 않은 사람을 찾으세요"
     : isSwitchboard
       ? "새벽이 오기 전에 전력을 되찾으세요"
       : isFootprints
         ? "괴도와 경비, 단둘이 밤을 시작하세요"
       : "빈 방을 믿지 마세요";
-  const lead = isInn ? "4명이 손님과 가구를 고르고, 보름달 아래 이웃과 잠자리를 바꿔요. 한 번의 밤, 고양이 기본 2별로 시작합니다." : isForest ? "4–6명이 각자의 숲을 만들고 이웃과 동물을 주고받아요. 모두 모이면 첫 계절이 시작됩니다." : isSuspicious
+  const lead = isMarket ? "3–4명의 요괴 상인이 가게를 사고 키우며 열두 밤을 장사해요. 첫 밤은 개업 준비, 둘째 밤부터 비밀 카드로 흥정하고 간판을 바꿉니다." : isInn ? "4명이 손님과 가구를 고르고, 보름달 아래 이웃과 잠자리를 바꿔요. 한 번의 밤, 고양이 기본 2별로 시작합니다." : isForest ? "4–6명이 각자의 숲을 만들고 이웃과 동물을 주고받아요. 모두 모이면 첫 계절이 시작됩니다." : isSuspicious
     ? "모두 들어오면 호스트가 초대장을 공개합니다. 역할과 비밀 단어는 다른 사람에게 보여주지 마세요."
     : isSwitchboard
       ? "각자의 휴대폰에 서로 다른 회로 단서가 도착합니다. 화면은 숨기고 단서는 말로 공유하세요."
@@ -388,9 +413,10 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
   return (
     <div className="lobby-layout">
       <section className="lobby-stage">
-        <div className="eyebrow"><span /> {isInn ? "MOONLIT INN" : isForest ? "OUR LITTLE FOREST" : isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
+        <div className="eyebrow"><span /> {isMarket ? "GOBLIN NIGHT MARKET" : isInn ? "MOONLIT INN" : isForest ? "OUR LITTLE FOREST" : isSuspicious ? "THE INVITATION IS WAITING" : isSwitchboard ? "THE GRID IS WAITING" : "THE HOUSE IS WAITING"}</div>
         <h1>{title}</h1>
         <p className="lobby-lead">{lead}</p>
+        {isMarket && <div className={marketStyles.lobbyArt}><MarketArt/></div>}
         <div className="lobby-code-block">
           <span>ROOM CODE</span>
           <strong>{view.room.code}</strong>
@@ -409,7 +435,7 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
         </div>
         {isHost ? (
           <button className="primary-button" disabled={busy || view.players.filter((player) => player.connected).length < minimumPlayers} onClick={onStart}>
-            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isInn ? "모두 준비됨 · 여관 열기" : isForest ? "모두 준비됨 · 숲길 시작" : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
+            {busy ? "게임을 준비하는 중…" : view.players.length < minimumPlayers ? `${minimumPlayers - view.players.length}명 더 필요해요` : isMarket ? "모두 준비됨 · 야시장 개장" : isInn ? "모두 준비됨 · 여관 열기" : isForest ? "모두 준비됨 · 숲길 시작" : isSuspicious ? "모두 준비됨 · 초대장 공개" : isSwitchboard ? "모두 준비됨 · 배전반 열기" : isFootprints ? "두 사람 준비됨 · 야간 순찰 시작" : "모두 준비됨 · 게임 시작"}
           </button>
         ) : <p className="waiting-copy">호스트가 게임을 시작할 때까지 기다려 주세요.</p>}
       </section>
@@ -430,7 +456,7 @@ function Lobby({ view, links, isHost, busy, copied, manualCopy, onCopy, onStart 
 }
 
 function MiniPublicSummary({ view, onOpen }: { view: Exclude<RoomView, LobbyRoomView>; onOpen: () => void }) {
-  const summary = isInnView(view) ? "이웃의 여관과 교환 제안 보기" : isForestView(view) ? `계절 ${view.seasonIndex + 1}/5 · 이웃의 숲 보기` : isDarkHouseView(view)
+  const summary = isMarketView(view) ? `${view.night}/${view.nights}밤 · 야시장 보드 보기` : isInnView(view) ? "이웃의 여관과 교환 제안 보기" : isForestView(view) ? `계절 ${view.seasonIndex + 1}/5 · 이웃의 숲 보기` : isDarkHouseView(view)
     ? view.bid ? `현재 ${view.bid.amount}개 선언` : "테이블 상황 보기"
     : isSuspiciousView(view)
       ? `ROUND ${view.round} · ${view.category}`
